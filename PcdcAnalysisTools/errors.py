@@ -4,7 +4,7 @@ TODO
 
 from cdiserrors import *
 
-from sheepdog.globals import SUPPORTED_FORMATS
+from PcdcAnalysisTools.globals import SUPPORTED_FORMATS
 
 
 class UnsupportedError(UserError):

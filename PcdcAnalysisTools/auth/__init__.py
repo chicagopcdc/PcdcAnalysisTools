@@ -14,7 +14,7 @@ from authutils.token.validate import current_token
 from cdislogging import get_logger
 import flask
 
-from sheepdog.errors import AuthNError, AuthZError
+from PcdcAnalysisTools.errors import AuthNError, AuthZError
 
 
 logger = get_logger(__name__)
@@ -23,7 +23,7 @@ try:
     from authutils.token.validate import validate_request
 except ImportError:
     logger.warning(
-        "Unable to import authutils validate_request. Sheepdog will error if config AUTH_SUBMISSION_LIST is set to "
+        "Unable to import authutils validate_request. PcdcAnalysisTools will error if config AUTH_SUBMISSION_LIST is set to "
         "True (note that it is True by default) "
     )
 
@@ -53,7 +53,7 @@ def authorize_for_project(*required_roles):
             jwt = get_jwt_from_header()
             authz = flask.current_app.auth.auth_request(
                 jwt=jwt,
-                service="sheepdog",
+                service="PcdcAnalysisTools",
                 methods=required_roles,
                 resources=[resource],
             )
@@ -77,7 +77,7 @@ def require_sheepdog_program_admin(func):
         jwt = get_jwt_from_header()
         authz = flask.current_app.auth.auth_request(
             jwt=jwt,
-            service="sheepdog",
+            service="PcdcAnalysisTools",
             methods="*",
             resources=["/services/sheepdog/submission/program"],
         )
@@ -99,7 +99,7 @@ def require_sheepdog_project_admin(func):
         jwt = get_jwt_from_header()
         authz = flask.current_app.auth.auth_request(
             jwt=jwt,
-            service="sheepdog",
+            service="PcdcAnalysisTools",
             methods="*",
             resources=["/services/sheepdog/submission/project"],
         )

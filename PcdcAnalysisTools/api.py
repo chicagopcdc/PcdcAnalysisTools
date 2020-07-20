@@ -12,15 +12,15 @@ from indexclient.client import IndexClient
 from gen3authz.client.arborist.client import ArboristClient
 
 
-import sheepdog
-from sheepdog.errors import (
+import PcdcAnalysisTools
+from PcdcAnalysisTools.errors import (
     APIError,
     setup_default_handlers,
     UnhealthyCheck,
     NotFoundError,
     InternalError,
 )
-from sheepdog.version_data import VERSION, COMMIT
+from PcdcAnalysisTools.version_data import VERSION, COMMIT
 
 # recursion depth is increased for complex graph traversals
 sys.setrecursionlimit(10000)
@@ -34,7 +34,7 @@ def app_register_blueprints(app):
 
     app.url_map.strict_slashes = False
 
-    sheepdog_blueprint = sheepdog.create_blueprint("submission")
+    sheepdog_blueprint = PcdcAnalysisTools.create_blueprint("submission")
 
     v0 = "/v0"
     app.register_blueprint(sheepdog_blueprint, url_prefix=v0 + "/submission")
@@ -109,7 +109,7 @@ def health_check():
 @app.route("/_version", methods=["GET"])
 def version():
     """
-    Returns the version of Sheepdog
+    Returns the version of PcdcAnalysisTools
     ---
     tags:
       - system
@@ -149,7 +149,7 @@ def _log_and_jsonify_exception(e):
 
 app.register_error_handler(APIError, _log_and_jsonify_exception)
 
-app.register_error_handler(sheepdog.errors.APIError, _log_and_jsonify_exception)
+app.register_error_handler(PcdcAnalysisTools.errors.APIError, _log_and_jsonify_exception)
 app.register_error_handler(AuthError, _log_and_jsonify_exception)
 
 
@@ -159,7 +159,7 @@ def run_for_development(**kwargs):
     for key in ["http_proxy", "https_proxy"]:
         if os.environ.get(key):
             del os.environ[key]
-    app.config.from_object("sheepdog.dev_settings")
+    app.config.from_object("PcdcAnalysisTools.dev_settings")
 
     kwargs["port"] = app.config["SHEEPDOG_PORT"]
     kwargs["host"] = app.config["SHEEPDOG_HOST"]

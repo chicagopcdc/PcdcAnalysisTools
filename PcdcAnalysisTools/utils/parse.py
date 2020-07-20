@@ -8,7 +8,7 @@ import yaml
 
 import flask
 
-from sheepdog.errors import UserError
+from PcdcAnalysisTools.errors import UserError
 
 
 def oph_raise_for_duplicates(object_pairs):

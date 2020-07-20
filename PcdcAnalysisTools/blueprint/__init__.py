@@ -1,11 +1,10 @@
 """
-Defines the sheepdog blueprint, which must be initialized with modules defining
-the data dictionary and the data models.
+Defines the PcdcAnalysisTools blueprint.
 """
 
 import flask
 
-from sheepdog import sanity_checks
+from PcdcAnalysisTools import sanity_checks
 
 
 def create_blueprint(name):
@@ -16,15 +15,15 @@ def create_blueprint(name):
         name: blueprint name
 
     Return:
-        flask.Blueprint: the sheepdog blueprint
+        flask.Blueprint: the PcdcAnalysisTools blueprint
     """
     sanity_checks.validate()
 
     blueprint = flask.Blueprint(name, __name__)
 
-    # Add all the routes defined in sheepdog.blueprint.routes to the new
+    # Add all the routes defined in PcdcAnalysisTools.blueprint.routes to the new
     # blueprint.
-    from sheepdog.blueprint.routes import routes
+    from PcdcAnalysisTools.blueprint.routes import routes
 
     for route in routes:
         blueprint.add_url_rule(

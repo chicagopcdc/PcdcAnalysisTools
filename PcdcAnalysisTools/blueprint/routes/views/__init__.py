@@ -8,11 +8,11 @@ import flask
 from flask import current_app
 import requests
 
-from sheepdog import auth, utils
-from sheepdog.utils import parse
-from sheepdog.blueprint.routes.views import program
-from sheepdog.errors import AuthError, NotFoundError, UserError
-from sheepdog.globals import PROGRAM_SEED, ROLES
+from PcdcAnalysisTools import auth, utils
+from PcdcAnalysisTools.utils import parse
+from PcdcAnalysisTools.blueprint.routes.views import program
+from PcdcAnalysisTools.errors import AuthError, NotFoundError, UserError
+from PcdcAnalysisTools.globals import PROGRAM_SEED, ROLES
 
 # @auth.require_sheepdog_program_admin
 def get_programs():

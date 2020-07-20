@@ -1,10 +1,10 @@
 """
-List routes to be added to the blueprint in ``sheepdog.blueprint``. Each
+List routes to be added to the blueprint in ``PcdcAnalysisTools.blueprint``. Each
 route is constructed with the ``new_route`` function from
-``sheepdog.blueprint.routes.route_utils``.
+``PcdcAnalysisTools.blueprint.routes.route_utils``.
 """
 
-from sheepdog.blueprint.routes import views
+from PcdcAnalysisTools.blueprint.routes import views
 
 
 def new_route(

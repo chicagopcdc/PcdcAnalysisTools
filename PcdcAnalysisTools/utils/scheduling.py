@@ -3,8 +3,8 @@ from threading import Thread
 
 from cdislogging import get_logger
 
-from sheepdog.errors import InternalError
-from sheepdog.globals import ASYNC_MAX_Q_LEN, ERR_ASYNC_SCHEDULING
+from PcdcAnalysisTools.errors import InternalError
+from PcdcAnalysisTools.globals import ASYNC_MAX_Q_LEN, ERR_ASYNC_SCHEDULING
 
 
 logger = get_logger("submission.scheduling")

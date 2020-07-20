@@ -1,7 +1,7 @@
 # pylint: disable=unsubscriptable-object
 """
-Provide utility functions primarily for code in ``sheepdog.blueprint``
-(though some are also used in ``sheepdog.upload``).
+Provide utility functions primarily for code in ``PcdcAnalysisTools.blueprint``
+(though some are also used in ``PcdcAnalysisTools.upload``).
 """
 
 from contextlib import contextmanager
@@ -18,11 +18,10 @@ import boto
 import flask
 from fuzzywuzzy.process import extract
 
-from sheepdog.errors import InternalError, NotFoundError, UnsupportedError, UserError
+from PcdcAnalysisTools.errors import InternalError, NotFoundError, UnsupportedError, UserError
 
 
 from . import parse
-from . import s3
 from . import scheduling
 
 

@@ -2,10 +2,6 @@ import os
 from boto.s3.connection import OrdinaryCallingFormat
 from os import environ as env
 
-#FOR DOCKER RUN ######
-from sheepdog.api import app, app_init, run_for_development
-from unittest.mock import patch, PropertyMock
-#######
 
 # Auth
 AUTH = "https://gdc-portal.nci.nih.gov/auth/keystone/v3/"
@@ -91,20 +87,3 @@ AUTH_SUBMISSION_LIST = False
 os.environ["AUTHLIB_INSECURE_TRANSPORT"] = "true"
 
 
-os.environ["GDC_FAKE_AUTH"] = "false"
-os.environ["GDC_FAKE_DOWNLOAD"] = "false"
-debug = bool(os.environ.get("SHEEPDOG_DEBUG", True))
-application = app
-authorized = True  # modify this to mock authorized/unauthorized
-with patch(
-    "gen3authz.client.arborist.client.ArboristClient.create_resource",
-    new_callable=PropertyMock,
-), patch(
-    "gen3authz.client.arborist.client.ArboristClient.auth_request",
-    new_callable=PropertyMock,
-    return_value=lambda jwt, service, methods, resources: authorized,
-):
-    run_for_development(debug=debug, threaded=True)
-# app_init(app)
-# application = app
-# application.debug = (environ.get('GEN3_DEBUG') == "True")

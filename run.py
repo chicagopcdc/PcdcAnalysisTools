@@ -10,7 +10,7 @@ import requests
 from flask import current_app
 # from psqlgraph import PolyNode as Node
 
-from sheepdog.api import run_for_development
+from PcdcAnalysisTools.api import run_for_development
 
 
 requests.packages.urllib3.disable_warnings()
@@ -99,19 +99,19 @@ def run_with_fake_auth():
         return project_ids
 
     with patch(
-        "sheepdog.auth.FederatedUser.roles",
+        "PcdcAnalysisTools.auth.FederatedUser.roles",
         new_callable=PropertyMock,
         return_value=roles,
     ), patch(
-        "sheepdog.auth.FederatedUser.logged_in",
+        "PcdcAnalysisTools.auth.FederatedUser.logged_in",
         new_callable=PropertyMock,
         return_value=lambda: True,
     ), patch(
-        "sheepdog.auth.FederatedUser.get_project_ids",
+        "PcdcAnalysisTools.auth.FederatedUser.get_project_ids",
         new_callable=PropertyMock,
         return_value=get_project_ids,
     ), patch(
-        "sheepdog.auth.verify_hmac", new=set_user
+        "PcdcAnalysisTools.auth.verify_hmac", new=set_user
     ):
 
         run_for_development(debug=debug, threaded=True)
@@ -134,9 +134,9 @@ def run_with_fake_authz():
 
 
 def run_with_fake_download():
-    with patch("sheepdog.download.get_nodes", fake_get_nodes):
+    with patch("PcdcAnalysisTools.download.get_nodes", fake_get_nodes):
         with patch.multiple(
-            "sheepdog.download",
+            "PcdcAnalysisTools.download",
             key_for=fake_key_for,
             key_for_node=fake_key_for_node,
             urls_from_index_client=fake_urls_from_index_client,
