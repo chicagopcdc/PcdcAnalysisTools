@@ -31,6 +31,7 @@ cdispyutils==1.0.4
 fuzzywuzzy==0.6.1
 lxml==4.4.2
 simplejson==3.8.1
+lifelines==0.25.0
 
 
 
