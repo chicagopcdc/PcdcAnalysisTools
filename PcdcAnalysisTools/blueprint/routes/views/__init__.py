@@ -10,7 +10,7 @@ import requests
 
 from PcdcAnalysisTools import auth, utils
 from PcdcAnalysisTools.utils import parse
-from PcdcAnalysisTools.blueprint.routes.views import program
+from PcdcAnalysisTools.blueprint.routes.views import program, survival
 from PcdcAnalysisTools.errors import AuthError, NotFoundError, UserError
 from PcdcAnalysisTools.globals import PROGRAM_SEED, ROLES
 
@@ -59,5 +59,4 @@ def get_programs():
     #     auth.validate_request(aud={"openid"}, purpose=None)
     
     return flask.jsonify({"links": ["aa","bb"]})
-
 

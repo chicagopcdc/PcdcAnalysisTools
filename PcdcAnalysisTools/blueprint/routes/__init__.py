@@ -50,6 +50,12 @@ def new_route(
 
 routes = [
     new_route("/", views.get_programs, methods=["GET"]),
+    new_route(
+        "/survival_curve",
+        views.survival.get_survival_curve,
+        endpoint="survival_curve",
+        methods=["POST"],
+    ),
     # new_route("/<program>", views.program.delete_program, methods=["DELETE"]),
     # new_route(
     #     "/<program>/<project>/manifest",
