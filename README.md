@@ -1,47 +1,30 @@
-# sheepdog
-
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0069fa67707f48a7aabfe9de6b857392)](https://www.codacy.com/app/uc-cdis/sheepdog?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=uc-cdis/sheepdog&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/0069fa67707f48a7aabfe9de6b857392)](https://www.codacy.com/app/uc-cdis/sheepdog?utm_source=github.com&utm_medium=referral&utm_content=uc-cdis/sheepdog&utm_campaign=Badge_Coverage)
+# PCDC Analysis tool
 
 ## Installation
-
-### For General Usage
-
-To install sheepdog for use with other Gen3 services, running these commands is sufficient.
-
-```bash
-python setup.py build
-python setup.py install
-```
 
 ### For Development
 
 ```bash
+python -m venv env
+source env/bin/activate
 pip install -r dev-requirements.txt
 python setup.py develop
+python run.py
+deactivate
 ```
 
 (`dev-requirements.txt` contains requirements for testing and doc generation.
 Installing with `python setup.py develop` avoids literally installing anything
 but creates an egg link to the source code.)
 
-## Minimal Usage Example
+### For Development
 
-```python
-import sheepdog
-import datamodelutils
-from dictionaryutils import dictionary
-from gdcdictionary import gdcdictionary
-from gdcdatamodel import models, validators
-
-dictionary.init(gdcdictionary)
-datamodelutils.validators.init(validators)
-datamodelutils.models.init(models)
-blueprint = sheepdog.create_blueprint(name='submission')
-
-app = Flask(__name__)
-app.register_blueprint(blueprint)
+build the container
+```bash
+docker build -t pcdcanalysistools:test .
 ```
+
+add the container in the revproxy conf and in the docker-compose.yml file
 
 ## Documentation
 
