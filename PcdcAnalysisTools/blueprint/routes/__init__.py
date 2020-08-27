@@ -52,9 +52,9 @@ def new_route(
 routes = [
     new_route("/", views.get_programs, methods=["GET"]),
     new_route(
-        "/survival_curve",
+        "/survival",
         views.survival.main,
-        endpoint="survival_curve",
+        endpoint="survival",
         methods=["POST"],
     ),
     # new_route("/<program>", views.program.delete_program, methods=["DELETE"]),
