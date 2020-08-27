@@ -8,9 +8,9 @@ import pandas as pd
 
 
 def main():
-    request_body = flask.request.get_json()
-    data = fetch_fake_data(request_body)
-    return flask.jsonify(get_survival_result(data, request_body))
+    args = utils.parse.parse_request_json()
+    data = fetch_fake_data(args)
+    return flask.jsonify(get_survival_result(data, args))
 
 
 def fetch_data(url, search_criteria):
@@ -18,12 +18,12 @@ def fetch_data(url, search_criteria):
     return
 
 
-def fetch_fake_data(request_body):
-    efs_flag = request_body["efsFlag"]
-    factor_var = request_body["factorVariable"]
-    stratification_var = request_body["stratificationVariable"]
-    start_time = request_body["startTime"]
-    end_time = request_body["endTime"]
+def fetch_fake_data(args):
+    efs_flag = args.get("efsFlag")
+    factor_var = args.get("factorVariable")
+    stratification_var = args.get("stratificationVariable")
+    start_time = args.get("startTime")
+    end_time = args.get("endTime")
 
     status_col, time_col = (
         ("EFSCENS", "EFSTIME")
@@ -46,11 +46,11 @@ def fetch_fake_data(request_body):
     )
 
 
-def get_survival_result(data, request_body):
+def get_survival_result(data, args):
     kmf = KaplanMeierFitter()
-    variables = [x for x in [request_body["factorVariable"],
-                             request_body["stratificationVariable"]] if x != ""]
-    time_range = get_time_range(data, request_body)
+    variables = [x for x in [args.get("factorVariable"),
+                             args.get("stratificationVariable")] if x != ""]
+    time_range = get_time_range(data, args)
 
     if len(variables) == 0:
         pval = None
@@ -85,12 +85,12 @@ def get_survival_result(data, request_body):
     return {"pval": pval, "risktable": risktable, "survival": survival}
 
 
-def get_time_range(data, request_body):
+def get_time_range(data, args):
     max_time = int(np.floor(data.time.max()))
-    start_time = request_body["startTime"]
+    start_time = args.get("startTime")
     end_time = (
-        min(request_body["endTime"], max_time)
-        if request_body["endTime"] > start_time
+        min(args.get("endTime"), max_time)
+        if args.get("endTime") > start_time
         else max_time
     )
 
