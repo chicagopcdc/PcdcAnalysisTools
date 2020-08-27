@@ -7,87 +7,123 @@ import numpy as np
 import pandas as pd
 
 
+def main():
+    request_body = flask.request.get_json()
+    data = fetch_fake_data(request_body)
+    return flask.jsonify(get_survival_result(data, request_body))
 
-def get_survival_curve():
-    args = utils.parse.parse_request_json()
-    print(args.get("patientSearchCriteria"))
-    print(args.get("factorVariable"))
 
-    data = fetch_fake_data() # if DATA_URL == "" else fetch_data(DATA_URL)
-    factor = parse_factor(args.get("factorVariable"))
-    return flask.jsonify(get_survival_data(data, factor))
-
-def fetch_data(url):
+def fetch_data(url, search_criteria):
     # TODO run guppy query towards ES
-    return pd.read_json(url, orient="records")
+    return
 
-def fetch_fake_data():
+
+def fetch_fake_data(request_body):
+    efs_flag = request_body["efsFlag"]
+    factor_var = request_body["factorVariable"]
+    stratification_var = request_body["stratificationVariable"]
+    start_time = request_body["startTime"]
+    end_time = request_body["endTime"]
+
+    status_col, time_col = (
+        ("EFSCENS", "EFSTIME")
+        if efs_flag
+        else ("SCENS", "STIME")
+    )
+    time_range_query = (
+        f"time >= {start_time} and time <= {end_time}"
+        if end_time > 0
+        else f"time >= {start_time}"
+    )
+
     return (
         pd.read_json("./data/fake.json", orient="records")
-            .rename(columns=str.lower)
-            .query("stime >= 0")
-            .assign(
-                time = lambda x: x.stime / 365,
-                status = lambda x: x.scens == 1
-            )
-            .drop(columns=["scens", "stime"])
+        .query(f"{time_col} >= 0")
+        .assign(status=lambda x: x[status_col] == 1,
+                time=lambda x: x[time_col] / 365.25)
+        .filter(items=[factor_var, stratification_var, "status", "time"])
+        .query(time_range_query)
     )
 
-def parse_factor(s):
-    return [x.strip() for x in s] if s else []
 
-def get_survival_data(data, factor):
+def get_survival_result(data, request_body):
     kmf = KaplanMeierFitter()
-    yearmax = int(np.floor(data.time.max()))
-    
-    if len(factor) == 0:
+    variables = [x for x in [request_body["factorVariable"],
+                             request_body["stratificationVariable"]] if x != ""]
+    time_range = get_time_range(data, request_body)
+
+    if len(variables) == 0:
         pval = None
-        
+
         kmf.fit(data.time, data.status)
-        risktable = get_risktable(kmf.event_table.at_risk, yearmax)
-        survival = parse_survival(kmf.survival_function_)
+        risktable = [{
+            "name": "All",
+            "data": get_risktable(kmf.event_table.at_risk, time_range)
+        }]
+        survival = [{
+            "name": "All",
+            "data": parse_survival(kmf.survival_function_, time_range)
+        }]
     else:
-        pval = get_pval(data, factor)
-        risktable = {}
-        survival = {}
-        for name, grouped_df in data.groupby(factor):
-            name = map(str, name if isinstance(name, tuple) else (name, ))
-            label = ", ".join(map(lambda x: "=".join(x), zip(factor, name)))
-            
+        pval = get_pval(data, variables)
+        risktable = []
+        survival = []
+        for name, grouped_df in data.groupby(variables):
+            name = map(str, name if isinstance(name, tuple) else (name,))
+            label = ",".join(map(lambda x: "=".join(x), zip(variables, name)))
+
             kmf.fit(grouped_df.time, grouped_df.status)
-            risktable[label] = get_risktable(kmf.event_table.at_risk, yearmax)
-            survival[label] = parse_survival(kmf.survival_function_)
+            risktable.append({
+                "name": label,
+                "data": get_risktable(kmf.event_table.at_risk, time_range)
+            })
+            survival.append({
+                "name": label,
+                "data": parse_survival(kmf.survival_function_, time_range)
+            })
 
-    return {
-        "pval": pval,
-        "risktable": risktable,
-        "survival": survival
-    }
+    return {"pval": pval, "risktable": risktable, "survival": survival}
 
-def parse_survival(df):
+
+def get_time_range(data, request_body):
+    max_time = int(np.floor(data.time.max()))
+    start_time = request_body["startTime"]
+    end_time = (
+        min(request_body["endTime"], max_time)
+        if request_body["endTime"] > start_time
+        else max_time
+    )
+
+    return range(start_time, end_time + 1)
+
+
+def parse_survival(df, time_range):
     return (
         df.reset_index()
-            .rename(columns={"KM_estimate": "prob", "timeline": "time"})
-            .to_dict(orient="records")
+        .rename(columns={"KM_estimate": "prob", "timeline": "time"})
+        .replace({'time': {0: min(time_range)}})
+        .to_dict(orient="records")
     )
 
-def get_pval(df, factor):
-    groups = list(map(str, zip(*[df[f] for f in factor])))
+
+def get_pval(df, variables):
+    groups = list(map(str, zip(*[df[f] for f in variables])))
     result = multivariate_logrank_test(df.time, groups, df.status)
     return result.p_value
 
-def get_risktable(df, yearmax):
+
+def get_risktable(df, time_range):
     return (
         df.reset_index()
-            .assign(year=lambda x: x.event_at.apply(np.ceil))
-            .groupby("year").at_risk.min()
-            .reset_index()
-            .merge(pd.DataFrame(data={"year": range(yearmax + 1)}), how="outer")
-            .sort_values(by="year")
-            .fillna(method="ffill")
-            .rename(columns={"at_risk": "n"})
-            .to_dict(orient="records")
+        .assign(time=lambda x: x.event_at.apply(np.ceil))
+        .groupby("time")
+        .at_risk.min()
+        .reset_index()
+        .merge(pd.DataFrame(data={"time": time_range}), how="outer")
+        .sort_values(by="time")
+        .fillna(method="ffill")
+        .rename(columns={"at_risk": "nrisk"})
+        .astype({"nrisk": "int32"})
+        .query(f"time >= {min(time_range)} and time <= {max(time_range)}")
+        .to_dict(orient="records")
     )
-
-
-
