@@ -34,11 +34,11 @@ def app_register_blueprints(app):
 
     app.url_map.strict_slashes = False
 
-    sheepdog_blueprint = PcdcAnalysisTools.create_blueprint("analysis")
+    sheepdog_blueprint = PcdcAnalysisTools.create_blueprint("survival")
 
     v0 = "/v0"
-    app.register_blueprint(sheepdog_blueprint, url_prefix=v0 + "/analysis")
-    app.register_blueprint(sheepdog_blueprint, url_prefix="/analysis")
+    app.register_blueprint(sheepdog_blueprint, url_prefix=v0 + "/survival")
+    app.register_blueprint(sheepdog_blueprint, url_prefix="/survival")
     app.register_blueprint(oauth2_blueprint.blueprint, url_prefix=v0 + "/oauth2")
     app.register_blueprint(oauth2_blueprint.blueprint, url_prefix="/oauth2")
 
