@@ -16,8 +16,8 @@ from dictionaryutils import DataDictionary, dictionary
 from datamodelutils import models, validators
 from gen3authz.client.arborist.client import ArboristClient
 
-import sheepdog
-from sheepdog.test_settings import (
+import PcdcAnalysisTools
+from PcdcAnalysisTools.test_settings import (
     Fernet,
     HMAC_ENCRYPTION_KEY,
     JWT_KEYPAIR_FILES,
@@ -119,7 +119,7 @@ def app(tmpdir, request):
         indexd.terminate()
         wait_for_indexd_not_alive(port)
 
-    _app.config.from_object("sheepdog.test_settings")
+    _app.config.from_object("PcdcAnalysisTools.test_settings")
     _app.config["PATH_TO_SCHEMA_DIR"] = PATH_TO_SCHEMA_DIR
 
     request.addfinalizer(teardown)

@@ -34,13 +34,15 @@ def app_register_blueprints(app):
 
     app.url_map.strict_slashes = False
 
-    sheepdog_blueprint = PcdcAnalysisTools.create_blueprint("analysis")
+    tools_blueprint = PcdcAnalysisTools.create_blueprint("tools")
 
     v0 = "/v0"
-    app.register_blueprint(sheepdog_blueprint, url_prefix=v0 + "/analysis")
-    app.register_blueprint(sheepdog_blueprint, url_prefix="/analysis")
-    app.register_blueprint(oauth2_blueprint.blueprint, url_prefix=v0 + "/oauth2")
+    app.register_blueprint(tools_blueprint, url_prefix=v0 + "/tools")
+    app.register_blueprint(tools_blueprint, url_prefix="/tools")
+    app.register_blueprint(oauth2_blueprint.blueprint,
+                           url_prefix=v0 + "/oauth2")
     app.register_blueprint(oauth2_blueprint.blueprint, url_prefix="/oauth2")
+
 
 def app_init(app):
     # Register duplicates only at runtime
@@ -60,7 +62,8 @@ def app_init(app):
     if app.config.get("USE_USER_HARAKIRI", True):
         setup_user_harakiri(app)
 
-    app.config["AUTH_NAMESPACE"] = "/" + os.getenv("AUTH_NAMESPACE", "").strip("/")
+    app.config["AUTH_NAMESPACE"] = "/" + \
+        os.getenv("AUTH_NAMESPACE", "").strip("/")
 
     app_register_blueprints(app)
 
@@ -69,7 +72,8 @@ def app_init(app):
     try:
         app.secret_key = app.config["FLASK_SECRET_KEY"]
     except KeyError:
-        app.logger.error("Secret key not set in config! Authentication will not work")
+        app.logger.error(
+            "Secret key not set in config! Authentication will not work")
 
     # ARBORIST deprecated, replaced by ARBORIST_URL
     arborist_url = os.environ.get("ARBORIST_URL", os.environ.get("ARBORIST"))
@@ -149,7 +153,8 @@ def _log_and_jsonify_exception(e):
 
 app.register_error_handler(APIError, _log_and_jsonify_exception)
 
-app.register_error_handler(PcdcAnalysisTools.errors.APIError, _log_and_jsonify_exception)
+app.register_error_handler(
+    PcdcAnalysisTools.errors.APIError, _log_and_jsonify_exception)
 app.register_error_handler(AuthError, _log_and_jsonify_exception)
 
 
@@ -167,5 +172,6 @@ def run_for_development(**kwargs):
     try:
         app_init(app)
     except Exception:
-        app.logger.exception("Couldn't initialize application, continuing anyway")
+        app.logger.exception(
+            "Couldn't initialize application, continuing anyway")
     app.run(**kwargs)
