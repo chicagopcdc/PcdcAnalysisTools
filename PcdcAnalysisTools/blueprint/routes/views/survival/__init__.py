@@ -19,6 +19,11 @@ def fetch_data(url, search_criteria):
 
 
 def fetch_fake_data(args):
+    """Fetches the mocked source data (pandas.DataFrame) based on request body
+
+    Args:
+        args(dict): Request body parameters and values
+    """
     efs_flag = args.get("efsFlag")
     factor_var = args.get("factorVariable")
     stratification_var = args.get("stratificationVariable")
@@ -47,6 +52,20 @@ def fetch_fake_data(args):
 
 
 def get_survival_result(data, args):
+    """Returns the survival results (dict) based on data and request body
+
+    Args:
+        data(pandas.DataFrame): Source data
+        args(dict): Request body parameters and values
+
+    Returns:
+        A dict of survival result consisting of "pval", "risktable", and "survival" data
+        example:
+
+        {"pval": 0.1,
+         "risktable": [{ "nrisk": 30, "time": 0}],
+         "survival": [{"prob": 1.0, "time": 0.0}]}
+    """
     kmf = KaplanMeierFitter()
     variables = [x for x in [args.get("factorVariable"),
                              args.get("stratificationVariable")] if x != ""]
@@ -62,7 +81,7 @@ def get_survival_result(data, args):
         }]
         survival = [{
             "name": "All",
-            "data": parse_survival(kmf.survival_function_, time_range)
+            "data": get_survival(kmf.survival_function_, time_range)
         }]
     else:
         pval = get_pval(data, variables)
@@ -79,13 +98,19 @@ def get_survival_result(data, args):
             })
             survival.append({
                 "name": label,
-                "data": parse_survival(kmf.survival_function_, time_range)
+                "data": get_survival(kmf.survival_function_, time_range)
             })
 
     return {"pval": pval, "risktable": risktable, "survival": survival}
 
 
 def get_time_range(data, args):
+    """Returns a (min, max) time range based on the data and request body
+
+    Args:
+        data(pandas.DataFrame): Source data
+        request_body(dict): Request body parameters and values
+    """
     max_time = int(np.floor(data.time.max()))
     start_time = args.get("startTime")
     end_time = (
@@ -97,24 +122,44 @@ def get_time_range(data, args):
     return range(start_time, end_time + 1)
 
 
-def parse_survival(df, time_range):
+def get_survival(survival_function, time_range):
+    """Returns the survival probabilities data (dict) for the response API
+
+    Args:
+        survival_function(pandas.DataFrame): The estimated survival function from a fitted lifelines.KaplanMeierFitter instance
+        time_range(range): A range of min and max time values
+    """
     return (
-        df.reset_index()
+        survival_function
+        .reset_index()
         .rename(columns={"KM_estimate": "prob", "timeline": "time"})
         .replace({'time': {0: min(time_range)}})
         .to_dict(orient="records")
     )
 
 
-def get_pval(df, variables):
-    groups = list(map(str, zip(*[df[f] for f in variables])))
-    result = multivariate_logrank_test(df.time, groups, df.status)
+def get_pval(data, variables):
+    """Returns the log-rank test p-value (float) for the data and variables
+
+    Args:
+        data(pandas.DataFrame): Source data
+        variables(list): Variables to use in the log-rank test
+    """
+    groups = list(map(str, zip(*[data[f] for f in variables])))
+    result = multivariate_logrank_test(data.time, groups, data.status)
     return result.p_value
 
 
-def get_risktable(df, time_range):
+def get_risktable(at_risk, time_range):
+    """Returns the number-at-risk table data (dict) for the response API
+
+    Args:
+        at_risk(pandas.Series): Number-at-risk data from a fitted lifelines.KaplanMeierFitter instance
+        time_range(range): A range of min and max time values
+    """
     return (
-        df.reset_index()
+        at_risk
+        .reset_index()
         .assign(time=lambda x: x.event_at.apply(np.ceil))
         .groupby("time")
         .at_risk.min()
