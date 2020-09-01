@@ -2,7 +2,7 @@
 # To check running container: docker exec -it PcdcAnalysisTools /bin/bash
 
 # FROM quay.io/cdis/python-nginx:pybase3-1.1.0
-FROM base_image:test
+FROM quay.io/pcdc/base_image:pcdc_dev_Tue__01_Sep_2020_19_31_03_GMT
 
 RUN apk update \
     && apk add --upgrade --no-cache \
