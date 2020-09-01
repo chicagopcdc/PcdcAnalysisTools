@@ -1,9 +1,9 @@
-from sheepdog import dictionary
-from sheepdog.utils.transforms.graph_to_doc import (
+from PcdcAnalysisTools import dictionary
+from PcdcAnalysisTools.utils.transforms.graph_to_doc import (
     entity_to_template,
     is_property_hidden,
 )
-from sheepdog.utils import _get_links
+from PcdcAnalysisTools.utils import _get_links
 
 
 def test_urls_in_templates_json():

@@ -1,5 +1,5 @@
 import pytest
-from sheepdog.utils.transforms.bcr_xml_to_json import munge_property
+from PcdcAnalysisTools.utils.transforms.bcr_xml_to_json import munge_property
 
 
 def test_gdc_type_mappings():

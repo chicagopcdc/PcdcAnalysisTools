@@ -11,8 +11,8 @@ except ImportError:
     from mock import MagicMock
     from mock import patch
 
-from sheepdog.errors import AuthZError
-from sheepdog.test_settings import JWT_KEYPAIR_FILES
+from PcdcAnalysisTools.errors import AuthZError
+from PcdcAnalysisTools.test_settings import JWT_KEYPAIR_FILES
 
 from tests import utils
 
