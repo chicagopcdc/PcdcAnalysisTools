@@ -53,7 +53,7 @@ routes = [
     new_route("/", views.get_programs, methods=["GET"]),
     new_route(
         "/survival",
-        views.survival.main,
+        views.survival.get_result,
         endpoint="survival",
         methods=["POST"],
     ),

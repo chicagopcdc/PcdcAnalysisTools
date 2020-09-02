@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 
-def main():
+def get_result():
     args = utils.parse.parse_request_json()
     data = fetch_fake_data(args)
     return flask.jsonify(get_survival_result(data, args))
