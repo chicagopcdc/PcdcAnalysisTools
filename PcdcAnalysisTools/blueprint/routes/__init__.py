@@ -44,16 +44,17 @@ def new_route(
         "endpoint": endpoint,
         "options": options,
         "swagger": swagger,
-        "schema": schema,  # Swagger schema definitions (defined in openapi/definitions)
+        # Swagger schema definitions (defined in openapi/definitions)
+        "schema": schema,
     }
 
 
 routes = [
     new_route("/", views.get_programs, methods=["GET"]),
     new_route(
-        "/survival_curve",
-        views.survival.get_survival_curve,
-        endpoint="survival_curve",
+        "/survival",
+        views.survival.get_result,
+        endpoint="survival",
         methods=["POST"],
     ),
     # new_route("/<program>", views.program.delete_program, methods=["DELETE"]),
