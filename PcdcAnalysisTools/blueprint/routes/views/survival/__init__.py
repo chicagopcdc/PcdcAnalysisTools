@@ -3,6 +3,7 @@ import flask
 from lifelines import KaplanMeierFitter
 from lifelines.statistics import multivariate_logrank_test
 from PcdcAnalysisTools import utils
+
 import numpy as np
 import pandas as pd
 
@@ -10,9 +11,14 @@ import pandas as pd
 
 def get_survival_curve():
     args = utils.parse.parse_request_json()
-    print(args.get("patientSearchCriteria"))
-    print(args.get("factorVariable"))
 
+    query = args.get("patientSearchCriteria")
+    fields = args.get("fields")
+    data = utils.guppy.downloadDataFromGuppy(path="http://guppy-service/download", type="subject", totalCount= 100000, fields=fields, filter=query["variables"]["filter"], sort=[], accessibility='accessible')
+
+
+
+    #TODO update according to new data
     data = fetch_fake_data() # if DATA_URL == "" else fetch_data(DATA_URL)
     factor = parse_factor(args.get("factorVariable"))
     return flask.jsonify(get_survival_data(data, factor))

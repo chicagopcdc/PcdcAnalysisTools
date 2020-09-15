@@ -23,6 +23,8 @@ from PcdcAnalysisTools.errors import InternalError, NotFoundError, UnsupportedEr
 
 from . import parse
 from . import scheduling
+from .guppy import guppy
+
 
 
 ALLOWED_STATES = ["ERROR_STATE, submitted_state(), UPLOADING_STATE"]
