@@ -17,7 +17,7 @@ def get_result():
 
 
     #TODO update according to new data
-    data = fetch_fake_data() # if DATA_URL == "" else fetch_data(DATA_URL)
+    data = fetch_fake_data(args) # if DATA_URL == "" else fetch_data(DATA_URL)
     factor = parse_factor(args.get("factorVariable"))
     return flask.jsonify(get_survival_data(data, factor))
 
