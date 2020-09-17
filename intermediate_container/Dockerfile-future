@@ -1,0 +1,22 @@
+# FROM quay.io/pcdc/analysis_intermediate_image:pcdc_dev_Tue__01_Sep_2020_19_31_03_GMT
+FROM pcdcanalysistools_intermediate:test
+
+COPY . /PcdcAnalysisTools
+COPY ./deployment/uwsgi/uwsgi.ini /etc/uwsgi/uwsgi.ini
+WORKDIR /PcdcAnalysisTools
+
+RUN pip install -r requirements.txt
+
+RUN mkdir -p /var/www/PcdcAnalysisTools \
+    && mkdir /run/ngnix/ \
+    && chown nginx /var/www/PcdcAnalysisTools
+
+EXPOSE 80
+
+RUN COMMIT=`git rev-parse HEAD` && echo "COMMIT=\"${COMMIT}\"" >PcdcAnalysisTools/version_data.py \
+    && VERSION=`git describe --always --tags` && echo "VERSION=\"${VERSION}\"" >>PcdcAnalysisTools/version_data.py \
+    && python setup.py install
+
+WORKDIR /var/www/PcdcAnalysisTools
+
+CMD /dockerrun.sh
