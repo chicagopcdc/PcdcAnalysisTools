@@ -20,31 +20,5 @@ RUN python -m pip install --upgrade pip \
     && python -m pip install --upgrade setuptools \
     && pip --version \
     && pip install numpy==1.17.3 \
-    && pip install scipy==1.3.1 
-
-
-
-# && pip install -r requirements.txt
-
-
-
-
-
-
-# COPY . /PcdcAnalysisTools
-# COPY ./deployment/uwsgi/uwsgi.ini /etc/uwsgi/uwsgi.ini
-# WORKDIR /PcdcAnalysisTools
-# 
-# RUN mkdir -p /var/www/PcdcAnalysisTools \
-#     && mkdir /run/ngnix/ \
-#     && chown nginx /var/www/PcdcAnalysisTools
-# 
-# EXPOSE 80
-# 
-# RUN COMMIT=`git rev-parse HEAD` && echo "COMMIT=\"${COMMIT}\"" >PcdcAnalysisTools/version_data.py \
-#     && VERSION=`git describe --always --tags` && echo "VERSION=\"${VERSION}\"" >>PcdcAnalysisTools/version_data.py \
-#     && python setup.py install
-# 
-# WORKDIR /var/www/PcdcAnalysisTools
-# 
-# CMD /dockerrun.sh
+    && pip install scipy==1.3.1 \
+    && pip install -r requirements.txt
