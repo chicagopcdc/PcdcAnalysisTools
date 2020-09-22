@@ -10,15 +10,15 @@ from PcdcAnalysisTools.auth import get_jwt_from_header
 #   UNACCESSIBLE: 'unaccessible',
 #   ALL: 'all',
 
-def downloadDataFromGuppy(path, type, totalCount, fields, filter, sort, accessibility):
+def downloadDataFromGuppy(path, type, totalCount, fields, filters, sort, accessibility):
     SCROLL_SIZE = 10000
     totalCount = 100000
     if (totalCount > SCROLL_SIZE):
         queryBody = { "type": type }
         if fields:
             queryBody["fields"] = fields
-        if filter:
-            queryBody["filter"] = filter # getGQLFilter(filter);
+        if filters:
+            queryBody["filter"] = filters # getGQLFilter(filter);
         if sort:
             queryBody["sort"] = [] # sort
         if accessibility:

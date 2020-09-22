@@ -10,10 +10,10 @@ import pandas as pd
 
 def get_result():
     args = utils.parse.parse_request_json()
-    query = args.get("patientSearchCriteria")
-    fields = args.get("fields")
-    data = utils.guppy.downloadDataFromGuppy(path="http://guppy-service/download", type="subject", totalCount= 100000, fields=fields, filter=query["variables"]["filter"], sort=[], accessibility='accessible')
-
+    
+    data = fetch_data(args)
+    print("LUCA FETCH")
+    print(data)
 
 
     #TODO update according to new data
@@ -22,9 +22,22 @@ def get_result():
     return flask.jsonify(get_survival_data(data, factor))
 
 
-def fetch_data(url, search_criteria):
-    # TODO run guppy query towards ES
-    return
+def fetch_data(args):
+    #TODO add check on payload nulls and stuff
+    #TODO add path in the config file or ENV variable
+    filters = args.get("filters")
+    fields = args.get("fields")
+    factorVariable = args.get("factorVariable")
+    fields.extend(factorVariable)
+    stratificationVariable = args.get("stratificationVariable")
+    fields.extend(stratificationVariable)
+    start_time = args.get("startTime")
+    end_time = args.get("endTime")
+
+    # NOT USED FOR NOW
+    # args.get("efsFlag")
+    
+    return utils.guppy.downloadDataFromGuppy(path="http://guppy-service/download", type="subject", totalCount= 100000, fields=fields, filters=filters, sort=[], accessibility='accessible')
 
 
 def fetch_fake_data(args):
