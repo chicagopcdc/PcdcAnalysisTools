@@ -1,3 +1,4 @@
+import json
 import flask
 
 from lifelines import KaplanMeierFitter
@@ -7,37 +8,54 @@ from PcdcAnalysisTools import utils
 import numpy as np
 import pandas as pd
 
+IS_USING_GUPPY = True
+
 
 def get_result():
     args = utils.parse.parse_request_json()
-    
-    data = fetch_data(args)
-    print("LUCA FETCH")
-    print(data)
-
-
-    #TODO update according to new data
-    data = fetch_fake_data(args) # if DATA_URL == "" else fetch_data(DATA_URL)
-    factor = parse_factor(args.get("factorVariable"))
-    return flask.jsonify(get_survival_data(data, factor))
+    data = fetch_data(args) if IS_USING_GUPPY else fetch_fake_data(args)
+    return flask.jsonify(get_survival_result(data, args))
 
 
 def fetch_data(args):
-    #TODO add check on payload nulls and stuff
-    #TODO add path in the config file or ENV variable
-    filters = args.get("filters")
-    fields = args.get("fields")
-    factorVariable = args.get("factorVariable")
-    fields.extend(factorVariable)
-    stratificationVariable = args.get("stratificationVariable")
-    fields.extend(stratificationVariable)
-    start_time = args.get("startTime")
-    end_time = args.get("endTime")
-
+    # TODO add check on payload nulls and stuff
+    # TODO add path in the config file or ENV variable
+    _filter = args.get("filter")
+    factor_var = args.get("factorVariable")
+    stratification_var = args.get("stratificationVariable")
+    start_time = args.get("startTime") * 365.25
+    end_time = args.get("endTime") * 365.25
     # NOT USED FOR NOW
     # args.get("efsFlag")
-    
-    return utils.guppy.downloadDataFromGuppy(path="http://guppy-service/download", type="subject", totalCount= 100000, fields=fields, filters=filters, sort=[], accessibility='accessible')
+
+    status_var, time_var = ("lkss", "age_at_lkss")
+
+    fields = [f for f in [status_var, time_var,
+                          factor_var, stratification_var] if f != ""]
+
+    filters = json.loads(json.dumps(_filter))
+    filters.setdefault('AND', [])
+    time_filters = [{">=": {time_var: start_time}}]
+    if end_time > 0 and end_time > start_time:
+        time_filters.append({"<=": {time_var: end_time}})
+    filters['AND'].append({'AND': time_filters})
+
+    guppy_data = utils.guppy.downloadDataFromGuppy(
+        path="http://guppy-service/download",
+        type="subject",
+        totalCount=100000,
+        fields=fields,
+        filters=filters,
+        sort=[],
+        accessibility='accessible'
+    )
+
+    return (
+        pd.DataFrame.from_records(guppy_data)
+        .assign(status=lambda x: x[status_var] == 1,
+                time=lambda x: x[time_var] / 365.25)
+        .filter(items=[factor_var, stratification_var, "status", "time"])
+    )
 
 
 def fetch_fake_data(args):
