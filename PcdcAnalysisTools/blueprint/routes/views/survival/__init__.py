@@ -151,7 +151,7 @@ def get_time_range(data, args):
         data(pandas.DataFrame): Source data
         request_body(dict): Request body parameters and values
     """
-    max_time = int(np.floor(data.time.max()))
+    max_time = int(np.ceil(data.time.max()))
     start_time = args.get("startTime")
     end_time = (
         min(args.get("endTime"), max_time)
