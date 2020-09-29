@@ -36,11 +36,11 @@ def fetch_data(args):
                           factor_var, stratification_var] if f != ""]
 
     filters = json.loads(json.dumps(_filter))
-    filters.setdefault('AND', [])
+    filters.setdefault("AND", [])
     time_filters = [{">=": {time_var: start_time}}]
     if end_time > 0 and end_time > start_time:
         time_filters.append({"<=": {time_var: end_time}})
-    filters['AND'].append({'AND': time_filters})
+    filters["AND"].append({"AND": time_filters})
 
     guppy_data = utils.guppy.downloadDataFromGuppy(
         path="http://guppy-service/download",
@@ -49,12 +49,12 @@ def fetch_data(args):
         fields=fields,
         filters=filters,
         sort=[],
-        accessibility='accessible'
+        accessibility="accessible"
     )
 
     return (
         pd.DataFrame.from_records(guppy_data)
-        .assign(status=lambda x: x[status_var] == 'Dead',
+        .assign(status=lambda x: x[status_var] == "Dead",
                 time=lambda x: x[time_var] / 365.25)
         .filter(items=[factor_var, stratification_var, "status", "time"])
     )
@@ -175,7 +175,7 @@ def get_survival(survival_function, time_range):
         survival_function
         .reset_index()
         .rename(columns={"KM_estimate": "prob", "timeline": "time"})
-        .replace({'time': {0: min(time_range)}})
+        .replace({"time": {0: min(time_range)}})
         .to_dict(orient="records")
     )
 
