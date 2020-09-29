@@ -65,6 +65,9 @@ def app_init(app):
     app.config["AUTH_NAMESPACE"] = "/" + \
         os.getenv("AUTH_NAMESPACE", "").strip("/")
 
+    # data source for survival analysis
+    app.config["IS_SURVIVAL_USING_GUPPY"] = True
+
     app_register_blueprints(app)
 
     # exclude es init as it's not used yet

@@ -8,12 +8,14 @@ from PcdcAnalysisTools import utils
 import numpy as np
 import pandas as pd
 
-IS_USING_GUPPY = True
-
 
 def get_result():
     args = utils.parse.parse_request_json()
-    data = fetch_data(args) if IS_USING_GUPPY else fetch_fake_data(args)
+    data = (
+        fetch_data(args)
+        if flask.current_app.config.get("IS_SURVIVAL_USING_GUPPY", True)
+        else fetch_fake_data(args)
+    )
     return flask.jsonify(get_survival_result(data, args))
 
 
