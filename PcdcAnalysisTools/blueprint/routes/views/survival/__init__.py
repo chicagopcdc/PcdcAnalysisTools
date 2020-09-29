@@ -52,7 +52,7 @@ def fetch_data(args):
 
     return (
         pd.DataFrame.from_records(guppy_data)
-        .assign(status=lambda x: x[status_var] == 1,
+        .assign(status=lambda x: x[status_var] == 'Dead',
                 time=lambda x: x[time_var] / 365.25)
         .filter(items=[factor_var, stratification_var, "status", "time"])
     )
