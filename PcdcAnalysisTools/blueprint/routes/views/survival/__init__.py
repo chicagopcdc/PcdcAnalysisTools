@@ -1,3 +1,4 @@
+import json
 import flask
 
 from lifelines import KaplanMeierFitter
@@ -10,34 +11,53 @@ import pandas as pd
 
 def get_result():
     args = utils.parse.parse_request_json()
-    
-    data = fetch_data(args)
-    print("LUCA FETCH")
-    print(data)
-
-
-    #TODO update according to new data
-    data = fetch_fake_data(args) # if DATA_URL == "" else fetch_data(DATA_URL)
-    factor = parse_factor(args.get("factorVariable"))
-    return flask.jsonify(get_survival_data(data, factor))
+    data = (
+        fetch_data(args)
+        if flask.current_app.config.get("IS_SURVIVAL_USING_GUPPY", True)
+        else fetch_fake_data(args)
+    )
+    return flask.jsonify(get_survival_result(data, args))
 
 
 def fetch_data(args):
-    #TODO add check on payload nulls and stuff
-    #TODO add path in the config file or ENV variable
-    filters = args.get("filters")
-    fields = args.get("fields")
-    factorVariable = args.get("factorVariable")
-    fields.extend(factorVariable)
-    stratificationVariable = args.get("stratificationVariable")
-    fields.extend(stratificationVariable)
-    start_time = args.get("startTime")
-    end_time = args.get("endTime")
-
+    # TODO add check on payload nulls and stuff
+    # TODO add path in the config file or ENV variable
+    _filter = args.get("filter")
+    factor_var = args.get("factorVariable")
+    stratification_var = args.get("stratificationVariable")
+    start_time = args.get("startTime") * 365.25
+    end_time = args.get("endTime") * 365.25
     # NOT USED FOR NOW
     # args.get("efsFlag")
-    
-    return utils.guppy.downloadDataFromGuppy(path="http://guppy-service/download", type="subject", totalCount= 100000, fields=fields, filters=filters, sort=[], accessibility='accessible')
+
+    status_var, time_var = ("lkss", "age_at_lkss")
+
+    fields = [f for f in [status_var, time_var,
+                          factor_var, stratification_var] if f != ""]
+
+    filters = json.loads(json.dumps(_filter))
+    filters.setdefault("AND", [])
+    time_filters = [{">=": {time_var: start_time}}]
+    if end_time > 0 and end_time > start_time:
+        time_filters.append({"<=": {time_var: end_time}})
+    filters["AND"].append({"AND": time_filters})
+
+    guppy_data = utils.guppy.downloadDataFromGuppy(
+        path="http://guppy-service/download",
+        type="subject",
+        totalCount=100000,
+        fields=fields,
+        filters=filters,
+        sort=[],
+        accessibility="accessible"
+    )
+
+    return (
+        pd.DataFrame.from_records(guppy_data)
+        .assign(status=lambda x: x[status_var] == "Dead",
+                time=lambda x: x[time_var] / 365.25)
+        .filter(items=[factor_var, stratification_var, "status", "time"])
+    )
 
 
 def fetch_fake_data(args):
@@ -133,7 +153,7 @@ def get_time_range(data, args):
         data(pandas.DataFrame): Source data
         request_body(dict): Request body parameters and values
     """
-    max_time = int(np.floor(data.time.max()))
+    max_time = int(np.ceil(data.time.max()))
     start_time = args.get("startTime")
     end_time = (
         min(args.get("endTime"), max_time)
@@ -155,7 +175,7 @@ def get_survival(survival_function, time_range):
         survival_function
         .reset_index()
         .rename(columns={"KM_estimate": "prob", "timeline": "time"})
-        .replace({'time': {0: min(time_range)}})
+        .replace({"time": {0: min(time_range)}})
         .to_dict(orient="records")
     )
 
@@ -169,7 +189,7 @@ def get_pval(data, variables):
     """
     groups = list(map(str, zip(*[data[f] for f in variables])))
     result = multivariate_logrank_test(data.time, groups, data.status)
-    return result.p_value
+    return result.p_value if not np.isnan(result.p_value) else None
 
 
 def get_risktable(at_risk, time_range):
