@@ -189,7 +189,7 @@ def get_pval(data, variables):
     """
     groups = list(map(str, zip(*[data[f] for f in variables])))
     result = multivariate_logrank_test(data.time, groups, data.status)
-    return result.p_value
+    return result.p_value if not np.isnan(result.p_value) else None
 
 
 def get_risktable(at_risk, time_range):
