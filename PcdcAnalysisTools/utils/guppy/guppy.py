@@ -1,7 +1,19 @@
 import requests
 import json
 
+import Crypto
+from Crypto.PublicKey import RSA
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA256
+from Crypto import Random
+import base64
+import codecs
+
+
 from PcdcAnalysisTools.auth import get_jwt_from_header
+from PcdcAnalysisTools.globals import PRIVATE_KEY_PATH
+
+
 
 # fields = []
 # sort = []
@@ -27,13 +39,55 @@ def downloadDataFromGuppy(path, type, totalCount, fields, filters, sort, accessi
         try:
             url = path #'http://guppy-service/download'
             headers = {'Content-Type': 'application/json'}
-            body = json.dumps(queryBody)
+            body = json.dumps(queryBody, separators=(',', ':'))
 
             print("INSIDE GUPPY")
             print(body)
             jwt = get_jwt_from_header()
             headers['Authorization'] = 'bearer ' + jwt
             print(headers)
+
+
+
+            #####################
+            with open(PRIVATE_KEY_PATH, "r") as f:
+                private_key = RSA.import_key(f.read())
+                print("PRIVATE KEY")
+                print(private_key)
+
+                # data = b'test message'
+                data = body
+                print(data)
+                data = str.encode(data)
+                print(data)
+                print(body)
+                # data = b'test message'
+                # hash_sign = SHA256.new(data.encode('utf-8'))
+                hash_sign = SHA256.new(data)
+                signer = pkcs1_15.new(private_key)
+                msg_signature = signer.sign(hash_sign)
+                print("signed message")
+                print(msg_signature)
+                print(data)
+                hexify = codecs.getencoder('hex')
+                m = hexify(msg_signature)[0]
+                print(m)
+
+                # try:
+                #         res = pkcs1_15.new(public_key).verify(hash_sign, msg_signature)
+                #         print(res)
+                #         print("valid")
+                # except (ValueError, TypeError):
+                #         print("not valid")
+            ###################
+
+                headers['Signature'] = b'signature ' + m
+                print("HERE")
+                print(data)
+                print(body)
+                # print(data.encode('utf-8'))
+
+
             r = requests.post(
                 url, data=body, headers=headers # , proxies=flask.current_app.config.get("EXTERNAL_PROXIES")
             )
