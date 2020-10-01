@@ -27,6 +27,7 @@ def fetch_data(args):
     stratification_var = args.get("stratificationVariable")
     start_time = args.get("startTime") * 365.25
     end_time = args.get("endTime") * 365.25
+
     # NOT USED FOR NOW
     # args.get("efsFlag")
 
