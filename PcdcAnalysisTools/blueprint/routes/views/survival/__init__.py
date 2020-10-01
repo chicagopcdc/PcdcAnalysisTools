@@ -1,5 +1,6 @@
 import json
 import flask
+import math
 
 from lifelines import KaplanMeierFitter
 from lifelines.statistics import multivariate_logrank_test
@@ -20,6 +21,7 @@ def get_result():
 
 
 def fetch_data(args):
+    # TODO add json payload control 
     # TODO add check on payload nulls and stuff
     # TODO add path in the config file or ENV variable
     _filter = args.get("filter")
@@ -30,6 +32,17 @@ def fetch_data(args):
 
     # NOT USED FOR NOW
     # args.get("efsFlag")
+
+
+    # This is to avoid doible as 5.0 to be translated in 5 in the JSON call which would break the body decoding
+    start_time_int = math.floor(start_time)
+    differential = start_time - start_time_int
+    start_time = start_time_int if differential == 0 else start_time
+    end_time_int = math.floor(end_time)
+    differential = end_time - end_time_int
+    end_time = end_time_int if differential == 0 else end_time
+
+
 
     status_var, time_var = ("lkss", "age_at_lkss")
 

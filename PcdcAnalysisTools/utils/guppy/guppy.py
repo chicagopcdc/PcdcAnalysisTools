@@ -53,7 +53,7 @@ def downloadDataFromGuppy(path, type, totalCount, fields, filters, sort, accessi
             with open(PRIVATE_KEY_PATH, "r") as f:
                 private_key = RSA.import_key(f.read())
                 print("PRIVATE KEY")
-                print(private_key)
+                print(private_key)  
 
                 # data = b'test message'
                 data = body
