@@ -5,11 +5,13 @@ import math
 from lifelines import KaplanMeierFitter
 from lifelines.statistics import multivariate_logrank_test
 from PcdcAnalysisTools import utils
+from PcdcAnalysisTools import auth
 
 import numpy as np
 import pandas as pd
 
 
+@auth.authorize_for_analysis("access")
 def get_result():
     args = utils.parse.parse_request_json()
     data = (
