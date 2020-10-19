@@ -40,6 +40,32 @@ def get_jwt_from_header():
     return jwt
 
 
+def authorize_for_analysis(*required_roles):
+    """
+    Wrap a function to allow access to the handler iff the user has at least
+    one of the roles requested on the given project.
+    """
+
+    def wrapper(func):
+        @functools.wraps(func)
+        def authorize_and_call(*args, **kwargs):
+            resource = "/analysis"
+            jwt = get_jwt_from_header()
+            authz = flask.current_app.auth.auth_request(
+                jwt=jwt,
+                service="analysis",
+                methods="access",
+                resources=[resource],
+            )
+            if not authz:
+                raise AuthZError("user is unauthorized")
+            return func(*args, **kwargs)
+
+        return authorize_and_call
+
+    return wrapper
+
+
 def authorize_for_project(*required_roles):
     """
     Wrap a function to allow access to the handler iff the user has at least

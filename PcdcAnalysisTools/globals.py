@@ -6,6 +6,7 @@ Contains values for global constants.
 import re
 import uuid
 
+PRIVATE_KEY_PATH = "/var/www/PcdcAnalysisTools/jwt_private_key.pem"
 
 #: Regex to match a Program or Project uuid.
 REGEX_UUID = re.compile(

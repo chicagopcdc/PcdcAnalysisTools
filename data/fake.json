@@ -1,202 +1,1602 @@
 [
-  { "SCENS": 1, "STIME": 703, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 487, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 748, "SEX": 2, "RACE": 99 },
-  { "SCENS": 1, "STIME": 2652, "SEX": 2, "RACE": 99 },
-  { "SCENS": 1, "STIME": 219, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 1326, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 375, "SEX": 1, "RACE": 4 },
-  { "SCENS": 1, "STIME": 1322, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 1451, "SEX": 1, "RACE": 2 },
-  { "SCENS": 1, "STIME": 623, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 164, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 3607, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 556, "SEX": 1, "RACE": 2 },
-  { "SCENS": 0, "STIME": 2413, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 21, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 966, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 23, "SEX": 1, "RACE": 99 },
-  { "SCENS": 0, "STIME": 9, "SEX": 1, "RACE": 99 },
-  { "SCENS": 0, "STIME": 3, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 7, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 1010, "SEX": 1, "RACE": 99 },
-  { "SCENS": 0, "STIME": 1403, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 8, "SEX": 2, "RACE": 2 },
-  { "SCENS": 9, "STIME": -999, "SEX": 2, "RACE": 4 },
-  { "SCENS": 0, "STIME": 7, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 310, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 697, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 295, "SEX": 1, "RACE": 99 },
-  { "SCENS": 0, "STIME": 5313, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 277, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 636, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 782, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 1304, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 147, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 215, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 355, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 979, "SEX": 1, "RACE": 4 },
-  { "SCENS": 1, "STIME": 197, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 91, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 528, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 111, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 399, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 6619, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 2378, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 151, "SEX": 2, "RACE": 2 },
-  { "SCENS": 1, "STIME": 1201, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 486, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 5553, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 378, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 157, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 996, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 5285, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 336, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 179, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 193, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 5408, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 237, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 451, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 424, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 3997, "SEX": 2, "RACE": 99 },
-  { "SCENS": 0, "STIME": 3312, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 428, "SEX": 2, "RACE": 99 },
-  { "SCENS": 1, "STIME": 26, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 1027, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 1410, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 893, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 317, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 3313, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 285, "SEX": 1, "RACE": 4 },
-  { "SCENS": 1, "STIME": 857, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 6385, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 493, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 207, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 386, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 327, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 4690, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 1798, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 205, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 268, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 608, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 170, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 294, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 114, "SEX": 2, "RACE": 2 },
-  { "SCENS": 1, "STIME": 463, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 859, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 1128, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 656, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 214, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 208, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 723, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 1502, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 252, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 471, "SEX": 1, "RACE": 2 },
-  { "SCENS": 1, "STIME": 704, "SEX": 1, "RACE": 99 },
-  { "SCENS": 0, "STIME": 4805, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 331, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 2443, "SEX": 1, "RACE": 2 },
-  { "SCENS": 1, "STIME": 209, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 4776, "SEX": 1, "RACE": 2 },
-  { "SCENS": 1, "STIME": 304, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 1376, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 1930, "SEX": 1, "RACE": 2 },
-  { "SCENS": 1, "STIME": 3039, "SEX": 2, "RACE": 99 },
-  { "SCENS": 1, "STIME": 218, "SEX": 1, "RACE": 2 },
-  { "SCENS": 1, "STIME": 484, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 5531, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 543, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 412, "SEX": 2, "RACE": 99 },
-  { "SCENS": 1, "STIME": 661, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 217, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 1180, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 4817, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 399, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 3801, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 516, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 795, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 70, "SEX": 2, "RACE": 99 },
-  { "SCENS": 1, "STIME": 354, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 1111, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 4092, "SEX": 2, "RACE": 99 },
-  { "SCENS": 1, "STIME": 170, "SEX": 2, "RACE": 99 },
-  { "SCENS": 1, "STIME": 411, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 169, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 154, "SEX": 2, "RACE": 2 },
-  { "SCENS": 1, "STIME": 656, "SEX": 2, "RACE": 99 },
-  { "SCENS": 1, "STIME": 385, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 1520, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 5296, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 929, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 5327, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 309, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 133, "SEX": 2, "RACE": 4 },
-  { "SCENS": 0, "STIME": 3657, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 531, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 678, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 78, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 1984, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 2386, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 293, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 4324, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 5946, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 3804, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 322, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 242, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 2138, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 996, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 4667, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 203, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 848, "SEX": 2, "RACE": 2 },
-  { "SCENS": 1, "STIME": 27, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 5968, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 4311, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 371, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 383, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 248, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 4591, "SEX": 1, "RACE": 4 },
-  { "SCENS": 0, "STIME": 2997, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 280, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 277, "SEX": 2, "RACE": 99 },
-  { "SCENS": 1, "STIME": 467, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 5046, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 1726, "SEX": 1, "RACE": 99 },
-  { "SCENS": 0, "STIME": 5300, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 3703, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 206, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 216, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 3671, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 4388, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 3737, "SEX": 1, "RACE": 2 },
-  { "SCENS": 1, "STIME": 205, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 1810, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 5138, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 312, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 589, "SEX": 1, "RACE": 2 },
-  { "SCENS": 1, "STIME": 1121, "SEX": 1, "RACE": 99 },
-  { "SCENS": 0, "STIME": 6666, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 407, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 6139, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 3857, "SEX": 2, "RACE": 2 },
-  { "SCENS": 1, "STIME": 1690, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 264, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 1399, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 352, "SEX": 2, "RACE": 99 },
-  { "SCENS": 1, "STIME": 1819, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 5775, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 291, "SEX": 1, "RACE": 1 },
-  { "SCENS": 0, "STIME": 2559, "SEX": 2, "RACE": 4 },
-  { "SCENS": 0, "STIME": 3598, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 846, "SEX": 1, "RACE": 2 },
-  { "SCENS": 1, "STIME": 149, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 39, "SEX": 1, "RACE": 99 },
-  { "SCENS": 1, "STIME": 483, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 1326, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 713, "SEX": 2, "RACE": 1 },
-  { "SCENS": 1, "STIME": 264, "SEX": 1, "RACE": 1 },
-  { "SCENS": 1, "STIME": 245, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 6000, "SEX": 2, "RACE": 4 },
-  { "SCENS": 1, "STIME": 473, "SEX": 1, "RACE": 2 },
-  { "SCENS": 1, "STIME": 1253, "SEX": 2, "RACE": 1 },
-  { "SCENS": 0, "STIME": 7094, "SEX": 1, "RACE": 1 }
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 612,
+    "SCENS": 1,
+    "STIME": 703,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 444,
+    "SCENS": 1,
+    "STIME": 487,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 430,
+    "SCENS": 1,
+    "STIME": 748,
+    "SEX": 2,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 1422,
+    "SCENS": 1,
+    "STIME": 2652,
+    "SEX": 2,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 134,
+    "SCENS": 1,
+    "STIME": 219,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 1028,
+    "SCENS": 1,
+    "STIME": 1326,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 328,
+    "SCENS": 1,
+    "STIME": 375,
+    "SEX": 1,
+    "RACE": 4
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 1322,
+    "SCENS": 1,
+    "STIME": 1322,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 688,
+    "SCENS": 0,
+    "STIME": 1451,
+    "SEX": 1,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 552,
+    "SCENS": 1,
+    "STIME": 623,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 164,
+    "SCENS": 0,
+    "STIME": 164,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 3607,
+    "SCENS": 0,
+    "STIME": 3607,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 556,
+    "SCENS": 1,
+    "STIME": 556,
+    "SEX": 1,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 2413,
+    "SCENS": 0,
+    "STIME": 2413,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 21,
+    "SCENS": 0,
+    "STIME": 21,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 966,
+    "SCENS": 0,
+    "STIME": 966,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 23,
+    "SCENS": 0,
+    "STIME": 23,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 9,
+    "SCENS": 0,
+    "STIME": 9,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 3,
+    "SCENS": 0,
+    "STIME": 3,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 7,
+    "SCENS": 0,
+    "STIME": 7,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 1010,
+    "SCENS": 0,
+    "STIME": 1010,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 1403,
+    "SCENS": 0,
+    "STIME": 1403,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 8,
+    "SCENS": 0,
+    "STIME": 8,
+    "SEX": 2,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 9,
+    "EFSTIME": -999,
+    "SCENS": 9,
+    "STIME": -999,
+    "SEX": 2,
+    "RACE": 4
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 7,
+    "SCENS": 0,
+    "STIME": 7,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 310,
+    "SCENS": 1,
+    "STIME": 310,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 583,
+    "SCENS": 1,
+    "STIME": 697,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 134,
+    "SCENS": 1,
+    "STIME": 295,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 5313,
+    "SCENS": 0,
+    "STIME": 5313,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 257,
+    "SCENS": 1,
+    "STIME": 277,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 636,
+    "SCENS": 1,
+    "STIME": 636,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 371,
+    "SCENS": 1,
+    "STIME": 782,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 236,
+    "SCENS": 1,
+    "STIME": 1304,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 147,
+    "SCENS": 1,
+    "STIME": 147,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 215,
+    "SCENS": 1,
+    "STIME": 215,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 355,
+    "SCENS": 1,
+    "STIME": 355,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 865,
+    "SCENS": 1,
+    "STIME": 979,
+    "SEX": 1,
+    "RACE": 4
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 197,
+    "SCENS": 1,
+    "STIME": 197,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 68,
+    "SCENS": 1,
+    "STIME": 91,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 528,
+    "SCENS": 0,
+    "STIME": 528,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 111,
+    "SCENS": 1,
+    "STIME": 111,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 184,
+    "SCENS": 1,
+    "STIME": 399,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 6619,
+    "SCENS": 0,
+    "STIME": 6619,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 2378,
+    "SCENS": 0,
+    "STIME": 2378,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 139,
+    "SCENS": 1,
+    "STIME": 151,
+    "SEX": 2,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 395,
+    "SCENS": 1,
+    "STIME": 1201,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 486,
+    "SCENS": 1,
+    "STIME": 486,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 5553,
+    "SCENS": 0,
+    "STIME": 5553,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 378,
+    "SCENS": 1,
+    "STIME": 378,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 157,
+    "SCENS": 1,
+    "STIME": 157,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 598,
+    "SCENS": 1,
+    "STIME": 996,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 5285,
+    "SCENS": 0,
+    "STIME": 5285,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 336,
+    "SCENS": 1,
+    "STIME": 336,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 179,
+    "SCENS": 1,
+    "STIME": 179,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 193,
+    "SCENS": 1,
+    "STIME": 193,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 5408,
+    "SCENS": 0,
+    "STIME": 5408,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 237,
+    "SCENS": 1,
+    "STIME": 237,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 432,
+    "SCENS": 1,
+    "STIME": 451,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 212,
+    "SCENS": 1,
+    "STIME": 424,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 3997,
+    "SCENS": 0,
+    "STIME": 3997,
+    "SEX": 2,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 3312,
+    "SCENS": 0,
+    "STIME": 3312,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 308,
+    "SCENS": 1,
+    "STIME": 428,
+    "SEX": 2,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 22,
+    "SCENS": 1,
+    "STIME": 26,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 680,
+    "SCENS": 1,
+    "STIME": 1027,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 778,
+    "SCENS": 1,
+    "STIME": 1410,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 396,
+    "SCENS": 1,
+    "STIME": 893,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 179,
+    "SCENS": 1,
+    "STIME": 317,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 3313,
+    "SCENS": 0,
+    "STIME": 3313,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 273,
+    "SCENS": 1,
+    "STIME": 285,
+    "SEX": 1,
+    "RACE": 4
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 419,
+    "SCENS": 1,
+    "STIME": 857,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 6385,
+    "SCENS": 0,
+    "STIME": 6385,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 434,
+    "SCENS": 1,
+    "STIME": 493,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 207,
+    "SCENS": 1,
+    "STIME": 207,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 275,
+    "SCENS": 1,
+    "STIME": 386,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 163,
+    "SCENS": 1,
+    "STIME": 327,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 4690,
+    "SCENS": 0,
+    "STIME": 4690,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 1536,
+    "SCENS": 1,
+    "STIME": 1798,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 145,
+    "SCENS": 1,
+    "STIME": 205,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 268,
+    "SCENS": 1,
+    "STIME": 268,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 602,
+    "SCENS": 1,
+    "STIME": 608,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 170,
+    "SCENS": 1,
+    "STIME": 170,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 124,
+    "SCENS": 1,
+    "STIME": 294,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 82,
+    "SCENS": 1,
+    "STIME": 114,
+    "SEX": 2,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 381,
+    "SCENS": 1,
+    "STIME": 463,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 726,
+    "SCENS": 1,
+    "STIME": 859,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 982,
+    "SCENS": 1,
+    "STIME": 1128,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 626,
+    "SCENS": 1,
+    "STIME": 656,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 159,
+    "SCENS": 1,
+    "STIME": 214,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 169,
+    "SCENS": 1,
+    "STIME": 208,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 614,
+    "SCENS": 1,
+    "STIME": 723,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 679,
+    "SCENS": 1,
+    "STIME": 1502,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 252,
+    "SCENS": 1,
+    "STIME": 252,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 471,
+    "SCENS": 1,
+    "STIME": 471,
+    "SEX": 1,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 554,
+    "SCENS": 1,
+    "STIME": 704,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 4805,
+    "SCENS": 0,
+    "STIME": 4805,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 184,
+    "SCENS": 1,
+    "STIME": 331,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 2443,
+    "SCENS": 0,
+    "STIME": 2443,
+    "SEX": 1,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 209,
+    "SCENS": 1,
+    "STIME": 209,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 4776,
+    "SCENS": 0,
+    "STIME": 4776,
+    "SEX": 1,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 281,
+    "SCENS": 1,
+    "STIME": 304,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 904,
+    "SCENS": 1,
+    "STIME": 1376,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 1265,
+    "SCENS": 1,
+    "STIME": 1930,
+    "SEX": 1,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 1774,
+    "SCENS": 1,
+    "STIME": 3039,
+    "SEX": 2,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 159,
+    "SCENS": 1,
+    "STIME": 218,
+    "SEX": 1,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 413,
+    "SCENS": 1,
+    "STIME": 484,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 5531,
+    "SCENS": 0,
+    "STIME": 5531,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 442,
+    "SCENS": 1,
+    "STIME": 543,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 246,
+    "SCENS": 1,
+    "STIME": 412,
+    "SEX": 2,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 546,
+    "SCENS": 1,
+    "STIME": 661,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 87,
+    "SCENS": 1,
+    "STIME": 217,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 602,
+    "SCENS": 1,
+    "STIME": 1180,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 4817,
+    "SCENS": 0,
+    "STIME": 4817,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 257,
+    "SCENS": 1,
+    "STIME": 399,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 3801,
+    "SCENS": 0,
+    "STIME": 3801,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 516,
+    "SCENS": 1,
+    "STIME": 516,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 593,
+    "SCENS": 1,
+    "STIME": 795,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 61,
+    "SCENS": 1,
+    "STIME": 70,
+    "SEX": 2,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 162,
+    "SCENS": 1,
+    "STIME": 354,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 107,
+    "SCENS": 1,
+    "STIME": 1111,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 4092,
+    "SCENS": 0,
+    "STIME": 4092,
+    "SEX": 2,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 78,
+    "SCENS": 1,
+    "STIME": 170,
+    "SEX": 2,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 411,
+    "SCENS": 1,
+    "STIME": 411,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 104,
+    "SCENS": 1,
+    "STIME": 169,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 154,
+    "SCENS": 1,
+    "STIME": 154,
+    "SEX": 2,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 72,
+    "SCENS": 1,
+    "STIME": 656,
+    "SEX": 2,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 305,
+    "SCENS": 1,
+    "STIME": 385,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 1520,
+    "SCENS": 0,
+    "STIME": 1520,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 5296,
+    "SCENS": 0,
+    "STIME": 5296,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 929,
+    "SCENS": 1,
+    "STIME": 929,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 5327,
+    "SCENS": 0,
+    "STIME": 5327,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 309,
+    "SCENS": 1,
+    "STIME": 309,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 36,
+    "SCENS": 1,
+    "STIME": 133,
+    "SEX": 2,
+    "RACE": 4
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 3657,
+    "SCENS": 0,
+    "STIME": 3657,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 440,
+    "SCENS": 1,
+    "STIME": 531,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 678,
+    "SCENS": 1,
+    "STIME": 678,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 78,
+    "SCENS": 1,
+    "STIME": 78,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 1984,
+    "SCENS": 0,
+    "STIME": 1984,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 23,
+    "SCENS": 1,
+    "STIME": 2386,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 293,
+    "SCENS": 1,
+    "STIME": 293,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 4324,
+    "SCENS": 0,
+    "STIME": 4324,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 5946,
+    "SCENS": 0,
+    "STIME": 5946,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 3804,
+    "SCENS": 0,
+    "STIME": 3804,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 205,
+    "SCENS": 1,
+    "STIME": 322,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 242,
+    "SCENS": 1,
+    "STIME": 242,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 2138,
+    "SCENS": 0,
+    "STIME": 2138,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 704,
+    "SCENS": 1,
+    "STIME": 996,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 4667,
+    "SCENS": 0,
+    "STIME": 4667,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 47,
+    "SCENS": 1,
+    "STIME": 203,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 762,
+    "SCENS": 1,
+    "STIME": 848,
+    "SEX": 2,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 17,
+    "SCENS": 1,
+    "STIME": 27,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 5968,
+    "SCENS": 1,
+    "STIME": 5968,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 4311,
+    "SCENS": 0,
+    "STIME": 4311,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 322,
+    "SCENS": 1,
+    "STIME": 371,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 237,
+    "SCENS": 1,
+    "STIME": 383,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 216,
+    "SCENS": 1,
+    "STIME": 248,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 4591,
+    "SCENS": 0,
+    "STIME": 4591,
+    "SEX": 1,
+    "RACE": 4
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 2997,
+    "SCENS": 0,
+    "STIME": 2997,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 135,
+    "SCENS": 1,
+    "STIME": 280,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 232,
+    "SCENS": 1,
+    "STIME": 277,
+    "SEX": 2,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 401,
+    "SCENS": 1,
+    "STIME": 467,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 5046,
+    "SCENS": 0,
+    "STIME": 5046,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 939,
+    "SCENS": 1,
+    "STIME": 1726,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 5300,
+    "SCENS": 0,
+    "STIME": 5300,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 3703,
+    "SCENS": 0,
+    "STIME": 3703,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 206,
+    "SCENS": 1,
+    "STIME": 206,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 216,
+    "SCENS": 1,
+    "STIME": 216,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 3671,
+    "SCENS": 0,
+    "STIME": 3671,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 923,
+    "SCENS": 0,
+    "STIME": 4388,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 3737,
+    "SCENS": 0,
+    "STIME": 3737,
+    "SEX": 1,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 189,
+    "SCENS": 1,
+    "STIME": 205,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 1810,
+    "SCENS": 0,
+    "STIME": 1810,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 5138,
+    "SCENS": 0,
+    "STIME": 5138,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 247,
+    "SCENS": 1,
+    "STIME": 312,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 514,
+    "SCENS": 1,
+    "STIME": 589,
+    "SEX": 1,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 682,
+    "SCENS": 1,
+    "STIME": 1121,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 6666,
+    "SCENS": 0,
+    "STIME": 6666,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 372,
+    "SCENS": 1,
+    "STIME": 407,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 6129,
+    "SCENS": 0,
+    "STIME": 6139,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 3857,
+    "SCENS": 0,
+    "STIME": 3857,
+    "SEX": 2,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 1183,
+    "SCENS": 1,
+    "STIME": 1690,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 264,
+    "SCENS": 1,
+    "STIME": 264,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 912,
+    "SCENS": 1,
+    "STIME": 1399,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 352,
+    "SCENS": 1,
+    "STIME": 352,
+    "SEX": 2,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 963,
+    "SCENS": 1,
+    "STIME": 1819,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 5775,
+    "SCENS": 0,
+    "STIME": 5775,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 291,
+    "SCENS": 1,
+    "STIME": 291,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 2559,
+    "SCENS": 0,
+    "STIME": 2559,
+    "SEX": 2,
+    "RACE": 4
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 3598,
+    "SCENS": 0,
+    "STIME": 3598,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 846,
+    "SCENS": 1,
+    "STIME": 846,
+    "SEX": 1,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 149,
+    "SCENS": 1,
+    "STIME": 149,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 39,
+    "SCENS": 1,
+    "STIME": 39,
+    "SEX": 1,
+    "RACE": 99
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 345,
+    "SCENS": 1,
+    "STIME": 483,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 935,
+    "SCENS": 1,
+    "STIME": 1326,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 539,
+    "SCENS": 1,
+    "STIME": 713,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 264,
+    "SCENS": 1,
+    "STIME": 264,
+    "SEX": 1,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 245,
+    "SCENS": 1,
+    "STIME": 245,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 422,
+    "SCENS": 0,
+    "STIME": 6000,
+    "SEX": 2,
+    "RACE": 4
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 442,
+    "SCENS": 1,
+    "STIME": 473,
+    "SEX": 1,
+    "RACE": 2
+  },
+  {
+    "EFSCENS": 1,
+    "EFSTIME": 887,
+    "SCENS": 1,
+    "STIME": 1253,
+    "SEX": 2,
+    "RACE": 1
+  },
+  {
+    "EFSCENS": 0,
+    "EFSTIME": 7094,
+    "SCENS": 0,
+    "STIME": 7094,
+    "SEX": 1,
+    "RACE": 1
+  }
 ]

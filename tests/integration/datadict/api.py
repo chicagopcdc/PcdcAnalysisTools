@@ -19,10 +19,10 @@ from indexd.alias.drivers.alchemy import SQLAlchemyAliasDriver
 from indexd.auth.drivers.alchemy import SQLAlchemyAuthDriver
 from psqlgraph import PsqlGraphDriver
 
-import sheepdog
-from sheepdog.errors import APIError, setup_default_handlers, UnhealthyCheck
-from sheepdog.version_data import VERSION, COMMIT
-from sheepdog.globals import dictionary_version, dictionary_commit
+import PcdcAnalysisTools
+from PcdcAnalysisTools.errors import APIError, setup_default_handlers, UnhealthyCheck
+from PcdcAnalysisTools.version_data import VERSION, COMMIT
+from PcdcAnalysisTools.globals import dictionary_version, dictionary_commit
 
 # recursion depth is increased for complex graph traversals
 sys.setrecursionlimit(10000)
@@ -76,10 +76,10 @@ def app_init(app):
         app.secret_key = app.config["FLASK_SECRET_KEY"]
     except KeyError:
         app.logger.error("Secret key not set in config! Authentication will not work")
-    sheepdog_blueprint = sheepdog.create_blueprint("submission")
+    PcdcAnalysisTools_blueprint = PcdcAnalysisTools.create_blueprint("submission")
 
     try:
-        app.register_blueprint(sheepdog_blueprint, url_prefix="/v0/submission")
+        app.register_blueprint(PcdcAnalysisTools_blueprint, url_prefix="/v0/submission")
     except AssertionError:
         app.logger.info("Blueprint is already registered!!!")
 
