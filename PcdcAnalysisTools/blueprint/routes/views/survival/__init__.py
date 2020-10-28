@@ -103,7 +103,7 @@ def get_survival_result(data, args):
     kmf = KaplanMeierFitter()
     variables = [x for x in [args.get("factorVariable"),
                              args.get("stratificationVariable")] if x != ""]
-    time_range = get_time_range(data, args)
+    time_range = get_time_range(data)
 
     if len(variables) == 0:
         pval = None
@@ -139,21 +139,12 @@ def get_survival_result(data, args):
 
 
 def get_time_range(data, args):
-    """Returns a (min, max) time range based on the data and request body
+    """Returns a (min, max) time range based on the data
 
     Args:
         data(pandas.DataFrame): Source data
-        request_body(dict): Request body parameters and values
     """
-    max_time = int(np.ceil(data.time.max()))
-    start_time = args.get("startTime", 0)
-    end_time = (
-        min(args.get("endTime", 0), max_time)
-        if args.get("endTime", 0) > start_time
-        else max_time
-    )
-
-    return range(start_time, end_time + 1)
+    return range(int(np.ceil(data.time.max())) + 1)
 
 
 def get_survival(survival_function, time_range):
