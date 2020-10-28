@@ -103,7 +103,7 @@ def get_survival_result(data, args):
     kmf = KaplanMeierFitter()
     variables = [x for x in [args.get("factorVariable"),
                              args.get("stratificationVariable")] if x != ""]
-    time_range = get_time_range(data)
+    time_range = range(int(np.ceil(data.time.max())) + 1)
 
     if len(variables) == 0:
         pval = None
@@ -136,15 +136,6 @@ def get_survival_result(data, args):
             })
 
     return {"pval": pval, "risktable": risktable, "survival": survival}
-
-
-def get_time_range(data, args):
-    """Returns a (min, max) time range based on the data
-
-    Args:
-        data(pandas.DataFrame): Source data
-    """
-    return range(int(np.ceil(data.time.max())) + 1)
 
 
 def get_survival(survival_function, time_range):
