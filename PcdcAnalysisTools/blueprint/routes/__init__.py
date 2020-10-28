@@ -57,6 +57,12 @@ routes = [
         endpoint="survival",
         methods=["POST"],
     ),
+    new_route(
+        "/counts",
+        views.count.get_result,
+        endpoint="count",
+        methods=["POST"],
+    ),
     # new_route("/<program>", views.program.delete_program, methods=["DELETE"]),
     # new_route(
     #     "/<program>/<project>/manifest",
