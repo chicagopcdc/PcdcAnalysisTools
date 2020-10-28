@@ -183,6 +183,5 @@ def get_risktable(at_risk, time_range):
         .fillna(method="ffill")
         .rename(columns={"at_risk": "nrisk"})
         .astype({"nrisk": "int32"})
-        .query(f"time >= {min(time_range)} and time <= {max(time_range)}")
         .to_dict(orient="records")
     )
