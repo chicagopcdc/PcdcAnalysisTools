@@ -29,22 +29,9 @@ def fetch_data(args):
     _filter = args.get("filter")
     factor_var = args.get("factorVariable")
     stratification_var = args.get("stratificationVariable")
-    start_time = args.get("startTime", 0) * 365.25
-    end_time = args.get("endTime", 0) * 365.25
 
     # NOT USED FOR NOW
     # args.get("efsFlag")
-
-
-    # This is to avoid doible as 5.0 to be translated in 5 in the JSON call which would break the body decoding
-    start_time_int = math.floor(start_time)
-    differential = start_time - start_time_int
-    start_time = start_time_int if differential == 0 else start_time
-    end_time_int = math.floor(end_time)
-    differential = end_time - end_time_int
-    end_time = end_time_int if differential == 0 else end_time
-
-
 
     status_var, time_var = ("lkss", "age_at_lkss")
 
@@ -53,10 +40,7 @@ def fetch_data(args):
 
     filters = json.loads(json.dumps(_filter))
     filters.setdefault("AND", [])
-    time_filters = [{">=": {time_var: start_time}}]
-    if end_time > 0 and end_time > start_time:
-        time_filters.append({"<=": {time_var: end_time}})
-    filters["AND"].append({"AND": time_filters})
+    filters["AND"].append({">=": {time_var: 0}})
 
     guppy_data = utils.guppy.downloadDataFromGuppy(
         path="http://guppy-service/download",
@@ -85,18 +69,11 @@ def fetch_fake_data(args):
     efs_flag = args.get("efsFlag")
     factor_var = args.get("factorVariable")
     stratification_var = args.get("stratificationVariable")
-    start_time = args.get("startTime", 0)
-    end_time = args.get("endTime", 0)
 
     status_col, time_col = (
         ("EFSCENS", "EFSTIME")
         if efs_flag
         else ("SCENS", "STIME")
-    )
-    time_range_query = (
-        f"time >= {start_time} and time <= {end_time}"
-        if end_time > 0
-        else f"time >= {start_time}"
     )
 
     return (
@@ -105,7 +82,6 @@ def fetch_fake_data(args):
         .assign(status=lambda x: x[status_col] == 1,
                 time=lambda x: x[time_col] / 365.25)
         .filter(items=[factor_var, stratification_var, "status", "time"])
-        .query(time_range_query)
     )
 
 
