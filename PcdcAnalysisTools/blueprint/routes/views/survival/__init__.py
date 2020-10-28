@@ -115,7 +115,7 @@ def get_survival_result(data, args):
         }]
         survival = [{
             "name": "All",
-            "data": get_survival(kmf.survival_function_, time_range)
+            "data": get_survival(kmf.survival_function_)
         }]
     else:
         pval = get_pval(data, variables)
@@ -132,24 +132,22 @@ def get_survival_result(data, args):
             })
             survival.append({
                 "name": label,
-                "data": get_survival(kmf.survival_function_, time_range)
+                "data": get_survival(kmf.survival_function_)
             })
 
     return {"pval": pval, "risktable": risktable, "survival": survival}
 
 
-def get_survival(survival_function, time_range):
+def get_survival(survival_function):
     """Returns the survival probabilities data (dict) for the response API
 
     Args:
         survival_function(pandas.DataFrame): The estimated survival function from a fitted lifelines.KaplanMeierFitter instance
-        time_range(range): A range of min and max time values
     """
     return (
         survival_function
         .reset_index()
         .rename(columns={"KM_estimate": "prob", "timeline": "time"})
-        .replace({"time": {0: min(time_range)}})
         .to_dict(orient="records")
     )
 
