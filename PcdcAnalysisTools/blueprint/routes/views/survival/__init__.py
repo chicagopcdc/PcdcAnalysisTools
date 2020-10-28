@@ -29,8 +29,8 @@ def fetch_data(args):
     _filter = args.get("filter")
     factor_var = args.get("factorVariable")
     stratification_var = args.get("stratificationVariable")
-    start_time = args.get("startTime") * 365.25
-    end_time = args.get("endTime") * 365.25
+    start_time = args.get("startTime", 0) * 365.25
+    end_time = args.get("endTime", 0) * 365.25
 
     # NOT USED FOR NOW
     # args.get("efsFlag")
@@ -85,8 +85,8 @@ def fetch_fake_data(args):
     efs_flag = args.get("efsFlag")
     factor_var = args.get("factorVariable")
     stratification_var = args.get("stratificationVariable")
-    start_time = args.get("startTime")
-    end_time = args.get("endTime")
+    start_time = args.get("startTime", 0)
+    end_time = args.get("endTime", 0)
 
     status_col, time_col = (
         ("EFSCENS", "EFSTIME")
@@ -170,10 +170,10 @@ def get_time_range(data, args):
         request_body(dict): Request body parameters and values
     """
     max_time = int(np.ceil(data.time.max()))
-    start_time = args.get("startTime")
+    start_time = args.get("startTime", 0)
     end_time = (
-        min(args.get("endTime"), max_time)
-        if args.get("endTime") > start_time
+        min(args.get("endTime", 0), max_time)
+        if args.get("endTime", 0) > start_time
         else max_time
     )
 
