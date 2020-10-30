@@ -57,7 +57,6 @@ def downloadDataFromGuppy(path, type, totalCount, fields, filters, sort, accessi
             print(e.message)
     
         if r.status_code == 200:
-            print(r.json())
             return r.json()
         return []
 
