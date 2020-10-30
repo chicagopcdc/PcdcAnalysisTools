@@ -14,12 +14,11 @@ def get_result():
 
 
 def fetch_data(args):
-    fields = args.get("fields")
     return utils.guppy.downloadDataFromGuppy(
         path="http://guppy-service/download",
         type="subject",
         totalCount=100000,
-        fields=fields,
+        fields=["consortium", "study_id", "_molecular_analysis_count"],
         filters=[],
         sort=[],
         accessibility="accessible"
