@@ -10,11 +10,13 @@ import requests
 
 from PcdcAnalysisTools import auth, utils
 from PcdcAnalysisTools.utils import parse
-from PcdcAnalysisTools.blueprint.routes.views import program, survival
+from PcdcAnalysisTools.blueprint.routes.views import program, survival, count
 from PcdcAnalysisTools.errors import AuthError, NotFoundError, UserError
 from PcdcAnalysisTools.globals import PROGRAM_SEED, ROLES
 
 # @auth.require_sheepdog_program_admin
+
+
 def get_programs():
     """
     Return the available resources at the top level above programs i.e.
@@ -57,6 +59,5 @@ def get_programs():
     """
     # if flask.current_app.config.get("AUTH_SUBMISSION_LIST", True) is True:
     #     auth.validate_request(aud={"openid"}, purpose=None)
-    
-    return flask.jsonify({"links": ["aa","bb"]})
 
+    return flask.jsonify({"links": ["aa", "bb"]})
