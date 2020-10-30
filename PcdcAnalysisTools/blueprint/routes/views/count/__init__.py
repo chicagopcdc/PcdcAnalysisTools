@@ -1,6 +1,5 @@
 import json
 import flask
-import math
 
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
