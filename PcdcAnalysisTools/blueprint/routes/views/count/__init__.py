@@ -9,12 +9,7 @@ from PcdcAnalysisTools import auth
 @auth.authorize_for_analysis("access")
 def get_result():
     args = utils.parse.parse_request_json()
-    data = fetch_data(args)
-    return flask.jsonify(get_counts_list(data, args))
-
-
-def fetch_data(args):
-    return utils.guppy.downloadDataFromGuppy(
+    data = utils.guppy.downloadDataFromGuppy(
         path="http://guppy-service/download",
         type="subject",
         totalCount=100000,
@@ -23,6 +18,7 @@ def fetch_data(args):
         sort=[],
         accessibility="accessible"
     )
+    return flask.jsonify(get_counts_list(data, args))
 
 
 def get_counts_list(data, args):
