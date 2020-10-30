@@ -10,7 +10,7 @@ import requests
 
 from PcdcAnalysisTools import auth, utils
 from PcdcAnalysisTools.utils import parse
-from PcdcAnalysisTools.blueprint.routes.views import program, survival, count
+from PcdcAnalysisTools.blueprint.routes.views import program, survival, counts
 from PcdcAnalysisTools.errors import AuthError, NotFoundError, UserError
 from PcdcAnalysisTools.globals import PROGRAM_SEED, ROLES
 
