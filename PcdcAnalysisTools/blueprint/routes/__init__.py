@@ -59,8 +59,8 @@ routes = [
     ),
     new_route(
         "/counts",
-        views.count.get_result,
-        endpoint="count",
+        views.counts.get_result,
+        endpoint="counts",
         methods=["POST"],
     ),
     # new_route("/<program>", views.program.delete_program, methods=["DELETE"]),
