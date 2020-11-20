@@ -29,22 +29,9 @@ def fetch_data(args):
     _filter = args.get("filter")
     factor_var = args.get("factorVariable")
     stratification_var = args.get("stratificationVariable")
-    start_time = args.get("startTime") * 365.25
-    end_time = args.get("endTime") * 365.25
 
     # NOT USED FOR NOW
     # args.get("efsFlag")
-
-
-    # This is to avoid doible as 5.0 to be translated in 5 in the JSON call which would break the body decoding
-    start_time_int = math.floor(start_time)
-    differential = start_time - start_time_int
-    start_time = start_time_int if differential == 0 else start_time
-    end_time_int = math.floor(end_time)
-    differential = end_time - end_time_int
-    end_time = end_time_int if differential == 0 else end_time
-
-
 
     status_var, time_var = ("lkss", "age_at_lkss")
 
@@ -53,10 +40,7 @@ def fetch_data(args):
 
     filters = json.loads(json.dumps(_filter))
     filters.setdefault("AND", [])
-    time_filters = [{">=": {time_var: start_time}}]
-    if end_time > 0 and end_time > start_time:
-        time_filters.append({"<=": {time_var: end_time}})
-    filters["AND"].append({"AND": time_filters})
+    filters["AND"].append({">=": {time_var: 0}})
 
     guppy_data = utils.guppy.downloadDataFromGuppy(
         path="http://guppy-service/download",
@@ -85,18 +69,11 @@ def fetch_fake_data(args):
     efs_flag = args.get("efsFlag")
     factor_var = args.get("factorVariable")
     stratification_var = args.get("stratificationVariable")
-    start_time = args.get("startTime")
-    end_time = args.get("endTime")
 
     status_col, time_col = (
         ("EFSCENS", "EFSTIME")
         if efs_flag
         else ("SCENS", "STIME")
-    )
-    time_range_query = (
-        f"time >= {start_time} and time <= {end_time}"
-        if end_time > 0
-        else f"time >= {start_time}"
     )
 
     return (
@@ -105,7 +82,6 @@ def fetch_fake_data(args):
         .assign(status=lambda x: x[status_col] == 1,
                 time=lambda x: x[time_col] / 365.25)
         .filter(items=[factor_var, stratification_var, "status", "time"])
-        .query(time_range_query)
     )
 
 
@@ -127,7 +103,7 @@ def get_survival_result(data, args):
     kmf = KaplanMeierFitter()
     variables = [x for x in [args.get("factorVariable"),
                              args.get("stratificationVariable")] if x != ""]
-    time_range = get_time_range(data, args)
+    time_range = range(int(np.ceil(data.time.max())) + 1)
 
     if len(variables) == 0:
         pval = None
@@ -139,7 +115,7 @@ def get_survival_result(data, args):
         }]
         survival = [{
             "name": "All",
-            "data": get_survival(kmf.survival_function_, time_range)
+            "data": get_survival(kmf.survival_function_)
         }]
     else:
         pval = get_pval(data, variables)
@@ -156,42 +132,22 @@ def get_survival_result(data, args):
             })
             survival.append({
                 "name": label,
-                "data": get_survival(kmf.survival_function_, time_range)
+                "data": get_survival(kmf.survival_function_)
             })
 
     return {"pval": pval, "risktable": risktable, "survival": survival}
 
 
-def get_time_range(data, args):
-    """Returns a (min, max) time range based on the data and request body
-
-    Args:
-        data(pandas.DataFrame): Source data
-        request_body(dict): Request body parameters and values
-    """
-    max_time = int(np.ceil(data.time.max()))
-    start_time = args.get("startTime")
-    end_time = (
-        min(args.get("endTime"), max_time)
-        if args.get("endTime") > start_time
-        else max_time
-    )
-
-    return range(start_time, end_time + 1)
-
-
-def get_survival(survival_function, time_range):
+def get_survival(survival_function):
     """Returns the survival probabilities data (dict) for the response API
 
     Args:
         survival_function(pandas.DataFrame): The estimated survival function from a fitted lifelines.KaplanMeierFitter instance
-        time_range(range): A range of min and max time values
     """
     return (
         survival_function
         .reset_index()
         .rename(columns={"KM_estimate": "prob", "timeline": "time"})
-        .replace({"time": {0: min(time_range)}})
         .to_dict(orient="records")
     )
 
@@ -227,6 +183,5 @@ def get_risktable(at_risk, time_range):
         .fillna(method="ffill")
         .rename(columns={"at_risk": "nrisk"})
         .astype({"nrisk": "int32"})
-        .query(f"time >= {min(time_range)} and time <= {max(time_range)}")
         .to_dict(orient="records")
     )
