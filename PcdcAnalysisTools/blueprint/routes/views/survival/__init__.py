@@ -2,6 +2,8 @@ import json
 import flask
 import math
 
+from flask import current_app as capp
+
 from lifelines import KaplanMeierFitter
 from lifelines.statistics import multivariate_logrank_test
 from PcdcAnalysisTools import utils
@@ -49,7 +51,8 @@ def fetch_data(args):
         fields=fields,
         filters=filters,
         sort=[],
-        accessibility="accessible"
+        accessibility="accessible",
+        config=capp.config
     )
 
     return (

@@ -1,5 +1,6 @@
 import json
 import flask
+from flask import current_app as capp
 
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
@@ -15,7 +16,8 @@ def get_result():
         fields=["consortium", "study_id", "_molecular_analysis_count"],
         filters=[],
         sort=[],
-        accessibility="accessible"
+        accessibility="accessible",
+        config=capp.config
     )
     return flask.jsonify(get_counts_list(data, args))
 
