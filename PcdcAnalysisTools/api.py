@@ -21,6 +21,7 @@ from PcdcAnalysisTools.errors import (
     InternalError,
 )
 from PcdcAnalysisTools.version_data import VERSION, COMMIT
+from PcdcAnalysisTools.utils.guppy.guppy import loadkey
 
 # recursion depth is increased for complex graph traversals
 sys.setrecursionlimit(10000)
@@ -67,6 +68,10 @@ def app_init(app):
 
     # data source for survival analysis
     app.config["IS_SURVIVAL_USING_GUPPY"] = True
+    app.config["RSA_PRIVATE_KEY"] = None
+    loadkey(app)
+    if app.config["RSA_PRIVATE_KEY"] is None:
+        app.logger.error("ERROR - PRIVATE KEY NOT LOADED!")
 
     app_register_blueprints(app)
 
