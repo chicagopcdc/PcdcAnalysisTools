@@ -25,7 +25,7 @@ def get_result():
 
 
 def fetch_data(args):
-    # TODO add json payload control 
+    # TODO add json payload control
     # TODO add check on payload nulls and stuff
     # TODO add path in the config file or ENV variable
     _filter = args.get("filter")
@@ -109,8 +109,6 @@ def get_survival_result(data, args):
     time_range = range(int(np.ceil(data.time.max())) + 1)
 
     if len(variables) == 0:
-        pval = None
-
         kmf.fit(data.time, data.status)
         risktable = [{
             "name": "All",
@@ -121,7 +119,6 @@ def get_survival_result(data, args):
             "data": get_survival(kmf.survival_function_)
         }]
     else:
-        pval = get_pval(data, variables)
         risktable = []
         survival = []
         for name, grouped_df in data.groupby(variables):
@@ -138,7 +135,7 @@ def get_survival_result(data, args):
                 "data": get_survival(kmf.survival_function_)
             })
 
-    return {"pval": pval, "risktable": risktable, "survival": survival}
+    return {"risktable": risktable, "survival": survival}
 
 
 def get_survival(survival_function):
