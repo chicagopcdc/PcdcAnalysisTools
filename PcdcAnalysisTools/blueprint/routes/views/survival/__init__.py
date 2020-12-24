@@ -96,12 +96,10 @@ def get_survival_result(data, args):
         args(dict): Request body parameters and values
 
     Returns:
-        A dict of survival result consisting of "pval", "risktable", and "survival" data
+        A dict of survival result consisting of "survival" data
         example:
 
-        {"pval": 0.1,
-         "risktable": [{ "nrisk": 30, "time": 0}],
-         "survival": [{"prob": 1.0, "time": 0.0}]}
+        {"survival": [{"prob": 1.0, "time": 0.0}]}
     """
     kmf = KaplanMeierFitter()
     variables = [x for x in [args.get("factorVariable"),
