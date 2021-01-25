@@ -25,7 +25,7 @@ def get_result():
 
 
 def fetch_data(args):
-    # TODO add json payload control 
+    # TODO add json payload control
     # TODO add check on payload nulls and stuff
     # TODO add path in the config file or ENV variable
     _filter = args.get("filter")
@@ -96,12 +96,10 @@ def get_survival_result(data, args):
         args(dict): Request body parameters and values
 
     Returns:
-        A dict of survival result consisting of "pval", "risktable", and "survival" data
+        A dict of survival result consisting of "survival" data
         example:
 
-        {"pval": 0.1,
-         "risktable": [{ "nrisk": 30, "time": 0}],
-         "survival": [{"prob": 1.0, "time": 0.0}]}
+        {"survival": [{"prob": 1.0, "time": 0.0}]}
     """
     kmf = KaplanMeierFitter()
     variables = [x for x in [args.get("factorVariable"),
@@ -109,36 +107,24 @@ def get_survival_result(data, args):
     time_range = range(int(np.ceil(data.time.max())) + 1)
 
     if len(variables) == 0:
-        pval = None
-
         kmf.fit(data.time, data.status)
-        risktable = [{
-            "name": "All",
-            "data": get_risktable(kmf.event_table.at_risk, time_range)
-        }]
         survival = [{
             "name": "All",
             "data": get_survival(kmf.survival_function_)
         }]
     else:
-        pval = get_pval(data, variables)
-        risktable = []
         survival = []
         for name, grouped_df in data.groupby(variables):
             name = map(str, name if isinstance(name, tuple) else (name,))
             label = ",".join(map(lambda x: "=".join(x), zip(variables, name)))
 
             kmf.fit(grouped_df.time, grouped_df.status)
-            risktable.append({
-                "name": label,
-                "data": get_risktable(kmf.event_table.at_risk, time_range)
-            })
             survival.append({
                 "name": label,
                 "data": get_survival(kmf.survival_function_)
             })
 
-    return {"pval": pval, "risktable": risktable, "survival": survival}
+    return {"survival": survival}
 
 
 def get_survival(survival_function):
