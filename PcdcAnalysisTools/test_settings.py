@@ -23,12 +23,6 @@ STORAGE = {"s3": {"keys": {}, "kwargs": {}}}
 STORAGE["s3"]["keys"]["host"] = {"access_key": "fake", "secret_key": "sooper_sekrit"}
 STORAGE["s3"]["kwargs"]["host"] = {}
 
-PSQLGRAPH = {
-    "host": "localhost",
-    "user": "test",
-    "password": "test",
-    "database": "sheepdog_automated_test",
-}
 
 SHEEPDOG_HOST = "localhost"
 SHEEPDOG_PORT = "443"
