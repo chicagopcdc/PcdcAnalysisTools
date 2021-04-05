@@ -1,7 +1,7 @@
 authlib==0.14.2
 authutils==4.0.0
 boto==2.39.0
-cryptography==3.1.1
+# cryptography==3.1.1
 # dictionaryutils==3.4.0
 # envelopes==0.4
 Flask==1.1.1
