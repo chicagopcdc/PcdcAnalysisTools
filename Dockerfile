@@ -1,4 +1,4 @@
-FROM quay.io/pcdc/pcdcanalysistools_intermediate:pcdc_dev_2021-04-05T16_38_58-05_00
+FROM quay.io/pcdc/pcdcanalysistools_intermediate:test_new_container_Wed__07_Apr_2021_18_45_52_GMT
 # pcdc_dev_Thu__17_Sep_2020_14_09_07_GMT
 
 COPY . /PcdcAnalysisTools
