@@ -19,6 +19,8 @@ def get_gdc():
         else fetch_fake_data(args)
     )
 
+    data = [value for value in data if value]
+
     query = '{"op":"and","content":[{"op":"in","content":{"field":"cases.case_id","value":'
     query += json.dumps(data)
     query += '}}]}'
