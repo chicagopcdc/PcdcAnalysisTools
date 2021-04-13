@@ -29,8 +29,8 @@ def fetch_data(args):
     # TODO add check on payload nulls and stuff
     # TODO add path in the config file or ENV variable
     _filter = args.get("filter")
-    factor_var = args.get("factorVariable")
-    stratification_var = args.get("stratificationVariable")
+    factor_var = args.get("parameter").get("factorVariable")
+    stratification_var = args.get("parameter").get("stratificationVariable")
 
     # NOT USED FOR NOW
     # args.get("efsFlag")
@@ -102,8 +102,8 @@ def get_survival_result(data, args):
         {"survival": [{"prob": 1.0, "time": 0.0}]}
     """
     kmf = KaplanMeierFitter()
-    variables = [x for x in [args.get("factorVariable"),
-                             args.get("stratificationVariable")] if x != ""]
+    variables = [x for x in [args.get("parameter").get("factorVariable"),
+                             args.get("parameter").get("stratificationVariable")] if x != ""]
     time_range = range(int(np.ceil(data.time.max())) + 1)
 
     if len(variables) == 0:
