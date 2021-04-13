@@ -106,6 +106,7 @@ def get_survival_result(data, args):
                              args.get("parameter").get("stratificationVariable")] if x != ""]
     time_range = range(int(np.ceil(data.time.max())) + 1)
 
+    result = {}
     if len(variables) == 0:
         kmf.fit(data.time, data.status)
         survival = [{
@@ -124,7 +125,10 @@ def get_survival_result(data, args):
                 "data": get_survival(kmf.survival_function_)
             })
 
-    return {"survival": survival}
+    if args.get("result").get("survival"):
+        result["survival"] = survival
+
+    return result
 
 
 def get_survival(survival_function):
