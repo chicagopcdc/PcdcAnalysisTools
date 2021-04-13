@@ -9,7 +9,6 @@ from authutils.oauth2.client import blueprint as oauth2_blueprint
 from authutils import AuthError
 from cdispyutils.log import get_handler
 from cdispyutils.uwsgi import setup_user_harakiri
-from indexclient.client import IndexClient
 from gen3authz.client.arborist.client import ArboristClient
 
 
