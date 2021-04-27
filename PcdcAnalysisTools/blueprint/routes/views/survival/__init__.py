@@ -115,13 +115,13 @@ def get_survival_result(data, args):
         kmf.fit(data.time, data.status)
         if args.get("result").get("risktable"):
             risktable.append({
-                "name": "All",
+                "group": [],
                 "data": get_risktable(kmf.event_table.at_risk, time_range)
             })
 
         if args.get("result").get("survival"):
             survival.append({
-                "name": "All",
+                "group": [],
                 "data": get_survival(kmf.survival_function_)
             })
     else:
@@ -130,18 +130,21 @@ def get_survival_result(data, args):
 
         for name, grouped_df in data.groupby(variables):
             name = map(str, name if isinstance(name, tuple) else (name,))
-            label = ",".join(map(lambda x: "=".join(x), zip(variables, name)))
+            group = list(map(
+                lambda x: {"variable": x[0], "value": x[1]},
+                zip(variables, name)
+            ))
 
             kmf.fit(grouped_df.time, grouped_df.status)
             if args.get("result").get("risktable"):
                 risktable.append({
-                    "name": label,
+                    "group": group,
                     "data": get_risktable(kmf.event_table.at_risk, time_range)
                 })
 
             if args.get("result").get("survival"):
                 survival.append({
-                    "name": label,
+                    "group": group,
                     "data": get_survival(kmf.survival_function_)
                 })
 
