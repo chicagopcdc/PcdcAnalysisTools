@@ -1,5 +1,4 @@
-FROM quay.io/pcdc/pcdcanalysistools_intermediate:test_new_container_Wed__07_Apr_2021_18_45_52_GMT
-# pcdc_dev_Thu__17_Sep_2020_14_09_07_GMT
+FROM quay.io/pcdc/pcdcanalysistools_intermediate:pcdc_dev_2021-04-08T12_37_25-05_00
 
 COPY . /PcdcAnalysisTools
 COPY ./deployment/uwsgi/uwsgi.ini /etc/uwsgi/uwsgi.ini

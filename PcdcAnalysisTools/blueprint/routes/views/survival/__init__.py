@@ -29,8 +29,8 @@ def fetch_data(args):
     # TODO add check on payload nulls and stuff
     # TODO add path in the config file or ENV variable
     _filter = args.get("filter")
-    factor_var = args.get("factorVariable")
-    stratification_var = args.get("stratificationVariable")
+    factor_var = args.get("parameter").get("factorVariable")
+    stratification_var = args.get("parameter").get("stratificationVariable")
 
     # NOT USED FOR NOW
     # args.get("efsFlag")
@@ -96,35 +96,66 @@ def get_survival_result(data, args):
         args(dict): Request body parameters and values
 
     Returns:
-        A dict of survival result consisting of "survival" data
+        A dict of survival result consisting of "pval", "risktable", and "survival" data
         example:
 
-        {"survival": [{"prob": 1.0, "time": 0.0}]}
+        {"pval": 0.1,
+         "risktable": [{ "nrisk": 30, "time": 0}],
+         "survival": [{"prob": 1.0, "time": 0.0}]}
     """
     kmf = KaplanMeierFitter()
-    variables = [x for x in [args.get("factorVariable"),
-                             args.get("stratificationVariable")] if x != ""]
+    variables = [x for x in [args.get("parameter").get("factorVariable"),
+                             args.get("parameter").get("stratificationVariable")] if x != ""]
     time_range = range(int(np.ceil(data.time.max())) + 1)
 
+    pval = None
+    risktable = []
+    survival = []
     if len(variables) == 0:
         kmf.fit(data.time, data.status)
-        survival = [{
-            "name": "All",
-            "data": get_survival(kmf.survival_function_)
-        }]
+        if args.get("result").get("risktable"):
+            risktable.append({
+                "name": "All",
+                "data": get_risktable(kmf.event_table.at_risk, time_range)
+            })
+
+        if args.get("result").get("survival"):
+            survival.append({
+                "name": "All",
+                "data": get_survival(kmf.survival_function_)
+            })
     else:
-        survival = []
+        if args.get("result").get("pval"):
+            pval = get_pval(data, variables)
+
         for name, grouped_df in data.groupby(variables):
             name = map(str, name if isinstance(name, tuple) else (name,))
             label = ",".join(map(lambda x: "=".join(x), zip(variables, name)))
 
             kmf.fit(grouped_df.time, grouped_df.status)
-            survival.append({
-                "name": label,
-                "data": get_survival(kmf.survival_function_)
-            })
+            if args.get("result").get("risktable"):
+                risktable.append({
+                    "name": label,
+                    "data": get_risktable(kmf.event_table.at_risk, time_range)
+                })
 
-    return {"survival": survival}
+            if args.get("result").get("survival"):
+                survival.append({
+                    "name": label,
+                    "data": get_survival(kmf.survival_function_)
+                })
+
+    result = {}
+    if args.get("result").get("pval"):
+        result["pval"] = pval
+
+    if args.get("result").get("risktable"):
+        result["risktable"] = risktable
+
+    if args.get("result").get("survival"):
+        result["survival"] = survival
+
+    return result
 
 
 def get_survival(survival_function):
