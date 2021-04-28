@@ -40,11 +40,11 @@ def get_counts_per_consortium(data, consortium=None):
     for d in data:
         if consortium is None:
             molecular_analysis_count += d.get("_molecular_analysis_count")
-            for id in d.get("study_id"):
+            for id in d.get("study_id", []):
                 study_set.add(id)
         elif consortium == d.get("consortium"):
             molecular_analysis_count += d.get("_molecular_analysis_count")
-            for id in d.get("study_id"):
+            for id in d.get("study_id", []):
                 study_set.add(id)
             subject_count += 1
 
