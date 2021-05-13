@@ -15,7 +15,7 @@ def get_gdc():
     args = utils.parse.parse_request_json()
     return_type = args.get("return_type")
 
-    if not return_type or return_type is not in ["url", "manifest"]:
+    if not return_type or return_type not in ["url", "manifest"]:
         return_type = "url"
 
     data = (
