@@ -13,6 +13,11 @@ def get_gdc():
     print("IN GDC - LUCA")
 
     args = utils.parse.parse_request_json()
+    return_type = args.get("return_type")
+
+    if not return_type or return_type not in ["url", "manifest"]:
+        return_type = "url"
+
     data = (
         fetch_data(args)
         if flask.current_app.config.get("IS_SURVIVAL_USING_GUPPY", True)
@@ -20,6 +25,9 @@ def get_gdc():
     )
 
     data = [value for value in data if value]
+
+    if return_type == "manifest":
+        return flask.jsonify({"manifest": data})
 
     query = '{"op":"and","content":[{"op":"in","content":{"field":"cases.case_id","value":'
     query += json.dumps(data)
