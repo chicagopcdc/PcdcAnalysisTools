@@ -69,6 +69,14 @@ routes = [
         endpoint="gdc",
         methods=["POST"],
     ),
+    new_route(
+        "/stats/consortiums",
+        views.stats.get_consortiums,
+        endpoint="stats/consortiums",
+        methods=["POST"],
+    ),
+
+
     # new_route("/<program>", views.program.delete_program, methods=["DELETE"]),
     # new_route(
     #     "/<program>/<project>/manifest",
