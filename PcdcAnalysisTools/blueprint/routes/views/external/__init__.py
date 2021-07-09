@@ -9,7 +9,7 @@ from PcdcAnalysisTools import auth
 
 other = "other"
 common_list = ["gdc", other]
-commons_dict = []
+commons_dict = {}
 commons_dict["gdc"] = "TARGET-GDC"
 # "GDC", "PDC", "GMKF", "Other". 
 
