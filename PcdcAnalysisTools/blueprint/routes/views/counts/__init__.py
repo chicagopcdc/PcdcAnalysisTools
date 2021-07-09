@@ -13,7 +13,7 @@ def get_result():
         path="http://guppy-service/download",
         type="subject",
         totalCount=100000,
-        fields=["consortium", "study_id", "_molecular_analysis_count"],
+        fields=["consortium", "studies.study_id", "molecular_analysis.molecular_abnormality"],
         filters=[],
         sort=[],
         accessibility="accessible",
@@ -23,7 +23,7 @@ def get_result():
 
 
 def get_counts_list(data, args):
-    consortium_list = args.get("consortiumList")
+    consortium_list = args.get("consortiumList", [])
     counts_list = []
     counts_list.append(get_counts_per_consortium(data))
     for consortium in consortium_list:
@@ -35,18 +35,18 @@ def get_counts_list(data, args):
 def get_counts_per_consortium(data, consortium=None):
     molecular_analysis_count = 0
     study_set = set()
-    subject_count = len(data) if consortium is None else 0
+    subject_count = 0
 
     for d in data:
-        if consortium is None:
-            molecular_analysis_count += d.get("_molecular_analysis_count")
-            for id in d.get("study_id", []):
-                study_set.add(id)
-        elif consortium == d.get("consortium"):
-            molecular_analysis_count += d.get("_molecular_analysis_count")
-            for id in d.get("study_id", []):
-                study_set.add(id)
+        if (consortium is None) or (consortium and "consortium" in d and d["consortium"] == consortium):
+            if "molecular_analysis" in d:
+                molecular_analysis_count += len(d["molecular_analysis"])
+            if "studies" in d:
+                for study in d["studies"]:
+                    if "study_id" in study:
+                        study_set.add(study["study_id"])
             subject_count += 1
+
 
     return {
         "consortium": "total" if consortium is None else consortium,
