@@ -64,9 +64,9 @@ routes = [
         methods=["POST"],
     ),
     new_route(
-        "/gdc",
-        views.external.get_gdc,
-        endpoint="gdc",
+        "/external/<common>",
+        views.external.get_info,
+        # endpoint="external",
         methods=["POST"],
     ),
     new_route(
