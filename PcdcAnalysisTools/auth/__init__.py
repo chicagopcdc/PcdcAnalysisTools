@@ -27,6 +27,8 @@ except ImportError:
         "True (note that it is True by default) "
     )
 
+def get_current_user():
+    return current_user
 
 def get_jwt_from_header():
     jwt = None
