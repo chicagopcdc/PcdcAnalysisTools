@@ -20,25 +20,17 @@ def get_consortiums():
 
 
 def get_consortium_list(filters):
-    # consortium_list = args.get("consortiumList")
-    # consortium_list = []
-    # counts_list.append(get_counts_per_consortium(data))
-    # for consortium in consortium_list:
-    #     counts_list.append(get_counts_per_consortium(data, consortium))
-
     data = utils.guppy.downloadDataFromGuppy(
         path="http://guppy-service/download",
         type="subject",
         totalCount=100000,
         fields=["consortium"],
-        filters=filters, #[],                 #TODO add filter
+        filters=filters,
         sort=[],
         accessibility="accessible",
         config=capp.config
     )    
-    # print(data)
 
     ret = list(set([d['consortium'] for d in data if 'consortium' in d]))
-    # ret = list(set(val for dic in data for val in dic.values())) 
     return ret
 

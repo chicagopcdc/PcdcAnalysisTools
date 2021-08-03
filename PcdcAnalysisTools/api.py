@@ -47,6 +47,7 @@ def app_register_blueprints(app):
 
 def app_init(app):
     # Register duplicates only at runtime
+    app.logger.setLevel(logging.INFO)
     app.logger.info("Initializing app")
 
     # explicit options set for compatibility with gdc's api
