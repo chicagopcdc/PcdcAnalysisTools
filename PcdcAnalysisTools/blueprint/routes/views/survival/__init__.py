@@ -52,7 +52,8 @@ def get_result():
 
 
 def fetch_data(filters, factor_var, stratification_var):
-    status_var, time_var = ("lkss", "age_at_lkss")
+    status_var, time_var = ("survival_characteristics.lkss",
+                            "survival_characteristics.age_at_lkss")
 
     fields = [f for f in [status_var, time_var,
                           factor_var, stratification_var] if f != ""]
@@ -87,10 +88,10 @@ def fetch_fake_data(factor_var, stratification_var):
     """
 
     status_col, time_col = ("EFSCENS", "EFSTIME")
-    #(
-        # ("EFSCENS", "EFSTIME")
-        # if efs_flag
-        # else ("SCENS", "STIME")
+    # (
+    # ("EFSCENS", "EFSTIME")
+    # if efs_flag
+    # else ("SCENS", "STIME")
     # )
 
     return (
