@@ -59,7 +59,12 @@ def fetch_data(filters, factor_var, stratification_var):
                           factor_var, stratification_var] if f != ""]
 
     filters.setdefault("AND", [])
-    filters["AND"].append({">=": {time_var: 0}})
+    filters["AND"].append({
+        "nested": {
+            "path": "survival_characteristics",
+            "AND": [{"GTE": {"age_at_lkss": 0}}]
+        }
+    })
 
     guppy_data = utils.guppy.downloadDataFromGuppy(
         path="http://guppy-service/download",
