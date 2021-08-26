@@ -77,6 +77,13 @@ def fetch_data(filters, factor_var, stratification_var):
         config=capp.config
     )
 
+    for each in guppy_data:
+        survival_dict = each.get("survival_characteristics")[0]
+        del each["survival_characteristics"]
+
+        each[status_var] = survival_dict.get("lkss")
+        each[time_var] = survival_dict.get("age_at_lkss")
+
     return (
         pd.DataFrame.from_records(guppy_data)
         .assign(status=lambda x: x[status_var] == "Dead",
