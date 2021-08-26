@@ -48,7 +48,7 @@ def get_result():
         if flask.current_app.config.get("IS_SURVIVAL_USING_GUPPY", True)
         else fetch_fake_data(args)
     )
-    return flask.jsonify(get_survival_result(data, factor_var, risktable_flag, survival_flag, pval_flag))
+    return flask.jsonify(get_survival_result(data, factor_var, stratification_var, risktable_flag, survival_flag, pval_flag))
 
 
 def fetch_data(filters, factor_var, stratification_var):
@@ -115,15 +115,16 @@ def fetch_fake_data(factor_var, stratification_var):
     )
 
 
-def get_survival_result(data, factor_var, risktable_flag, survival_flag, pval_flag):
+def get_survival_result(data, stratification_var, factor_var, risktable_flag, survival_flag, pval_flag):
     """Returns the survival results (dict) based on data and request body
 
     Args:
         data(pandas.DataFrame): Source data
-        factor_var: Request body parameters and values
-        risktable_flag: Request body parameters and values
-        survival_flag: Request body parameters and values
-        pval_flag: Request body parameters and values
+        factor_var(str): Factor variable for survival results
+        stratification_var(str): Stratification variable for survival results
+        risktable_flag(bool): Include risk table in result?
+        survival_flag(bool): Include survival probability in result?
+        pval_flag(bool): Include p-value in result?
 
     Returns:
         A dict of survival result consisting of "pval", "risktable", and "survival" data
