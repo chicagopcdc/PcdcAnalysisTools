@@ -48,17 +48,23 @@ def get_result():
         if flask.current_app.config.get("IS_SURVIVAL_USING_GUPPY", True)
         else fetch_fake_data(args)
     )
-    return flask.jsonify(get_survival_result(data, factor_var, risktable_flag, survival_flag, pval_flag))
+    return flask.jsonify(get_survival_result(data, factor_var, stratification_var, risktable_flag, survival_flag, pval_flag))
 
 
 def fetch_data(filters, factor_var, stratification_var):
-    status_var, time_var = ("lkss", "age_at_lkss")
+    status_var, time_var = ("survival_characteristics.lkss",
+                            "survival_characteristics.age_at_lkss")
 
     fields = [f for f in [status_var, time_var,
                           factor_var, stratification_var] if f != ""]
 
     filters.setdefault("AND", [])
-    filters["AND"].append({">=": {time_var: 0}})
+    filters["AND"].append({
+        "nested": {
+            "path": "survival_characteristics",
+            "AND": [{"GTE": {"age_at_lkss": 0}}]
+        }
+    })
 
     guppy_data = utils.guppy.downloadDataFromGuppy(
         path="http://guppy-service/download",
@@ -70,6 +76,13 @@ def fetch_data(filters, factor_var, stratification_var):
         accessibility="accessible",
         config=capp.config
     )
+
+    for each in guppy_data:
+        survival_dict = each.get("survival_characteristics")[0]
+        del each["survival_characteristics"]
+
+        each[status_var] = survival_dict.get("lkss")
+        each[time_var] = survival_dict.get("age_at_lkss")
 
     return (
         pd.DataFrame.from_records(guppy_data)
@@ -87,10 +100,10 @@ def fetch_fake_data(factor_var, stratification_var):
     """
 
     status_col, time_col = ("EFSCENS", "EFSTIME")
-    #(
-        # ("EFSCENS", "EFSTIME")
-        # if efs_flag
-        # else ("SCENS", "STIME")
+    # (
+    # ("EFSCENS", "EFSTIME")
+    # if efs_flag
+    # else ("SCENS", "STIME")
     # )
 
     return (
@@ -102,15 +115,16 @@ def fetch_fake_data(factor_var, stratification_var):
     )
 
 
-def get_survival_result(data, factor_var, risktable_flag, survival_flag, pval_flag):
+def get_survival_result(data, stratification_var, factor_var, risktable_flag, survival_flag, pval_flag):
     """Returns the survival results (dict) based on data and request body
 
     Args:
         data(pandas.DataFrame): Source data
-        factor_var: Request body parameters and values
-        risktable_flag: Request body parameters and values
-        survival_flag: Request body parameters and values
-        pval_flag: Request body parameters and values
+        factor_var(str): Factor variable for survival results
+        stratification_var(str): Stratification variable for survival results
+        risktable_flag(bool): Include risk table in result?
+        survival_flag(bool): Include survival probability in result?
+        pval_flag(bool): Include p-value in result?
 
     Returns:
         A dict of survival result consisting of "pval", "risktable", and "survival" data
