@@ -1,6 +1,5 @@
 import json
 import flask
-import math
 
 from flask import current_app as capp
 
