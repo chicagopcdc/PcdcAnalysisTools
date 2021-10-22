@@ -115,7 +115,7 @@ def fetch_fake_data(factor_var, stratification_var):
     )
 
 
-def get_survival_result(data, stratification_var, factor_var, risktable_flag, survival_flag, pval_flag):
+def get_survival_result(data, factor_var, stratification_var, risktable_flag, survival_flag, pval_flag):
     """Returns the survival results (dict) based on data and request body
 
     Args:
