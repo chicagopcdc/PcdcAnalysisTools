@@ -4,7 +4,7 @@ COPY . /PcdcAnalysisTools
 COPY ./deployment/uwsgi/uwsgi.ini /etc/uwsgi/uwsgi.ini
 WORKDIR /PcdcAnalysisTools
 
-RUN pip install -r requirements.txt
+RUN poetry install
 
 RUN mkdir -p /var/www/PcdcAnalysisTools \
     && mkdir /run/ngnix/ \

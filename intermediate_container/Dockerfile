@@ -14,12 +14,11 @@ RUN apk update \
     && apk add linux-headers musl-dev gcc libxml2-dev libxslt-dev \
     && apk add curl bash git vim 
 
-COPY ./requirements.txt /PcdcAnalysisTools/
+COPY ./pyproject.toml /PcdcAnalysisTools/
+COPY ./poetry.lock /PcdcAnalysisTools/
 WORKDIR /PcdcAnalysisTools
 
 RUN python -m pip install --upgrade pip \
     && python -m pip install --upgrade setuptools \
     && pip --version \
-    && pip install numpy==1.17.3 \
-    && pip install scipy==1.3.1 \
-    && pip install -r requirements.txt
+    && poetry install
