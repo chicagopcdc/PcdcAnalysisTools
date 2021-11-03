@@ -29,10 +29,10 @@ sphinx-rtd-theme = "^1.0.0"
 Sphinx = "3.0.4"
 flasgger = "0.9.1"
 cdisutilstest = {git = "https://git@github.com/uc-cdis/cdisutils-test.git", rev = "1.0.0"}
-authlib = "^0.14.2"
-authutils = "4.0.0"
+authlib = "<=0.14.2"
+authutils = "^6.1.0"
 Flask = "^1.1.4"
-Werkzeug = "^0.16.0"
+werkzeug = "^0.16.0"
 jsonschema = "2.5.1"
 cdislogging = "^1.1.1"
 indexclient = {git = "https://github.com/uc-cdis/indexclient.git", rev = "1.6.0"}

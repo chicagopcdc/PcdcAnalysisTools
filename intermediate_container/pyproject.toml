@@ -7,8 +7,8 @@ license = "Apache License 2.0"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-authlib = "^0.14.2"
-authutils = "4.0.0"
+authlib = "<=0.14.2"
+authutils = "^6.1.0"
 boto = "^2.39.0"
 Flask = "^1.1.4"
 Flask-Cors = "^3.0.9"
