@@ -1,4 +1,4 @@
-FROM quay.io/pcdc/pcdcanalysistools_intermediate:pcdc_dev_2021-04-08T12_37_25-05_00
+FROM quay.io/pcdc/pcdcanalysistools_intermediate:pcdc_dev_local_build
 
 COPY . /PcdcAnalysisTools
 COPY ./deployment/uwsgi/uwsgi.ini /etc/uwsgi/uwsgi.ini
