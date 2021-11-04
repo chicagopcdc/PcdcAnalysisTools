@@ -14,11 +14,16 @@ RUN apk update \
     && apk add linux-headers musl-dev gcc libxml2-dev libxslt-dev \
     && apk add curl bash git vim 
 
-COPY ./pyproject.toml /PcdcAnalysisTools/
-COPY ./poetry.lock /PcdcAnalysisTools/
+# upgrade pip + poetry
+RUN pip install --upgrade pip \
+    && pip install --upgrade poetry 
+
+COPY pyproject.toml poetry.lock /PcdcAnalysisTools/
+
 WORKDIR /PcdcAnalysisTools
 
-RUN python -m pip install --upgrade pip \
-    && python -m pip install --upgrade setuptools \
+# RUN source $HOME/.poetry/env \
+RUN poetry config virtualenvs.create false \
+    && poetry install -vv --no-dev --no-interaction \
     && pip --version \
-    && poetry install
+    && poetry show -v

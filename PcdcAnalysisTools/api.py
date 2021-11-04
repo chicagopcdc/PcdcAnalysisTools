@@ -74,7 +74,14 @@ def app_init(app):
     key_path = app.config.get("PRIVATE_KEY_PATH", None)
     app.config["RSA_PRIVATE_KEY"] = SignatureManager(key_path=key_path).get_key()
     if app.config["RSA_PRIVATE_KEY"] is None:
-        app.logger.error("ERROR - PRIVATE KEY NOT LOADED!")
+        app.logger.error(f"ERROR - PRIVATE KEY NOT LOADED! ('{key_path}')")
+    # else:
+    #     app.logger.info(f"Private key loaded. ('{key_path}')")
+
+    # gapi = app.config['GUPPY_API']
+    # app.logger.info(f"GUPPY_API hostname {gapi}")
+    # sn = app.config['SERVICE_NAME']
+    # app.logger.info(f"SERVICE_NAME: {sn}")
 
     app_register_blueprints(app)
 
