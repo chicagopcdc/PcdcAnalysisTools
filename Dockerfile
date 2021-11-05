@@ -1,5 +1,6 @@
 # FROM quay.io/pcdc/pcdcanalysistools_intermediate:pcdc_dev_local_build
-FROM pcdcanalysistools_intermediate_01
+# FROM pcdcanalysistools_intermediate_01
+FROM quay.io/pcdc/pcdcanalysistools_intermediate:PEDS-520_cross_service_interaction_Thu__04_Nov_2021_20_19_46_GMT
 
 COPY . /PcdcAnalysisTools
 COPY ./deployment/uwsgi/uwsgi.ini /etc/uwsgi/uwsgi.ini
