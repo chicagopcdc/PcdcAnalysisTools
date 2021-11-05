@@ -28,7 +28,7 @@ def downloadDataFromGuppy(path, type, totalCount, fields, filters, sort, accessi
             jwt = get_jwt_from_header()
             headers['Authorization'] = 'bearer ' + jwt
             sm = SignatureManager(key=config["RSA_PRIVATE_KEY"])
-            headers['Signature'] = b'signature ' + sm.sign(body, config)
+            headers['Signature'] = b'signature ' + sm.sign(body)
             headers['Gen3-Service'] = encode_str(config.get('SERVICE_NAME'))
 
             r = requests.post(
