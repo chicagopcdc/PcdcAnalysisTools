@@ -3,7 +3,7 @@
 
 # FROM quay.io/pcdc/base_image:pcdc_dev_2021-11-03T09_23_27-05_00
 # FROM quay.io/cdis/python:pybase3-2.0.0
-FROM quay.io/pcdc/python_3.8.12-buster:1.0.0
+FROM quay.io/pcdc/python:python3.8
 
 # RUN apk update \
 #     && apk add --upgrade --no-cache \
