@@ -10,7 +10,7 @@ from PcdcAnalysisTools import auth
 def get_result():
     args = utils.parse.parse_request_json()
     data = utils.guppy.downloadDataFromGuppy(
-        path="http://guppy-service/download",
+        path=capp.config['GUPPY_API'] + "/download",
         type="subject",
         totalCount=100000,
         fields=["consortium", "studies.study_id", "molecular_analysis.molecular_abnormality"],

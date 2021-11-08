@@ -66,7 +66,7 @@ def fetch_data(filters, factor_var, stratification_var):
     })
 
     guppy_data = utils.guppy.downloadDataFromGuppy(
-        path="http://guppy-service/download",
+        path=capp.config['GUPPY_API'] + "/download",
         type="subject",
         totalCount=100000,
         fields=fields,

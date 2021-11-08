@@ -10,6 +10,8 @@ from authutils import AuthError
 from cdispyutils.log import get_handler
 from cdispyutils.uwsgi import setup_user_harakiri
 from gen3authz.client.arborist.client import ArboristClient
+from pcdcutils.environment import is_env_enabled
+from pcdcutils.signature import SignatureManager
 
 
 import PcdcAnalysisTools
@@ -21,7 +23,6 @@ from PcdcAnalysisTools.errors import (
     InternalError,
 )
 from PcdcAnalysisTools.version_data import VERSION, COMMIT
-from PcdcAnalysisTools.utils.guppy.guppy import loadkey
 
 # recursion depth is increased for complex graph traversals
 sys.setrecursionlimit(10000)
@@ -69,10 +70,18 @@ def app_init(app):
 
     # data source for survival analysis
     app.config["IS_SURVIVAL_USING_GUPPY"] = True
-    app.config["RSA_PRIVATE_KEY"] = None
-    loadkey(app)
+
+    key_path = app.config.get("PRIVATE_KEY_PATH", None)
+    app.config["RSA_PRIVATE_KEY"] = SignatureManager(key_path=key_path).get_key()
     if app.config["RSA_PRIVATE_KEY"] is None:
-        app.logger.error("ERROR - PRIVATE KEY NOT LOADED!")
+        app.logger.error(f"ERROR - PRIVATE KEY NOT LOADED! ('{key_path}')")
+    # else:
+    #     app.logger.info(f"Private key loaded. ('{key_path}')")
+
+    # gapi = app.config['GUPPY_API']
+    # app.logger.info(f"GUPPY_API hostname {gapi}")
+    # sn = app.config['SERVICE_NAME']
+    # app.logger.info(f"SERVICE_NAME: {sn}")
 
     app_register_blueprints(app)
 
@@ -98,7 +107,7 @@ app = Flask(__name__)
 
 # Setup logger
 app.logger.setLevel(
-    logging.DEBUG if (os.environ.get("GEN3_DEBUG") == "True") else logging.WARNING
+    logging.DEBUG if is_env_enabled('GEN3_DEBUG') else logging.WARNING
 )
 app.logger.propagate = False
 while app.logger.handlers:
