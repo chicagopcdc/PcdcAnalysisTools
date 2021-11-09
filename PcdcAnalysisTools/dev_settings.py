@@ -2,7 +2,7 @@ import os
 from boto.s3.connection import OrdinaryCallingFormat
 from os import environ as env
 
-ERVICE_NAME = 'pcdcanalysistools'
+SERVICE_NAME = 'pcdcanalysistools'
 PRIVATE_KEY_PATH = "/var/www/PcdcAnalysisTools/jwt_private_key.pem"
 
 
