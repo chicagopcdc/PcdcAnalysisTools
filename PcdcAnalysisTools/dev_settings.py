@@ -2,6 +2,9 @@ import os
 from boto.s3.connection import OrdinaryCallingFormat
 from os import environ as env
 
+SERVICE_NAME = 'pcdcanalysistools'
+PRIVATE_KEY_PATH = "/var/www/PcdcAnalysisTools/jwt_private_key.pem"
+
 
 # Auth
 AUTH = "https://gdc-portal.nci.nih.gov/auth/keystone/v3/"
@@ -60,6 +63,8 @@ DICTIONARY_URL = os.environ.get(
     "DICTIONARY_URL",
     "https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json",
 )
+
+GUPPY_API = "http://localhost/guppy"
 
 USER_API = "http://localhost/user/"
 OIDC_ISSUER = "http://localhost"

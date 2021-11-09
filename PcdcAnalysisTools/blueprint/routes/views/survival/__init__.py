@@ -1,6 +1,5 @@
 import json
 import flask
-import math
 
 from flask import current_app as capp
 
@@ -8,6 +7,7 @@ from lifelines import KaplanMeierFitter
 from lifelines.statistics import multivariate_logrank_test
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
+from PcdcAnalysisTools.errors import AuthError
 
 import numpy as np
 import pandas as pd
@@ -67,7 +67,7 @@ def fetch_data(filters, factor_var, stratification_var):
     })
 
     guppy_data = utils.guppy.downloadDataFromGuppy(
-        path="http://guppy-service/download",
+        path=capp.config['GUPPY_API'] + "/download",
         type="subject",
         totalCount=100000,
         fields=fields,
@@ -115,7 +115,7 @@ def fetch_fake_data(factor_var, stratification_var):
     )
 
 
-def get_survival_result(data, stratification_var, factor_var, risktable_flag, survival_flag, pval_flag):
+def get_survival_result(data, factor_var, stratification_var, risktable_flag, survival_flag, pval_flag):
     """Returns the survival results (dict) based on data and request body
 
     Args:
@@ -147,7 +147,7 @@ def get_survival_result(data, stratification_var, factor_var, risktable_flag, su
         if risktable_flag:
             risktable.append({
                 "group": [],
-                "data": get_risktable(kmf.event_table.at_risk, time_range)
+                "data": get_risktable(kmf.event_table, time_range)
             })
 
         if survival_flag:
@@ -170,7 +170,7 @@ def get_survival_result(data, stratification_var, factor_var, risktable_flag, su
             if risktable_flag:
                 risktable.append({
                     "group": group,
-                    "data": get_risktable(kmf.event_table.at_risk, time_range)
+                    "data": get_risktable(kmf.event_table, time_range)
                 })
 
             if survival_flag:
@@ -218,24 +218,24 @@ def get_pval(data, variables):
     return result.p_value if not np.isnan(result.p_value) else None
 
 
-def get_risktable(at_risk, time_range):
+def get_risktable(event_table, time_range):
     """Returns the number-at-risk table data (dict) for the response API
 
     Args:
-        at_risk(pandas.Series): Number-at-risk data from a fitted lifelines.KaplanMeierFitter instance
+        event_table(pandas.DataFrame): A summary of the life table from a fitted lifelines.KaplanMeierFitter instance
         time_range(range): A range of min and max time values
     """
     return (
-        at_risk
+        event_table
+        .assign(nrisk=lambda x: x.at_risk - x.removed)
         .reset_index()
         .assign(time=lambda x: x.event_at.apply(np.ceil))
         .groupby("time")
-        .at_risk.min()
+        .nrisk.min()
         .reset_index()
         .merge(pd.DataFrame(data={"time": time_range}), how="outer")
         .sort_values(by="time")
         .fillna(method="ffill")
-        .rename(columns={"at_risk": "nrisk"})
         .astype({"nrisk": "int32"})
         .to_dict(orient="records")
     )

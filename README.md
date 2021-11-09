@@ -7,15 +7,10 @@
 ```bash
 python -m venv env
 source env/bin/activate
-pip install -r dev-requirements.txt
-python setup.py develop
+poetry install
 python run.py
 deactivate
 ```
-
-(`dev-requirements.txt` contains requirements for testing and doc generation.
-Installing with `python setup.py develop` avoids literally installing anything
-but creates an egg link to the source code.)
 
 ### For Development
 

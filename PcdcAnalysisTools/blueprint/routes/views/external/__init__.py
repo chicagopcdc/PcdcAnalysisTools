@@ -65,7 +65,7 @@ def fetch_data(args, common):
         fields = ["external_references.external_subject_id", "external_references.external_resource_name"]
 
     guppy_data = utils.guppy.downloadDataFromGuppy(
-        path="http://guppy-service/download",
+        path=capp.config['GUPPY_API'] + "/download",
         type="subject",
         totalCount=100000,
         fields=fields,
