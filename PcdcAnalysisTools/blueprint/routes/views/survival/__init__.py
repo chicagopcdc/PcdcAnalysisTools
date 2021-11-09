@@ -7,6 +7,7 @@ from lifelines import KaplanMeierFitter
 from lifelines.statistics import multivariate_logrank_test
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
+from PcdcAnalysisTools.errors import AuthError
 
 import numpy as np
 import pandas as pd
