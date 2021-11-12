@@ -90,7 +90,24 @@ def parse_data(data, factor_var, stratification_var, status_var, time_var):
         status_var(str): Status variable for survival results
         time_var(str): Time variable for survival results
     """
+    is_factor_var_nested = "." in factor_var
+    is_stratification_var_nested = "." in stratification_var
+
     for each in data:
+        if is_factor_var_nested:
+            factor_path, factor_field = factor_var.split(".")
+            factor_dict = each.get(factor_path)[0]
+            del each[factor_path]
+            
+            each[factor_var] = factor_dict.get(factor_field)
+        
+        if is_stratification_var_nested:
+            stratification_path, stratification_field = stratification_var.split(".")
+            stratification_dict = each.get(stratification_path)[0]
+            del each[stratification_path]
+            
+            each[stratification_var] = stratification_dict.get(stratification_field)
+
         survival_dict = each.get("survival_characteristics")[0]
         del each["survival_characteristics"]
 
