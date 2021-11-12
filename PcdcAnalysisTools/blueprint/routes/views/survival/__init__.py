@@ -77,7 +77,20 @@ def fetch_data(filters, factor_var, stratification_var):
         config=capp.config
     )
 
-    for each in guppy_data:
+    return parse_data(guppy_data, factor_var, stratification_var, status_var, time_var)
+
+
+def parse_data(data, factor_var, stratification_var, status_var, time_var):
+    """Parses the fetched source data in preparation for fitting survival estimator
+
+    Args:
+        data(pandas.DataFrame): Request body parameters and values
+        factor_var(str): Factor variable for survival results
+        stratification_var(str): Stratification variable for survival results
+        status_var(str): Status variable for survival results
+        time_var(str): Time variable for survival results
+    """
+    for each in data:
         survival_dict = each.get("survival_characteristics")[0]
         del each["survival_characteristics"]
 
@@ -85,7 +98,7 @@ def fetch_data(filters, factor_var, stratification_var):
         each[time_var] = survival_dict.get("age_at_lkss")
 
     return (
-        pd.DataFrame.from_records(guppy_data)
+        pd.DataFrame.from_records(data)
         .assign(status=lambda x: x[status_var] == "Dead",
                 time=lambda x: x[time_var] / 365.25)
         .filter(items=[factor_var, stratification_var, "status", "time"])
@@ -119,7 +132,7 @@ def get_survival_result(data, factor_var, stratification_var, risktable_flag, su
     """Returns the survival results (dict) based on data and request body
 
     Args:
-        data(pandas.DataFrame): Source data
+        data(pandas.DataFrame): Parsed source data
         factor_var(str): Factor variable for survival results
         stratification_var(str): Stratification variable for survival results
         risktable_flag(bool): Include risk table in result?
@@ -210,7 +223,7 @@ def get_pval(data, variables):
     """Returns the log-rank test p-value (float) for the data and variables
 
     Args:
-        data(pandas.DataFrame): Source data
+        data(pandas.DataFrame): Parsed source data
         variables(list): Variables to use in the log-rank test
     """
     groups = list(map(str, zip(*[data[f] for f in variables])))
