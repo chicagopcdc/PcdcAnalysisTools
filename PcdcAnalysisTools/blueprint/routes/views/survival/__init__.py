@@ -7,6 +7,7 @@ from lifelines import KaplanMeierFitter
 from lifelines.statistics import multivariate_logrank_test
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
+from PcdcAnalysisTools.errors import AuthError
 
 import numpy as np
 import pandas as pd
@@ -66,7 +67,7 @@ def fetch_data(filters, factor_var, stratification_var):
     })
 
     guppy_data = utils.guppy.downloadDataFromGuppy(
-        path="http://guppy-service/download",
+        path=capp.config['GUPPY_API'] + "/download",
         type="subject",
         totalCount=100000,
         fields=fields,

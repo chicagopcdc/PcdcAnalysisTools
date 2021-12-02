@@ -28,10 +28,7 @@ class NoIndexForFileError(UserError):
 class HandledIntegrityError(Exception):
     pass
 
-class NoPrivateKeyError(APIError):
-    def __init__(self, message):
-        self.message = message
-        self.code = 500
+
 
 
 

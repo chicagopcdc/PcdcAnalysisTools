@@ -1,14 +1,22 @@
-# FROM quay.io/pcdc/pcdcanalysistools_intermediate:improve_base_image_Thu__04_Nov_2021_16_36_28_GMT
-# FROM quay.io/pcdc/pcdcanalysistools_intermediate:improve_base_image_Fri__05_Nov_2021_18_50_41_GMT
-FROM quay.io/pcdc/pcdcanalysistools_intermediate:improve_base_image_Fri__05_Nov_2021_20_16_29_GMT
+# FROM quay.io/pcdc/pcdcanalysistools_intermediate:pcdc_dev_local_build
+# FROM pcdcanalysistools_intermediate_01
+FROM quay.io/pcdc/pcdcanalysistools_intermediate:PEDS-520_cross_service_interaction_Thu__04_Nov_2021_20_19_46_GMT
 
 COPY . /PcdcAnalysisTools
 COPY ./deployment/uwsgi/uwsgi.ini /etc/uwsgi/uwsgi.ini
 WORKDIR /PcdcAnalysisTools
 
-# RUN pip install -r requirements.txt
-RUN python3 /PcdcAnalysisTools/setup.py install \
-    && python3 -m pip install -r requirements.txt
+# upgrade pip + poetry
+RUN pip install --upgrade pip \
+    && pip install --upgrade poetry 
+
+COPY pyproject.toml poetry.lock /PcdcAnalysisTools/
+
+# RUN source $HOME/.poetry/env \
+RUN poetry config virtualenvs.create false \
+    && poetry install -vv --no-dev --no-interaction \
+    && pip --version \
+    && poetry show -v
 
 RUN mkdir -p /var/www/PcdcAnalysisTools \
     && mkdir /run/ngnix/ \

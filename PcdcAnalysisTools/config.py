@@ -1,5 +1,5 @@
-import os
 from cdislogging import get_logger
+from pcdcutils.environment import is_env_enabled
 
 logger = get_logger(__name__)
 
@@ -10,7 +10,7 @@ logger = get_logger(__name__)
 # mode will affect which mapping and index is used is used.
 
 
-LEGACY_MODE = os.environ.get("GDC_API_LEGACY_MODE", "").lower() == "true"
+LEGACY_MODE = is_env_enabled("GDC_API_LEGACY_MODE")
 
 
 if LEGACY_MODE:

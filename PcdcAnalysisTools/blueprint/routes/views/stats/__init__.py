@@ -21,7 +21,7 @@ def get_consortiums():
 
 def get_consortium_list(filters):
     data = utils.guppy.downloadDataFromGuppy(
-        path="http://guppy-service/download",
+        path=capp.config['GUPPY_API'] + "/download",
         type="subject",
         totalCount=100000,
         fields=["consortium"],

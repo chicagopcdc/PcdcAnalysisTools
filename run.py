@@ -3,13 +3,13 @@
 from authutils import ROLES as all_roles
 from collections import defaultdict
 from mock import patch, PropertyMock
-import os
+from os import environ
 
 import requests
 
 from flask import current_app
 # from psqlgraph import PolyNode as Node
-
+from pcdcutils.environment import is_env_enabled
 from PcdcAnalysisTools.api import run_for_development
 
 
@@ -141,20 +141,20 @@ def run_with_fake_download():
             key_for_node=fake_key_for_node,
             urls_from_index_client=fake_urls_from_index_client,
         ):
-            if os.environ.get("GDC_FAKE_AUTH"):
+            if is_env_enabled("GDC_FAKE_AUTH"):
                 run_with_fake_auth()
             else:
                 run_for_development(debug=debug, threaded=True)
 
 
 if __name__ == "__main__":
-    os.environ["GDC_FAKE_AUTH"] = "false"
-    os.environ["GDC_FAKE_DOWNLOAD"] = "false"
-    debug = bool(os.environ.get("SHEEPDOG_DEBUG", True))
-    if os.environ.get("GDC_FAKE_DOWNLOAD") == "True":
+    environ["GDC_FAKE_AUTH"] = "false"
+    environ["GDC_FAKE_DOWNLOAD"] = "false"
+    debug = is_env_enabled('SHEEPDOG_DEBUG')
+    if is_env_enabled("GDC_FAKE_DOWNLOAD"):
         run_with_fake_download()
     else:
-        if os.environ.get("GDC_FAKE_AUTH") == "True":
+        if is_env_enabled("GDC_FAKE_AUTH"):
             run_with_fake_auth()
         else:
             run_with_fake_authz()
