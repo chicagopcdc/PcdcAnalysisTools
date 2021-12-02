@@ -24,7 +24,7 @@ EXPOSE 80
 
 RUN COMMIT=`git rev-parse HEAD` && echo "COMMIT=\"${COMMIT}\"" >PcdcAnalysisTools/version_data.py \
     && VERSION=`git describe --always --tags` && echo "VERSION=\"${VERSION}\"" >>PcdcAnalysisTools/version_data.py \
-    && python3 setup.py install
+    && python setup.py install
 
 WORKDIR /var/www/PcdcAnalysisTools
 
