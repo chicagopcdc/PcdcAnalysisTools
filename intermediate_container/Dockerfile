@@ -3,6 +3,9 @@
 
 FROM quay.io/pcdc/python:python3.10_2021-12-02T11_35_14-06_00
 
+RUN apt-get update \
+    && apt-get install libblas-dev liblapack-dev libatlas-base-dev gfortran
+
 # upgrade pip + poetry
 RUN pip install --upgrade pip \
     && pip install --upgrade poetry 
