@@ -1,18 +1,9 @@
 # To run: docker run -v /path/to/wsgi.py:/var/www/PcdcAnalysisTools/wsgi.py --name=PcdcAnalysisTools -p 81:80 PcdcAnalysisTools
 # To check running container: docker exec -it PcdcAnalysisTools /bin/bash
 
-# FROM quay.io/pcdc/base_image:pcdc_dev_Tue__01_Sep_2020_19_31_03_GMT
-FROM quay.io/pcdc/base_image:pcdc_dev_2021-11-03T09_23_27-05_00
-
-RUN apk update \
-    && apk add --upgrade --no-cache \
-        bash openssh curl ca-certificates openssl less htop g++ make wget rsync \
-        build-base libpng-dev freetype-dev libexecinfo-dev openblas-dev libgomp lapack-dev \
-                libgcc libquadmath musl libgfortran lapack-dev \
-    && apk add --no-cache jpeg-dev zlib-dev \
-    && apk add postgresql-libs postgresql-dev libffi-dev libressl-dev \
-    && apk add linux-headers musl-dev gcc libxml2-dev libxslt-dev \
-    && apk add curl bash git vim 
+# FROM quay.io/pcdc/base_image:pcdc_dev_2021-11-03T09_23_27-05_00
+# FROM quay.io/cdis/python:pybase3-2.0.0
+FROM quay.io/pcdc/python:python3.8
 
 # upgrade pip + poetry
 RUN pip install --upgrade pip \
