@@ -36,8 +36,13 @@ def downloadDataFromGuppy(path, type, totalCount, fields, filters, sort, accessi
             )
         except NoKeyError as e:
             print(e.message)
+            return []
         except requests.HTTPError as e:
             print(e.message)
+            return []
+        except requests.ConnectionError as e:
+            print(e.message)
+            return []
     
         if r.status_code == 200:
             return r.json()
