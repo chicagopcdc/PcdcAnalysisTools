@@ -22,8 +22,6 @@ def get_result():
     # TODO add path in the config file or ENV variable
     _filter = args.get("filter")
     filters = json.loads(json.dumps(_filter))
-    factor_var = args.get("parameter").get("factorVariable")
-    stratification_var = args.get("parameter").get("stratificationVariable")
     # NOT USED FOR NOW
     # efs_flag = args.get("efsFlag")
     risktable_flag = args.get("result").get("risktable")
@@ -31,8 +29,6 @@ def get_result():
 
     log_obj = {}
     log_obj["filters"] = filters
-    log_obj["factor_variable"] = factor_var
-    log_obj["stratification_variable"] = stratification_var
     try:
         user = auth.get_current_user()
         log_obj["user_id"] = user.id
@@ -43,19 +39,16 @@ def get_result():
     capp.logger.info(log_obj)
 
     data = (
-        fetch_data(filters, factor_var, stratification_var)
+        fetch_data(filters)
         if flask.current_app.config.get("IS_SURVIVAL_USING_GUPPY", True)
-        else fetch_fake_data(args)
+        else fetch_fake_data()
     )
-    return flask.jsonify(get_survival_result(data, factor_var, stratification_var, risktable_flag, survival_flag))
+    return flask.jsonify(get_survival_result(data, risktable_flag, survival_flag))
 
 
-def fetch_data(filters, factor_var, stratification_var):
+def fetch_data(filters, ):
     status_var, time_var = ("survival_characteristics.lkss",
                             "survival_characteristics.age_at_lkss")
-
-    fields = [f for f in [status_var, time_var,
-                          factor_var, stratification_var] if f != ""]
 
     filters.setdefault("AND", [])
     filters["AND"].append({
@@ -69,7 +62,7 @@ def fetch_data(filters, factor_var, stratification_var):
         path=capp.config['GUPPY_API'] + "/download",
         type="subject",
         totalCount=100000,
-        fields=fields,
+        fields=[status_var, time_var],
         filters=filters,
         sort=[],
         accessibility="accessible",
@@ -87,11 +80,11 @@ def fetch_data(filters, factor_var, stratification_var):
         pd.DataFrame.from_records(guppy_data)
         .assign(status=lambda x: x[status_var] == "Dead",
                 time=lambda x: x[time_var] / 365.25)
-        .filter(items=[factor_var, stratification_var, "status", "time"])
+        .filter(items=["status", "time"])
     )
 
 
-def fetch_fake_data(factor_var, stratification_var):
+def fetch_fake_data():
     """Fetches the mocked source data (pandas.DataFrame) based on request body
 
     Args:
@@ -110,17 +103,15 @@ def fetch_fake_data(factor_var, stratification_var):
         .query(f"{time_col} >= 0")
         .assign(status=lambda x: x[status_col] == 1,
                 time=lambda x: x[time_col] / 365.25)
-        .filter(items=[factor_var, stratification_var, "status", "time"])
+        .filter(items=["status", "time"])
     )
 
 
-def get_survival_result(data, factor_var, stratification_var, risktable_flag, survival_flag):
+def get_survival_result(data, risktable_flag, survival_flag):
     """Returns the survival results (dict) based on data and request body
 
     Args:
         data(pandas.DataFrame): Source data
-        factor_var(str): Factor variable for survival results
-        stratification_var(str): Stratification variable for survival results
         risktable_flag(bool): Include risk table in result?
         survival_flag(bool): Include survival probability in result?
 
@@ -132,52 +123,21 @@ def get_survival_result(data, factor_var, stratification_var, risktable_flag, su
          "survival": [{"prob": 1.0, "time": 0.0}]}
     """
     kmf = KaplanMeierFitter()
-    variables = [x for x in [factor_var,
-                             stratification_var] if x != ""]
-    time_range = range(int(np.ceil(data.time.max())) + 1)
-
-    risktable = []
-    survival = []
-    if len(variables) == 0:
-        kmf.fit(data.time, data.status)
-        if risktable_flag:
-            risktable.append({
-                "group": [],
-                "data": get_risktable(kmf.event_table, time_range)
-            })
-
-        if survival_flag:
-            survival.append({
-                "group": [],
-                "data": get_survival(kmf.survival_function_)
-            })
-    else:
-        for name, grouped_df in data.groupby(variables):
-            name = map(str, name if isinstance(name, tuple) else (name,))
-            group = list(map(
-                lambda x: {"variable": x[0], "value": x[1]},
-                zip(variables, name)
-            ))
-
-            kmf.fit(grouped_df.time, grouped_df.status)
-            if risktable_flag:
-                risktable.append({
-                    "group": group,
-                    "data": get_risktable(kmf.event_table, time_range)
-                })
-
-            if survival_flag:
-                survival.append({
-                    "group": group,
-                    "data": get_survival(kmf.survival_function_)
-                })
-
+    kmf.fit(data.time, data.status)
+    
     result = {}
     if risktable_flag:
-        result["risktable"] = risktable
+        time_range = range(int(np.ceil(data.time.max())) + 1)
+        result["risktable"] = [{
+            "group": [],
+            "data": get_risktable(kmf.event_table, time_range)
+        }]
 
     if survival_flag:
-        result["survival"] = survival
+        result["survival"] = [{
+            "group": [],
+            "data": get_survival(kmf.survival_function_)
+        }]
 
     return result
 
