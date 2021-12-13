@@ -28,7 +28,6 @@ def get_result():
     # efs_flag = args.get("efsFlag")
     risktable_flag = args.get("result").get("risktable")
     survival_flag = args.get("result").get("survival")
-    pval_flag = args.get("result").get("pval")
 
     log_obj = {}
     log_obj["filters"] = filters
@@ -48,7 +47,7 @@ def get_result():
         if flask.current_app.config.get("IS_SURVIVAL_USING_GUPPY", True)
         else fetch_fake_data(args)
     )
-    return flask.jsonify(get_survival_result(data, factor_var, stratification_var, risktable_flag, survival_flag, pval_flag))
+    return flask.jsonify(get_survival_result(data, factor_var, stratification_var, risktable_flag, survival_flag))
 
 
 def fetch_data(filters, factor_var, stratification_var):
@@ -115,7 +114,7 @@ def fetch_fake_data(factor_var, stratification_var):
     )
 
 
-def get_survival_result(data, factor_var, stratification_var, risktable_flag, survival_flag, pval_flag):
+def get_survival_result(data, factor_var, stratification_var, risktable_flag, survival_flag):
     """Returns the survival results (dict) based on data and request body
 
     Args:
@@ -124,14 +123,12 @@ def get_survival_result(data, factor_var, stratification_var, risktable_flag, su
         stratification_var(str): Stratification variable for survival results
         risktable_flag(bool): Include risk table in result?
         survival_flag(bool): Include survival probability in result?
-        pval_flag(bool): Include p-value in result?
 
     Returns:
-        A dict of survival result consisting of "pval", "risktable", and "survival" data
+        A dict of survival result consisting of "risktable", and "survival" data
         example:
 
-        {"pval": 0.1,
-         "risktable": [{ "nrisk": 30, "time": 0}],
+        {"risktable": [{ "nrisk": 30, "time": 0}],
          "survival": [{"prob": 1.0, "time": 0.0}]}
     """
     kmf = KaplanMeierFitter()
@@ -139,7 +136,6 @@ def get_survival_result(data, factor_var, stratification_var, risktable_flag, su
                              stratification_var] if x != ""]
     time_range = range(int(np.ceil(data.time.max())) + 1)
 
-    pval = None
     risktable = []
     survival = []
     if len(variables) == 0:
@@ -156,9 +152,6 @@ def get_survival_result(data, factor_var, stratification_var, risktable_flag, su
                 "data": get_survival(kmf.survival_function_)
             })
     else:
-        if pval_flag:
-            pval = get_pval(data, variables)
-
         for name, grouped_df in data.groupby(variables):
             name = map(str, name if isinstance(name, tuple) else (name,))
             group = list(map(
@@ -180,9 +173,6 @@ def get_survival_result(data, factor_var, stratification_var, risktable_flag, su
                 })
 
     result = {}
-    if pval_flag:
-        result["pval"] = pval
-
     if risktable_flag:
         result["risktable"] = risktable
 
@@ -204,18 +194,6 @@ def get_survival(survival_function):
         .rename(columns={"KM_estimate": "prob", "timeline": "time"})
         .to_dict(orient="records")
     )
-
-
-def get_pval(data, variables):
-    """Returns the log-rank test p-value (float) for the data and variables
-
-    Args:
-        data(pandas.DataFrame): Source data
-        variables(list): Variables to use in the log-rank test
-    """
-    groups = list(map(str, zip(*[data[f] for f in variables])))
-    result = multivariate_logrank_test(data.time, groups, data.status)
-    return result.p_value if not np.isnan(result.p_value) else None
 
 
 def get_risktable(event_table, time_range):
