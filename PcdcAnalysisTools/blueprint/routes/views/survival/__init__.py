@@ -90,29 +90,6 @@ def fetch_data(filters):
     )
 
 
-def fetch_fake_data():
-    """Fetches the mocked source data (pandas.DataFrame) based on request body
-
-    Args:
-        args(dict): Request body parameters and values
-    """
-
-    status_col, time_col = ("EFSCENS", "EFSTIME")
-    # (
-    # ("EFSCENS", "EFSTIME")
-    # if efs_flag
-    # else ("SCENS", "STIME")
-    # )
-
-    return (
-        pd.read_json("./data/fake.json", orient="records")
-        .query(f"{time_col} >= 0")
-        .assign(status=lambda x: x[status_col] == 1,
-                time=lambda x: x[time_col] / 365.25)
-        .filter(items=["status", "time"])
-    )
-
-
 def get_survival_result(data, risktable_flag, survival_flag):
     """Returns the survival results (dict) based on data and request body
 
