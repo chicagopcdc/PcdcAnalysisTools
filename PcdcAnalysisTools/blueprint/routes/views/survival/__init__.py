@@ -38,15 +38,10 @@ def get_result():
     capp.logger.info(log_obj)
 
     survival_results = {}
-    if len(filter_sets) > 0:
-        for filter_set in filter_sets:
-            data = fetch_data(filter_set.get("filters"))
-            result = get_survival_result(data, risktable_flag, survival_flag)
-            survival_results[filter_set.get("id")] = result
-    else:
-        data = fetch_data({})
+    for filter_set in filter_sets:
+        data = fetch_data(filter_set.get("filters"))
         result = get_survival_result(data, risktable_flag, survival_flag)
-        survival_results[""] = result
+        survival_results[filter_set.get("id")] = result
     
     return flask.jsonify(survival_results)
 
