@@ -4,7 +4,6 @@ import flask
 from flask import current_app as capp
 
 from lifelines import KaplanMeierFitter
-from lifelines.statistics import multivariate_logrank_test
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
 from PcdcAnalysisTools.errors import AuthError
