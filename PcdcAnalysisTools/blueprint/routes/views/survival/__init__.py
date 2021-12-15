@@ -39,9 +39,13 @@ def get_result():
 
     survival_results = {}
     for filter_set in filter_sets:
+        # the default "All Subjects" option has filter set id of -1
+        filter_set_id = filter_set.get("id")
         data = fetch_data(filter_set.get("filters"))
         result = get_survival_result(data, risktable_flag, survival_flag)
-        survival_results[filter_set.get("id")] = result
+
+        survival_results[filter_set_id] = result
+        survival_results[filter_set_id]["name"] = filter_set.get("name")
     
     return flask.jsonify(survival_results)
 
