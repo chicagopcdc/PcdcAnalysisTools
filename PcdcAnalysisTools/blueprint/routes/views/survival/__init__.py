@@ -26,7 +26,7 @@ def get_result():
     survival_flag = args.get("result").get("survival")
 
     log_obj = {}
-    log_obj["explorer_id"] = filter_sets[0].get("explorerId")
+    log_obj["explorer_id"] = args.get("explorerId")
     log_obj["filter_set_ids"] = args.get("usedFilterSetIds")
     try:
         user = auth.get_current_user()
