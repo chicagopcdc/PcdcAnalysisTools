@@ -20,15 +20,15 @@ def get_result():
     # TODO add json payload control
     # TODO add check on payload nulls and stuff
     # TODO add path in the config file or ENV variable
-    _filter = args.get("filter")
-    filters = json.loads(json.dumps(_filter))
+    filter_sets = json.loads(json.dumps(args.get("filterSets")))
     # NOT USED FOR NOW
     # efs_flag = args.get("efsFlag")
     risktable_flag = args.get("result").get("risktable")
     survival_flag = args.get("result").get("survival")
 
     log_obj = {}
-    log_obj["filters"] = filters
+    log_obj["explorer_id"] = filter_sets[0].get("explorerId")
+    log_obj["filter_set_ids"] = args.get("usedFilterSetIds")
     try:
         user = auth.get_current_user()
         log_obj["user_id"] = user.id
@@ -38,15 +38,21 @@ def get_result():
         )
     capp.logger.info(log_obj)
 
-    data = (
-        fetch_data(filters)
-        if flask.current_app.config.get("IS_SURVIVAL_USING_GUPPY", True)
-        else fetch_fake_data()
-    )
-    return flask.jsonify(get_survival_result(data, risktable_flag, survival_flag))
+    survival_results = {}
+    if len(filter_sets) > 0:
+        for filter_set in filter_sets:
+            data = fetch_data(filter_set.get("filters"))
+            result = get_survival_result(data, risktable_flag, survival_flag)
+            survival_results[filter_set.get("id")] = result
+    else:
+        data = fetch_data({})
+        result = get_survival_result(data, risktable_flag, survival_flag)
+        survival_results[""] = result
+    
+    return flask.jsonify(survival_results)
 
 
-def fetch_data(filters, ):
+def fetch_data(filters):
     status_var, time_var = ("survival_characteristics.lkss",
                             "survival_characteristics.age_at_lkss")
 
@@ -128,16 +134,10 @@ def get_survival_result(data, risktable_flag, survival_flag):
     result = {}
     if risktable_flag:
         time_range = range(int(np.ceil(data.time.max())) + 1)
-        result["risktable"] = [{
-            "group": [],
-            "data": get_risktable(kmf.event_table, time_range)
-        }]
+        result["risktable"] = get_risktable(kmf.event_table, time_range)
 
     if survival_flag:
-        result["survival"] = [{
-            "group": [],
-            "data": get_survival(kmf.survival_function_)
-        }]
+        result["survival"] = get_survival(kmf.survival_function_)
 
     return result
 
