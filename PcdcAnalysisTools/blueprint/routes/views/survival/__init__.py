@@ -4,7 +4,6 @@ import flask
 from flask import current_app as capp
 
 from lifelines import KaplanMeierFitter
-from lifelines.statistics import multivariate_logrank_test
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
 from PcdcAnalysisTools.errors import AuthError
@@ -20,20 +19,15 @@ def get_result():
     # TODO add json payload control
     # TODO add check on payload nulls and stuff
     # TODO add path in the config file or ENV variable
-    _filter = args.get("filter")
-    filters = json.loads(json.dumps(_filter))
-    factor_var = args.get("parameter").get("factorVariable")
-    stratification_var = args.get("parameter").get("stratificationVariable")
+    filter_sets = json.loads(json.dumps(args.get("filterSets")))
     # NOT USED FOR NOW
     # efs_flag = args.get("efsFlag")
     risktable_flag = args.get("result").get("risktable")
     survival_flag = args.get("result").get("survival")
-    pval_flag = args.get("result").get("pval")
 
     log_obj = {}
-    log_obj["filters"] = filters
-    log_obj["factor_variable"] = factor_var
-    log_obj["stratification_variable"] = stratification_var
+    log_obj["explorer_id"] = args.get("explorerId")
+    log_obj["filter_set_ids"] = args.get("usedFilterSetIds")
     try:
         user = auth.get_current_user()
         log_obj["user_id"] = user.id
@@ -43,20 +37,22 @@ def get_result():
         )
     capp.logger.info(log_obj)
 
-    data = (
-        fetch_data(filters, factor_var, stratification_var)
-        if flask.current_app.config.get("IS_SURVIVAL_USING_GUPPY", True)
-        else fetch_fake_data(args)
-    )
-    return flask.jsonify(get_survival_result(data, factor_var, stratification_var, risktable_flag, survival_flag, pval_flag))
+    survival_results = {}
+    for filter_set in filter_sets:
+        # the default "All Subjects" option has filter set id of -1
+        filter_set_id = filter_set.get("id")
+        data = fetch_data(filter_set.get("filters"))
+        result = get_survival_result(data, risktable_flag, survival_flag)
+
+        survival_results[filter_set_id] = result
+        survival_results[filter_set_id]["name"] = filter_set.get("name")
+    
+    return flask.jsonify(survival_results)
 
 
-def fetch_data(filters, factor_var, stratification_var):
+def fetch_data(filters):
     status_var, time_var = ("survival_characteristics.lkss",
                             "survival_characteristics.age_at_lkss")
-
-    fields = [f for f in [status_var, time_var,
-                          factor_var, stratification_var] if f != ""]
 
     filters.setdefault("AND", [])
     filters["AND"].append({
@@ -70,7 +66,7 @@ def fetch_data(filters, factor_var, stratification_var):
         path=capp.config['GUPPY_API'] + "/download",
         type="subject",
         totalCount=100000,
-        fields=fields,
+        fields=[status_var, time_var],
         filters=filters,
         sort=[],
         accessibility="accessible",
@@ -88,106 +84,35 @@ def fetch_data(filters, factor_var, stratification_var):
         pd.DataFrame.from_records(guppy_data)
         .assign(status=lambda x: x[status_var] == "Dead",
                 time=lambda x: x[time_var] / 365.25)
-        .filter(items=[factor_var, stratification_var, "status", "time"])
+        .filter(items=["status", "time"])
     )
 
 
-def fetch_fake_data(factor_var, stratification_var):
-    """Fetches the mocked source data (pandas.DataFrame) based on request body
-
-    Args:
-        args(dict): Request body parameters and values
-    """
-
-    status_col, time_col = ("EFSCENS", "EFSTIME")
-    # (
-    # ("EFSCENS", "EFSTIME")
-    # if efs_flag
-    # else ("SCENS", "STIME")
-    # )
-
-    return (
-        pd.read_json("./data/fake.json", orient="records")
-        .query(f"{time_col} >= 0")
-        .assign(status=lambda x: x[status_col] == 1,
-                time=lambda x: x[time_col] / 365.25)
-        .filter(items=[factor_var, stratification_var, "status", "time"])
-    )
-
-
-def get_survival_result(data, factor_var, stratification_var, risktable_flag, survival_flag, pval_flag):
+def get_survival_result(data, risktable_flag, survival_flag):
     """Returns the survival results (dict) based on data and request body
 
     Args:
         data(pandas.DataFrame): Source data
-        factor_var(str): Factor variable for survival results
-        stratification_var(str): Stratification variable for survival results
         risktable_flag(bool): Include risk table in result?
         survival_flag(bool): Include survival probability in result?
-        pval_flag(bool): Include p-value in result?
 
     Returns:
-        A dict of survival result consisting of "pval", "risktable", and "survival" data
+        A dict of survival result consisting of "risktable", and "survival" data
         example:
 
-        {"pval": 0.1,
-         "risktable": [{ "nrisk": 30, "time": 0}],
+        {"risktable": [{ "nrisk": 30, "time": 0}],
          "survival": [{"prob": 1.0, "time": 0.0}]}
     """
     kmf = KaplanMeierFitter()
-    variables = [x for x in [factor_var,
-                             stratification_var] if x != ""]
-    time_range = range(int(np.ceil(data.time.max())) + 1)
-
-    pval = None
-    risktable = []
-    survival = []
-    if len(variables) == 0:
-        kmf.fit(data.time, data.status)
-        if risktable_flag:
-            risktable.append({
-                "group": [],
-                "data": get_risktable(kmf.event_table, time_range)
-            })
-
-        if survival_flag:
-            survival.append({
-                "group": [],
-                "data": get_survival(kmf.survival_function_)
-            })
-    else:
-        if pval_flag:
-            pval = get_pval(data, variables)
-
-        for name, grouped_df in data.groupby(variables):
-            name = map(str, name if isinstance(name, tuple) else (name,))
-            group = list(map(
-                lambda x: {"variable": x[0], "value": x[1]},
-                zip(variables, name)
-            ))
-
-            kmf.fit(grouped_df.time, grouped_df.status)
-            if risktable_flag:
-                risktable.append({
-                    "group": group,
-                    "data": get_risktable(kmf.event_table, time_range)
-                })
-
-            if survival_flag:
-                survival.append({
-                    "group": group,
-                    "data": get_survival(kmf.survival_function_)
-                })
-
+    kmf.fit(data.time, data.status)
+    
     result = {}
-    if pval_flag:
-        result["pval"] = pval
-
     if risktable_flag:
-        result["risktable"] = risktable
+        time_range = range(int(np.ceil(data.time.max())) + 1)
+        result["risktable"] = get_risktable(kmf.event_table, time_range)
 
     if survival_flag:
-        result["survival"] = survival
+        result["survival"] = get_survival(kmf.survival_function_)
 
     return result
 
@@ -204,18 +129,6 @@ def get_survival(survival_function):
         .rename(columns={"KM_estimate": "prob", "timeline": "time"})
         .to_dict(orient="records")
     )
-
-
-def get_pval(data, variables):
-    """Returns the log-rank test p-value (float) for the data and variables
-
-    Args:
-        data(pandas.DataFrame): Source data
-        variables(list): Variables to use in the log-rank test
-    """
-    groups = list(map(str, zip(*[data[f] for f in variables])))
-    result = multivariate_logrank_test(data.time, groups, data.status)
-    return result.p_value if not np.isnan(result.p_value) else None
 
 
 def get_risktable(event_table, time_range):
