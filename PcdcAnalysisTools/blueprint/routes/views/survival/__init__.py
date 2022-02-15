@@ -68,13 +68,6 @@ def fetch_data(filters, efs_flag):
     )
 
     filters.setdefault("AND", [])
-    if efs_flag:
-        filters["AND"].append({"AND": [{"GTE": {EVENT_FREE_TIME_VAR: 0}}]})
-    else:
-        path, name = OVERALL_TIME_VAR.split('.')
-        filters["AND"].append({
-            "nested": {"path": path, "AND": [{"GTE": {name: 0}}]}
-        })
 
     guppy_data = utils.guppy.downloadDataFromGuppy(
         path=capp.config['GUPPY_API'] + "/download",
@@ -97,9 +90,15 @@ def fetch_data(filters, efs_flag):
 
     return (
         pd.DataFrame.from_records(guppy_data)
-        .assign(status=lambda x: x[status_var] == status_str,
-                time=lambda x: x[time_var] / 365.25)
-        .filter(items=["status", "time"])
+        .assign(
+            omitted=lambda x:
+                x[status_var].isna() | x[time_var].isna() | x[time_var] < 0,
+            status=lambda x:
+                np.where(x["omitted"], None, x[status_var] == status_str),
+            time=lambda x:
+                np.where(x["omitted"], None, x[time_var] / 365.25)
+        )
+        .filter(items=["omitted", "status", "time"])
     )
 
 
@@ -115,13 +114,21 @@ def get_survival_result(data, risktable_flag, survival_flag):
         A dict of survival result consisting of "risktable", and "survival" data
         example:
 
-        {"risktable": [{ "nrisk": 30, "time": 0}],
+        {"count": {"fitted": 30, "total": 30},
+         "risktable": [{ "nrisk": 30, "time": 0}],
          "survival": [{"prob": 1.0, "time": 0.0}]}
     """
-    kmf = KaplanMeierFitter()
-    kmf.fit(data.time, data.status)
+    data_kmf = data.loc[data["omitted"] == False]
 
-    result = {}
+    kmf = KaplanMeierFitter()
+    kmf.fit(data_kmf.time, data_kmf.status)
+
+    result = {
+        "count": {
+            "fitted": data_kmf.shape[0],
+            "total": data.shape[0]
+        }
+    }
     if risktable_flag:
         time_range = range(int(np.ceil(data.time.max())) + 1)
         result["risktable"] = get_risktable(kmf.event_table, time_range)
