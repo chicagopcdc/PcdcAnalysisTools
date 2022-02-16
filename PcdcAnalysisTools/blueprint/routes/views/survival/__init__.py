@@ -119,16 +119,25 @@ def get_survival_result(data, risktable_flag, survival_flag):
          "survival": [{"prob": 1.0, "time": 0.0}]}
     """
     data_kmf = data.loc[data["omitted"] == False]
-
-    kmf = KaplanMeierFitter()
-    kmf.fit(data_kmf.time, data_kmf.status)
-
     result = {
         "count": {
             "fitted": data_kmf.shape[0],
             "total": data.shape[0]
         }
     }
+
+    if result["count"]["fitted"] == 0:
+        if risktable_flag:
+            result["risktable"] = [{"nrisk": 0, "time": 0}]
+
+        if survival_flag:
+            result["survival"] = [{"prob": 0, "time": 0}]
+
+        return result
+
+    kmf = KaplanMeierFitter()
+    kmf.fit(data_kmf.time, data_kmf.status)
+
     if risktable_flag:
         time_range = range(int(np.ceil(data.time.max())) + 1)
         result["risktable"] = get_risktable(kmf.event_table, time_range)
