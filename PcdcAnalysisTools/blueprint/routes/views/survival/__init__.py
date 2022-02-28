@@ -36,7 +36,7 @@ def get_result():
         logger.warning(
             "Unable to load or find the user, check your token"
         )
-    capp.logger.info(log_obj)
+    capp.logger.info("SURVIVAL TOOL - " + json.dumps(log_obj))
 
     survival_results = {}
     for filter_set in filter_sets:
