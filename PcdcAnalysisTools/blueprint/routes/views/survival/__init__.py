@@ -6,7 +6,7 @@ from flask import current_app as capp
 from lifelines import KaplanMeierFitter
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
-from PcdcAnalysisTools.errors import AuthError
+from PcdcAnalysisTools.errors import AuthError, NotFoundError
 
 import numpy as np
 import pandas as pd
@@ -80,6 +80,7 @@ def fetch_data(filters, efs_flag):
         config=capp.config
     )
 
+    capp.logger.info("LUCAAAAA - checks")
     if efs_flag:
         MISSING_EVENT_FREE_STATUS_VAR = True
         MISSING_EVENT_FREE_TIME_VAR = True
