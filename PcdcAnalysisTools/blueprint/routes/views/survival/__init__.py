@@ -29,6 +29,7 @@ def get_result():
     log_obj = {}
     log_obj["explorer_id"] = args.get("explorerId")
     log_obj["filter_set_ids"] = args.get("usedFilterSetIds")
+    log_obj["efs_flag"] = efs_flag
     try:
         user = auth.get_current_user()
         log_obj["user_id"] = user.id
