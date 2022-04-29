@@ -80,7 +80,6 @@ def fetch_data(filters, efs_flag):
         config=capp.config
     )
 
-    capp.logger.info("LUCAAAAA - checks")
     if efs_flag:
         MISSING_EVENT_FREE_STATUS_VAR = True
         MISSING_EVENT_FREE_TIME_VAR = True
@@ -93,10 +92,8 @@ def fetch_data(filters, efs_flag):
                 MISSING_EVENT_FREE_TIME_VAR = False
                 break
 
-        capp.logger.info("LUCAAAAA - " + json.dumps(MISSING_EVENT_FREE_STATUS_VAR))
-        capp.logger.info("LUCAAAAA - " + json.dumps(MISSING_EVENT_FREE_TIME_VAR))
         if MISSING_EVENT_FREE_STATUS_VAR or MISSING_EVENT_FREE_TIME_VAR:
-            raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without this necessary data points.")
+            raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without this necessary data points.".format(EVENT_FREE_STATUS_VAR, EVENT_FREE_TIME_VAR))
     elif not efs_flag:
         for each in guppy_data:
             survival_dict = each.get("survival_characteristics")[0]
