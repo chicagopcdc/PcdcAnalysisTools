@@ -6,7 +6,7 @@ from flask import current_app as capp
 from lifelines import KaplanMeierFitter
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
-from PcdcAnalysisTools.errors import AuthError
+from PcdcAnalysisTools.errors import AuthError, NotFoundError
 
 import numpy as np
 import pandas as pd
@@ -29,6 +29,7 @@ def get_result():
     log_obj = {}
     log_obj["explorer_id"] = args.get("explorerId")
     log_obj["filter_set_ids"] = args.get("usedFilterSetIds")
+    log_obj["efs_flag"] = efs_flag
     try:
         user = auth.get_current_user()
         log_obj["user_id"] = user.id
@@ -80,13 +81,29 @@ def fetch_data(filters, efs_flag):
         config=capp.config
     )
 
-    if not efs_flag:
+    if efs_flag:
+        MISSING_EVENT_FREE_STATUS_VAR = True
+        MISSING_EVENT_FREE_TIME_VAR = True
+        for each in guppy_data:
+            if each.get(EVENT_FREE_STATUS_VAR) is not None:
+                MISSING_EVENT_FREE_STATUS_VAR = False
+                break
+
+            if each.get(EVENT_FREE_TIME_VAR) is not None:
+                MISSING_EVENT_FREE_TIME_VAR = False
+                break
+
+        if MISSING_EVENT_FREE_STATUS_VAR or MISSING_EVENT_FREE_TIME_VAR:
+            raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without this necessary data points.".format(EVENT_FREE_STATUS_VAR, EVENT_FREE_TIME_VAR))
+    elif not efs_flag:
         for each in guppy_data:
             survival_dict = each.get("survival_characteristics")[0]
             del each["survival_characteristics"]
 
             each[status_var] = survival_dict.get("lkss")
             each[time_var] = survival_dict.get("age_at_lkss")
+
+
 
     return (
         pd.DataFrame.from_records(guppy_data)
