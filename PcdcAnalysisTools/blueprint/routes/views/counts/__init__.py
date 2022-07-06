@@ -28,6 +28,7 @@ def get_counts_list(data, args):
     counts_list.append(get_counts_per_consortium(data))
     for consortium in consortium_list:
         counts_list.append(get_counts_per_consortium(data, consortium))
+    counts_list.append(get_counts_per_consortium(data, "missing"))
 
     return counts_list
 
@@ -46,6 +47,9 @@ def get_counts_per_consortium(data, consortium=None):
                     if "study_id" in study:
                         study_set.add(study["study_id"])
             subject_count += 1
+        elif consortium == "missing":
+            if "consortium" not in d:
+                subject_count += 1
 
 
     return {
