@@ -96,12 +96,25 @@ def fetch_data(filters, efs_flag):
         if MISSING_EVENT_FREE_STATUS_VAR or MISSING_EVENT_FREE_TIME_VAR:
             raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(EVENT_FREE_STATUS_VAR, EVENT_FREE_TIME_VAR))
     elif not efs_flag:
-        for each in guppy_data:
-            survival_dict = each.get("survival_characteristics")[0]
-            del each["survival_characteristics"]
+        MISSING_OVERALL_STATUS_VAR = True
+        MISSING_OVERALL_TIME_VAR = True
 
-            each[status_var] = survival_dict.get("lkss")
-            each[time_var] = survival_dict.get("age_at_lkss")
+        for each in guppy_data:
+            survival_dict_tmp = each.get("survival_characteristics")
+            if survival_dict_tmp:
+                survival_dict = survival_dict_tmp[0]
+                del each["survival_characteristics"]
+
+                each[status_var] = survival_dict.get("lkss")
+                if each[status_var] is not None:
+                    MISSING_OVERALL_STATUS_VAR = False
+            
+                each[time_var] = survival_dict.get("age_at_lkss")
+                if each[time_var] is not None:
+                    MISSING_OVERALL_TIME_VAR = False
+
+        if MISSING_OVERALL_STATUS_VAR or MISSING_OVERALL_TIME_VAR:
+            raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(OVERALL_STATUS_VAR, OVERALL_TIME_VAR))
 
 
 
