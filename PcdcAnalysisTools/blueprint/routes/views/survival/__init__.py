@@ -122,7 +122,7 @@ def fetch_data(filters, efs_flag):
         pd.DataFrame.from_records(guppy_data)
         .assign(
             omitted=lambda x:
-                ((x[status_var].isna()) | x[status_var] == 'Unknown' |
+                ((x[status_var].isna()) | (x[status_var] == 'Unknown') |
                  (x[time_var].isna()) | (x[time_var] < 0)),
             status=lambda x:
                 np.where(x["omitted"], None, x[status_var] == status_str),
