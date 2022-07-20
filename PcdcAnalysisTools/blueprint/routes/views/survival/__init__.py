@@ -11,6 +11,8 @@ from PcdcAnalysisTools.errors import AuthError, NotFoundError
 import numpy as np
 import pandas as pd
 
+import os
+
 
 @auth.authorize_for_analysis("access")
 def get_result():
@@ -30,13 +32,14 @@ def get_result():
     log_obj["explorer_id"] = args.get("explorerId")
     log_obj["filter_set_ids"] = args.get("usedFilterSetIds")
     log_obj["efs_flag"] = efs_flag
-    try:
-        user = auth.get_current_user()
-        log_obj["user_id"] = user.id
-    except AuthError:
-        logger.warning(
-            "Unable to load or find the user, check your token"
-        )
+    if not os.environ.get('MOCK_DATA'):
+        try:
+            user = auth.get_current_user()
+            log_obj["user_id"] = user.id
+        except AuthError:
+            logger.warning(
+                "Unable to load or find the user, check your token"
+            )
     capp.logger.info("SURVIVAL TOOL - " + json.dumps(log_obj))
 
     survival_results = {}
@@ -70,16 +73,20 @@ def fetch_data(filters, efs_flag):
 
     filters.setdefault("AND", [])
 
-    guppy_data = utils.guppy.downloadDataFromGuppy(
-        path=capp.config['GUPPY_API'] + "/download",
-        type="subject",
-        totalCount=100000,
-        fields=[status_var, time_var],
-        filters=filters,
-        sort=[],
-        accessibility="accessible",
-        config=capp.config
-    )
+    if os.environ.get('MOCK_DATA') == 'True': 
+        f = open(os.environ.get('DATA_PATH'))
+        guppy_data = json.load(f)
+    else:
+        guppy_data = utils.guppy.downloadDataFromGuppy(
+            path=capp.config['GUPPY_API'] + "/download",
+            type="subject",
+            totalCount=100000,
+            fields=[status_var, time_var],
+            filters=filters,
+            sort=[],
+            accessibility="accessible",
+            config=capp.config
+        )
 
     if efs_flag:
         MISSING_EVENT_FREE_STATUS_VAR = True
