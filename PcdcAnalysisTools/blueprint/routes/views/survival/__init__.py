@@ -94,7 +94,8 @@ def fetch_data(filters, efs_flag):
                 break
 
         if MISSING_EVENT_FREE_STATUS_VAR or MISSING_EVENT_FREE_TIME_VAR:
-            raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(EVENT_FREE_STATUS_VAR, EVENT_FREE_TIME_VAR))
+            raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(
+                EVENT_FREE_STATUS_VAR, EVENT_FREE_TIME_VAR))
     elif not efs_flag:
         MISSING_OVERALL_STATUS_VAR = True
         MISSING_OVERALL_TIME_VAR = True
@@ -108,21 +109,21 @@ def fetch_data(filters, efs_flag):
                 each[status_var] = survival_dict.get("lkss")
                 if each[status_var] is not None:
                     MISSING_OVERALL_STATUS_VAR = False
-            
+
                 each[time_var] = survival_dict.get("age_at_lkss")
                 if each[time_var] is not None:
                     MISSING_OVERALL_TIME_VAR = False
 
         if MISSING_OVERALL_STATUS_VAR or MISSING_OVERALL_TIME_VAR:
-            raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(OVERALL_STATUS_VAR, OVERALL_TIME_VAR))
-
-
+            raise NotFoundError(
+                "The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(OVERALL_STATUS_VAR, OVERALL_TIME_VAR))
 
     return (
         pd.DataFrame.from_records(guppy_data)
         .assign(
             omitted=lambda x:
-                ((x[status_var].isna()) | (x[time_var].isna()) | (x[time_var] < 0)),
+                ((x[status_var].isna()) | x[status_var] == 'Unknown' |
+                 (x[time_var].isna()) | (x[time_var] < 0)),
             status=lambda x:
                 np.where(x["omitted"], None, x[status_var] == status_str),
             time=lambda x:
