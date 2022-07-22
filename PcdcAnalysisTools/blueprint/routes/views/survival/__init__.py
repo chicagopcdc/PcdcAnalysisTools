@@ -87,11 +87,11 @@ def fetch_data(filters, efs_flag):
         for each in guppy_data:
             if each.get(EVENT_FREE_STATUS_VAR) is not None:
                 MISSING_EVENT_FREE_STATUS_VAR = False
-                break
+                # break
 
             if each.get(EVENT_FREE_TIME_VAR) is not None:
                 MISSING_EVENT_FREE_TIME_VAR = False
-                break
+                # break
 
         if MISSING_EVENT_FREE_STATUS_VAR or MISSING_EVENT_FREE_TIME_VAR:
             raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(
