@@ -111,14 +111,10 @@ def fetch_data(filters, efs_flag):
                 each[status_var] = survival_dict.get("lkss")
                 if each[status_var] is not None:
                     MISSING_OVERALL_STATUS_VAR = False
-                    if not MISSING_OVERALL_TIME_VAR:
-                        break
 
                 each[time_var] = survival_dict.get("age_at_lkss")
                 if each[time_var] is not None:
                     MISSING_OVERALL_TIME_VAR = False
-                    if not MISSING_OVERALL_STATUS_VAR:
-                        break
 
         if MISSING_OVERALL_STATUS_VAR or MISSING_OVERALL_TIME_VAR:
             raise NotFoundError(
