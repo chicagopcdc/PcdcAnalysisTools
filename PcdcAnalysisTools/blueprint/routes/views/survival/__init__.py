@@ -13,6 +13,12 @@ import pandas as pd
 
 
 @auth.authorize_for_analysis("access")
+def get_config():
+    config = capp.config.get("SURVIVAL", {"consortium": [], "result": {}})
+    return flask.jsonify(config)
+
+
+@auth.authorize_for_analysis("access")
 def get_result():
     args = utils.parse.parse_request_json()
     config = capp.config.get("SURVIVAL", {"consortium": [], "result": {}})
