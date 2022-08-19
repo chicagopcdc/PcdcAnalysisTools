@@ -90,10 +90,10 @@ def fetch_data(filters, efs_flag):
 
             if MISSING_EVENT_FREE_TIME_VAR and each.get(EVENT_FREE_TIME_VAR) is not None:
                 MISSING_EVENT_FREE_TIME_VAR = False
-            
+
             if not MISSING_EVENT_FREE_STATUS_VAR and not MISSING_EVENT_FREE_TIME_VAR:
                 break
-                
+
         if MISSING_EVENT_FREE_STATUS_VAR or MISSING_EVENT_FREE_TIME_VAR:
             raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(
                 EVENT_FREE_STATUS_VAR, EVENT_FREE_TIME_VAR))
