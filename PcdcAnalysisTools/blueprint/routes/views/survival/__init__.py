@@ -69,15 +69,17 @@ def fetch_data(config, filters, efs_flag):
         else (OVERALL_STATUS_STR, OVERALL_STATUS_VAR, OVERALL_TIME_VAR)
     )
 
-    filters.setdefault("AND", [])
-    filters["AND"].append({"IN": {"consortium": config.get('consortium')}})
-
     guppy_data = utils.guppy.downloadDataFromGuppy(
         path=capp.config['GUPPY_API'] + "/download",
         type="subject",
         totalCount=100000,
         fields=[status_var, time_var],
-        filters=filters,
+        filters={
+            "AND": [
+                {"IN": {"consortium": config.get('consortium')}},
+                filters
+            ]
+        },
         sort=[],
         accessibility="accessible",
         config=capp.config
