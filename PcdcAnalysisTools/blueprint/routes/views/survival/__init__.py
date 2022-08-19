@@ -15,7 +15,7 @@ import pandas as pd
 @auth.authorize_for_analysis("access")
 def get_result():
     args = utils.parse.parse_request_json()
-    config = capp.config.get("SURVIVAL", {"result": {}})
+    config = capp.config.get("SURVIVAL", {"consortium": [], "result": {}})
 
     # TODO add json payload control
     # TODO add check on payload nulls and stuff
@@ -44,7 +44,7 @@ def get_result():
     for filter_set in filter_sets:
         # the default "All Subjects" option has filter set id of -1
         filter_set_id = filter_set.get("id")
-        data = fetch_data(filter_set.get("filters"), efs_flag)
+        data = fetch_data(config, filter_set.get("filters"), efs_flag)
         result = get_survival_result(data, risktable_flag, survival_flag)
 
         survival_results[filter_set_id] = result
@@ -62,7 +62,7 @@ OVERALL_STATUS_VAR = "survival_characteristics.lkss"
 OVERALL_TIME_VAR = "survival_characteristics.age_at_lkss"
 
 
-def fetch_data(filters, efs_flag):
+def fetch_data(config, filters, efs_flag):
     status_str, status_var, time_var = (
         (EVENT_FREE_STATUS_STR, EVENT_FREE_STATUS_VAR, EVENT_FREE_TIME_VAR)
         if efs_flag
@@ -70,6 +70,7 @@ def fetch_data(filters, efs_flag):
     )
 
     filters.setdefault("AND", [])
+    filters["AND"].append({"IN": {"consortium": config.get('consortium')}})
 
     guppy_data = utils.guppy.downloadDataFromGuppy(
         path=capp.config['GUPPY_API'] + "/download",
