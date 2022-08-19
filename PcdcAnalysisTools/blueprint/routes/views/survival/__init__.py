@@ -15,6 +15,7 @@ import pandas as pd
 @auth.authorize_for_analysis("access")
 def get_result():
     args = utils.parse.parse_request_json()
+    config = capp.config.get("SURVIVAL", {"result": {}})
 
     # TODO add json payload control
     # TODO add check on payload nulls and stuff
@@ -22,8 +23,8 @@ def get_result():
     filter_sets = json.loads(json.dumps(args.get("filterSets")))
     # NOT USED FOR NOW
     # efs_flag = args.get("efsFlag")
-    risktable_flag = args.get("result").get("risktable")
-    survival_flag = args.get("result").get("survival")
+    risktable_flag = config.get("result").get("risktable", False)
+    survival_flag = config.get("result").get("survival", False)
     efs_flag = args.get('efsFlag', False)
 
     log_obj = {}
