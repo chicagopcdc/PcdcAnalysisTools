@@ -11,17 +11,19 @@ from PcdcAnalysisTools.errors import AuthError, NotFoundError
 import numpy as np
 import pandas as pd
 
+DEFAULT_SURVIVAL_CONFIG = {"consortium": [], "result": {}}
+
 
 @auth.authorize_for_analysis("access")
 def get_config():
-    config = capp.config.get("SURVIVAL", {"consortium": [], "result": {}})
+    config = capp.config.get("SURVIVAL", DEFAULT_SURVIVAL_CONFIG)
     return flask.jsonify(config)
 
 
 @auth.authorize_for_analysis("access")
 def get_result():
     args = utils.parse.parse_request_json()
-    config = capp.config.get("SURVIVAL", {"consortium": [], "result": {}})
+    config = capp.config.get("SURVIVAL", DEFAULT_SURVIVAL_CONFIG)
 
     # TODO add json payload control
     # TODO add check on payload nulls and stuff
