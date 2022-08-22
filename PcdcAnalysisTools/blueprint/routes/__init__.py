@@ -58,6 +58,12 @@ routes = [
         methods=["POST"],
     ),
     new_route(
+        "/survival/config",
+        views.survival.get_config,
+        endpoint="survival/config",
+        methods=["GET"],
+    ),
+    new_route(
         "/counts",
         views.counts.get_result,
         endpoint="counts",
