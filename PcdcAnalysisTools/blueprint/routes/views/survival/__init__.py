@@ -82,12 +82,14 @@ def fetch_data(config, filters, efs_flag):
         type="subject",
         totalCount=100000,
         fields=[status_var, time_var],
-        filters={
-            "AND": [
+        filters=(
+            {"AND": [
                 {"IN": {"consortium": config.get('consortium')}},
                 filters
-            ]
-        },
+            ]}
+            if config.get('consortium')
+            else filters
+        ),
         sort=[],
         accessibility="accessible",
         config=capp.config
