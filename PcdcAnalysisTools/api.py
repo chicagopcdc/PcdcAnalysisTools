@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+from dotenv import load_dotenv
 
 from flask import Flask, jsonify
 
@@ -102,6 +103,7 @@ def app_init(app):
 
 
 app = Flask(__name__)
+load_dotenv()
 if os.environ['MOCK_DATA'] == 'True':
     app_register_blueprints(app)
 # Setup logger
