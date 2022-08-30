@@ -1,5 +1,6 @@
 import json
 import flask
+import os
 
 from flask import current_app as capp
 
@@ -10,6 +11,9 @@ from PcdcAnalysisTools.errors import AuthError, NotFoundError
 
 import numpy as np
 import pandas as pd
+
+
+
 
 DEFAULT_SURVIVAL_CONFIG = {"consortium": [], "result": {}}
 
@@ -39,13 +43,14 @@ def get_result():
     log_obj["explorer_id"] = args.get("explorerId")
     log_obj["filter_set_ids"] = args.get("usedFilterSetIds")
     log_obj["efs_flag"] = efs_flag
-    try:
-        user = auth.get_current_user()
-        log_obj["user_id"] = user.id
-    except AuthError:
-        logger.warning(
-            "Unable to load or find the user, check your token"
-        )
+    if not os.environ.get('MOCK_DATA'):
+        try:
+            user = auth.get_current_user()
+            log_obj["user_id"] = user.id
+        except AuthError:
+            logger.warning(
+                "Unable to load or find the user, check your token"
+            )
     capp.logger.info("SURVIVAL TOOL - " + json.dumps(log_obj))
 
     survival_results = {}
@@ -77,7 +82,13 @@ def fetch_data(config, filters, efs_flag):
         else (OVERALL_STATUS_STR, OVERALL_STATUS_VAR, OVERALL_TIME_VAR)
     )
 
-    guppy_data = utils.guppy.downloadDataFromGuppy(
+    filters.setdefault("AND", [])
+
+    if os.environ.get('MOCK_DATA') == 'True': 
+        f = open(os.environ.get('DATA_PATH'))
+        guppy_data = json.load(f)
+    else:
+        guppy_data = utils.guppy.downloadDataFromGuppy(
         path=capp.config['GUPPY_API'] + "/download",
         type="subject",
         totalCount=100000,

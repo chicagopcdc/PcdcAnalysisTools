@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+from dotenv import load_dotenv
 
 from flask import Flask, jsonify
 
@@ -82,7 +83,6 @@ def app_init(app):
     # app.logger.info(f"GUPPY_API hostname {gapi}")
     # sn = app.config['SERVICE_NAME']
     # app.logger.info(f"SERVICE_NAME: {sn}")
-
     app_register_blueprints(app)
 
     # exclude es init as it's not used yet
@@ -103,8 +103,9 @@ def app_init(app):
 
 
 app = Flask(__name__)
-
-
+load_dotenv()
+if os.environ['MOCK_DATA'] == 'True':
+    app_register_blueprints(app)
 # Setup logger
 app.logger.setLevel(
     logging.DEBUG if is_env_enabled('GEN3_DEBUG') else logging.WARNING
