@@ -1,5 +1,6 @@
 import json
 import flask
+import os
 
 from flask import current_app as capp
 
@@ -11,12 +12,22 @@ from PcdcAnalysisTools.errors import AuthError, NotFoundError
 import numpy as np
 import pandas as pd
 
-import os
+
+
+
+DEFAULT_SURVIVAL_CONFIG = {"consortium": [], "result": {}}
+
+
+@auth.authorize_for_analysis("access")
+def get_config():
+    config = capp.config.get("SURVIVAL", DEFAULT_SURVIVAL_CONFIG)
+    return flask.jsonify(config)
 
 
 @auth.authorize_for_analysis("access")
 def get_result():
     args = utils.parse.parse_request_json()
+    config = capp.config.get("SURVIVAL", DEFAULT_SURVIVAL_CONFIG)
 
     # TODO add json payload control
     # TODO add check on payload nulls and stuff
@@ -24,8 +35,8 @@ def get_result():
     filter_sets = json.loads(json.dumps(args.get("filterSets")))
     # NOT USED FOR NOW
     # efs_flag = args.get("efsFlag")
-    risktable_flag = args.get("result").get("risktable")
-    survival_flag = args.get("result").get("survival")
+    risktable_flag = config.get("result").get("risktable", False)
+    survival_flag = config.get("result").get("survival", False)
     efs_flag = args.get('efsFlag', False)
 
     log_obj = {}
@@ -46,7 +57,7 @@ def get_result():
     for filter_set in filter_sets:
         # the default "All Subjects" option has filter set id of -1
         filter_set_id = filter_set.get("id")
-        data = fetch_data(filter_set.get("filters"), efs_flag)
+        data = fetch_data(config, filter_set.get("filters"), efs_flag)
         result = get_survival_result(data, risktable_flag, survival_flag)
 
         survival_results[filter_set_id] = result
@@ -64,7 +75,7 @@ OVERALL_STATUS_VAR = "survival_characteristics.lkss"
 OVERALL_TIME_VAR = "survival_characteristics.age_at_lkss"
 
 
-def fetch_data(filters, efs_flag):
+def fetch_data(config, filters, efs_flag):
     status_str, status_var, time_var = (
         (EVENT_FREE_STATUS_STR, EVENT_FREE_STATUS_VAR, EVENT_FREE_TIME_VAR)
         if efs_flag
@@ -78,30 +89,39 @@ def fetch_data(filters, efs_flag):
         guppy_data = json.load(f)
     else:
         guppy_data = utils.guppy.downloadDataFromGuppy(
-            path=capp.config['GUPPY_API'] + "/download",
-            type="subject",
-            totalCount=100000,
-            fields=[status_var, time_var],
-            filters=filters,
-            sort=[],
-            accessibility="accessible",
-            config=capp.config
-        )
+        path=capp.config['GUPPY_API'] + "/download",
+        type="subject",
+        totalCount=100000,
+        fields=[status_var, time_var],
+        filters=(
+            {"AND": [
+                {"IN": {"consortium": config.get('consortium')}},
+                filters
+            ]}
+            if config.get('consortium')
+            else filters
+        ),
+        sort=[],
+        accessibility="accessible",
+        config=capp.config
+    )
 
     if efs_flag:
         MISSING_EVENT_FREE_STATUS_VAR = True
         MISSING_EVENT_FREE_TIME_VAR = True
         for each in guppy_data:
-            if each.get(EVENT_FREE_STATUS_VAR) is not None:
+            if MISSING_EVENT_FREE_STATUS_VAR and each.get(EVENT_FREE_STATUS_VAR) is not None:
                 MISSING_EVENT_FREE_STATUS_VAR = False
-                break
 
-            if each.get(EVENT_FREE_TIME_VAR) is not None:
+            if MISSING_EVENT_FREE_TIME_VAR and each.get(EVENT_FREE_TIME_VAR) is not None:
                 MISSING_EVENT_FREE_TIME_VAR = False
+
+            if not MISSING_EVENT_FREE_STATUS_VAR and not MISSING_EVENT_FREE_TIME_VAR:
                 break
 
         if MISSING_EVENT_FREE_STATUS_VAR or MISSING_EVENT_FREE_TIME_VAR:
-            raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(EVENT_FREE_STATUS_VAR, EVENT_FREE_TIME_VAR))
+            raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(
+                EVENT_FREE_STATUS_VAR, EVENT_FREE_TIME_VAR))
     elif not efs_flag:
         MISSING_OVERALL_STATUS_VAR = True
         MISSING_OVERALL_TIME_VAR = True
@@ -115,21 +135,21 @@ def fetch_data(filters, efs_flag):
                 each[status_var] = survival_dict.get("lkss")
                 if each[status_var] is not None:
                     MISSING_OVERALL_STATUS_VAR = False
-            
+
                 each[time_var] = survival_dict.get("age_at_lkss")
                 if each[time_var] is not None:
                     MISSING_OVERALL_TIME_VAR = False
 
         if MISSING_OVERALL_STATUS_VAR or MISSING_OVERALL_TIME_VAR:
-            raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(OVERALL_STATUS_VAR, OVERALL_TIME_VAR))
-
-
+            raise NotFoundError(
+                "The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(OVERALL_STATUS_VAR, OVERALL_TIME_VAR))
 
     return (
         pd.DataFrame.from_records(guppy_data)
         .assign(
             omitted=lambda x:
-                ((x[status_var].isna()) | (x[time_var].isna()) | (x[time_var] < 0)),
+                ((x[status_var].isna()) | (x[status_var] == 'Unknown') |
+                 (x[time_var].isna()) | (x[time_var] < 0)),
             status=lambda x:
                 np.where(x["omitted"], None, x[status_var] == status_str),
             time=lambda x:
