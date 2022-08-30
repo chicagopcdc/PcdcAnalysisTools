@@ -9,10 +9,6 @@ from pcdcutils.environment import is_env_enabled
 import json
 import os 
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
 @auth.authorize_for_analysis("access")
 def get_result():
     args = utils.parse.parse_request_json()
