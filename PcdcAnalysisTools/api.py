@@ -104,7 +104,8 @@ def app_init(app):
 
 app = Flask(__name__)
 load_dotenv()
-if os.environ['MOCK_DATA'] == 'True':
+app.mock_data = os.environ.get("MOCK_DATA", False)
+if app.mock_data == 'True':
     app_register_blueprints(app)
 # Setup logger
 app.logger.setLevel(

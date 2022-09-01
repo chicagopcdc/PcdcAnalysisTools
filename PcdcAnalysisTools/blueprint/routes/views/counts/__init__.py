@@ -12,7 +12,7 @@ import os
 @auth.authorize_for_analysis("access")
 def get_result():
     args = utils.parse.parse_request_json()
-    if os.environ.get('MOCK_DATA') == 'True': 
+    if capp.mock_data == 'True': 
         f = open(os.environ.get('DATA_PATH'))
         data = json.load(f)
     else:

@@ -131,7 +131,7 @@ def stats_correct_data(set_data):
     return survival
 
 def test_enviorment():
-    assert os.environ.get('MOCK_DATA') == 'True'
+    assert app.mock_data == 'True'
 
 
 def test_tools_route(client):

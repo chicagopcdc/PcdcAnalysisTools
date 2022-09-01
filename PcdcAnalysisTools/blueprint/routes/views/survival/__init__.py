@@ -43,7 +43,7 @@ def get_result():
     log_obj["explorer_id"] = args.get("explorerId")
     log_obj["filter_set_ids"] = args.get("usedFilterSetIds")
     log_obj["efs_flag"] = efs_flag
-    if not os.environ.get('MOCK_DATA'):
+    if not capp.mock_data:
         try:
             user = auth.get_current_user()
             log_obj["user_id"] = user.id
@@ -84,7 +84,7 @@ def fetch_data(config, filters, efs_flag):
 
     filters.setdefault("AND", [])
 
-    if os.environ.get('MOCK_DATA') == 'True': 
+    if capp.mock_data == 'True': 
         f = open(os.environ.get('DATA_PATH'))
         guppy_data = json.load(f)
     else:

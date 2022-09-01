@@ -22,7 +22,7 @@ def get_consortiums():
 
 
 def get_consortium_list(filters):
-    if os.environ.get('MOCK_DATA') == 'True': 
+    if capp.mock_data == 'True': 
         f = open(os.environ.get('DATA_PATH'))
         data = json.load(f)
     else:
