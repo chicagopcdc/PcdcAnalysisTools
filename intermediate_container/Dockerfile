@@ -1,7 +1,6 @@
 # To run: docker run -v /path/to/wsgi.py:/var/www/PcdcAnalysisTools/wsgi.py --name=PcdcAnalysisTools -p 81:80 PcdcAnalysisTools
 # To check running container: docker exec -it PcdcAnalysisTools /bin/bash
 
-# FROM quay.io/pcdc/base_image:pcdc_dev_Tue__01_Sep_2020_19_31_03_GMT
 FROM quay.io/pcdc/base_image:pcdc_dev_2021-11-03T09_23_27-05_00
 
 RUN apk update \
