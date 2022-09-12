@@ -5,6 +5,8 @@ from flask import current_app as capp
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
 
+import os
+
 
 @auth.authorize_for_analysis("access")
 def get_consortiums():
@@ -20,16 +22,20 @@ def get_consortiums():
 
 
 def get_consortium_list(filters):
-    data = utils.guppy.downloadDataFromGuppy(
-        path=capp.config['GUPPY_API'] + "/download",
-        type="subject",
-        totalCount=100000,
-        fields=["consortium"],
-        filters=filters,
-        sort=[],
-        accessibility="accessible",
-        config=capp.config
-    )    
+    if capp.mock_data == 'True': 
+        f = open(os.environ.get('DATA_PATH'))
+        data = json.load(f)
+    else:
+        data = utils.guppy.downloadDataFromGuppy(
+            path=capp.config['GUPPY_API'] + "/download",
+            type="subject",
+            totalCount=100000,
+            fields=["consortium"],
+            filters=filters,
+            sort=[],
+            accessibility="accessible",
+            config=capp.config
+        )    
 
     ret = list(set([d['consortium'] for d in data if 'consortium' in d]))
     return ret

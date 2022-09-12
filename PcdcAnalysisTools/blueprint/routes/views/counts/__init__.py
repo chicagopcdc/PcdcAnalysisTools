@@ -5,20 +5,27 @@ from flask import current_app as capp
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
 
+from pcdcutils.environment import is_env_enabled
+import json
+import os 
 
 @auth.authorize_for_analysis("access")
 def get_result():
     args = utils.parse.parse_request_json()
-    data = utils.guppy.downloadDataFromGuppy(
-        path=capp.config['GUPPY_API'] + "/download",
-        type="subject",
-        totalCount=100000,
-        fields=["consortium", "studies.study_id", "molecular_analysis.molecular_abnormality"],
-        filters=[],
-        sort=[],
-        accessibility="accessible",
-        config=capp.config
-    )
+    if capp.mock_data == 'True': 
+        f = open(os.environ.get('DATA_PATH'))
+        data = json.load(f)
+    else:
+        data = utils.guppy.downloadDataFromGuppy(
+            path=capp.config['GUPPY_API'] + "/download",
+            type="subject",
+            totalCount=100000,
+            fields=["consortium", "studies.study_id", "molecular_analysis.molecular_abnormality"],
+            filters=[],
+            sort=[],
+            accessibility="accessible",
+            config=capp.config
+        )
     return flask.jsonify(get_counts_list(data, args))
 
 
