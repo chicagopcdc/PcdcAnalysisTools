@@ -10,7 +10,7 @@ from PcdcAnalysisTools import auth
 other = "other"
 common_list = ["gdc", other]
 commons_dict = {}
-commons_dict["gdc"] = "TARGET-GDC"
+commons_dict["gdc"] = "TARGET - GDC"
 # "GDC", "PDC", "GMKF", "Other". 
 
 ### TODO TODO
@@ -86,7 +86,7 @@ def fetch_data(args, common):
         return [item["external_subject_id"] for ext_ref in guppy_data if ext_ref and "external_references" in ext_ref for item in ext_ref["external_references"] if item and "external_resource_name" in item and item["external_resource_name"] == commons_dict[common] and "external_subject_id" in item and item["external_subject_id"]]
 
 def build_url(data, common):
-    if commons_dict[common] == "TARGET-GDC":
+    if commons_dict[common] == "TARGET - GDC":
         query = '{"op":"and","content":[{"op":"in","content":{"field":"cases.case_id","value":'
         query += json.dumps(data)
         query += '}}]}'
