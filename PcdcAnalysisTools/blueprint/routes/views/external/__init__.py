@@ -2,7 +2,7 @@ import json
 import flask
 import urllib.parse
 from flask import current_app as capp
-
+from flask import make_response
 
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
@@ -20,6 +20,20 @@ commons_dict["gdc"] = "TARGET - GDC"
 
 @auth.authorize_for_analysis("access")
 def get_info(common):
+    """Returns the GDC URL with a query string with case ids.
+
+    If the URL is too long the GDC website will return a 414 error. The maximum length
+    depends on their server as well as the client browser. When that happens this function
+    will return a relative URL with a response header of 'Content-Disposition': 'attachment;
+    and the payload will be a plain text file with UUIDs separated by comma. This Should allow
+    the user to copy-paste the contents of the file directly onto the appropriate field in the
+    GDC website. 
+    
+    2048 characters seems to be one of the lower limits. We are using that number,
+    minus the URL size, as an approximation for when the text file should be returned.
+    This ends up being around 40 UUIDs after encoding.
+    """
+
     args = utils.parse.parse_request_json()
 
     if not common or common not in common_list:
@@ -33,6 +47,12 @@ def get_info(common):
     #     return_type = "url"
     # if return_type == "manifest":
     #     return flask.jsonify({"manifest": data})
+    if len(data) > 40:
+        payload = ','.join(d for d in data)
+        headers = {'Content-Disposition': 'attachment; filename=case_ids.txt'}
+        jwt = auth.get_jwt_from_header()
+        headers['Authorization'] = 'bearer ' + jwt
+        return make_response(payload, 201, headers)
 
     ret_obj = {}
     if common == other:
@@ -86,31 +106,14 @@ def fetch_data(args, common):
         return [item["external_subject_id"] for ext_ref in guppy_data if ext_ref and "external_references" in ext_ref for item in ext_ref["external_references"] if item and "external_resource_name" in item and item["external_resource_name"] == commons_dict[common] and "external_subject_id" in item and item["external_subject_id"]]
 
 def build_url(data, common):
-    """Returns the GDC URL with a query string with case ids.
-
-    If the URL is too long the GDC website will return a 414 error. The maximum length
-    depends on their server as well as the client browser. When that happens this function
-    will return a relative URL with a response header of 'Content-Disposition': 'attachment;
-    and the payload will be a plain text file with UUIDs separated by comma. This Should allow
-    the user to copy-paste the contents of the file directly onto the appropriate field in the
-    GDC website. 
-    
-    2248 characters seems to be one of the lower limits. We are using that number,
-    minus the URL size, as an approximation for when the text file should be returned.
-    """
     if commons_dict[common] == "TARGET - GDC":
 
-        encoded_data = urllib.parse.quote(', '.join(code for code in data))
+        query = '{"op":"and","content":[{"op":"in","content":{"field":"cases.case_id","value":'
+        query += json.dumps(data)
+        query += '}}]}'
+        encoded = urllib.parse.quote(query)
+        link = 'https://portal.gdc.cancer.gov/exploration?filters=' + encoded
 
-        if len(encoded_data) <= 1820:
-
-            query = urllib.parse.quote('{"op":"and","content":[{"op":"in","content":{"field":"cases.case_id","value":')
-            query += json.dumps(data)
-            query += urllib.parse.quote('}}]}')
-            link = 'https://portal.gdc.cancer.gov/exploration?filters=' + query
-
-        else:
-            link = "/analysis/case_ids?data=" + encoded_data
         return link
     else:
         return None
