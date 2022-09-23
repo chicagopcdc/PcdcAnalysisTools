@@ -13,7 +13,7 @@ from cdispyutils.uwsgi import setup_user_harakiri
 from gen3authz.client.arborist.client import ArboristClient
 from pcdcutils.environment import is_env_enabled
 from pcdcutils.signature import SignatureManager
-
+from flask import Response, request
 
 import PcdcAnalysisTools
 from PcdcAnalysisTools.errors import (
@@ -150,6 +150,15 @@ def version():
     base = {"version": VERSION, "commit": COMMIT}
 
     return jsonify(base), 200
+
+@app.route("/case_ids", methods=["GET"])
+def download_case_ids():
+    data = request.args['data']
+    return Response(
+        data,
+        mimetype='text/plain',
+        headers={'Content-Disposition': 'attachment; filename=case_ids.txt'}
+    )
 
 
 @app.errorhandler(404)
