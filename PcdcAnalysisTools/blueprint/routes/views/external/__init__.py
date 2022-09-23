@@ -2,7 +2,6 @@ import json
 import flask
 import urllib.parse
 from flask import current_app as capp
-from flask import request
 
 
 from PcdcAnalysisTools import utils
