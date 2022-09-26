@@ -48,10 +48,14 @@ def get_info(common):
     # if return_type == "manifest":
     #     return flask.jsonify({"manifest": data})
     if len(data) > 40:
-        payload = ','.join(d for d in data)
+        csv_data = ','.join(d for d in data)
+        payload = {}
+        payload["data"] = csv_data
+        payload["type"] = "file"
+        payload["link"] = "https://portal.gdc.cancer.gov/exploration"
         headers = {'Content-Disposition': 'attachment; filename=case_ids.txt'}
         jwt = auth.get_jwt_from_header()
-        headers['Authorization'] = 'bearer ' + jwt
+        # headers['Authorization'] = 'bearer ' + jwt
         return make_response(payload, 201, headers)
 
     ret_obj = {}
