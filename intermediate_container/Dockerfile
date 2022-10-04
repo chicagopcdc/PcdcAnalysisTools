@@ -1,7 +1,7 @@
 # To run: docker run -v /path/to/wsgi.py:/var/www/PcdcAnalysisTools/wsgi.py --name=PcdcAnalysisTools -p 81:80 PcdcAnalysisTools
 # To check running container: docker exec -it PcdcAnalysisTools /bin/bash
 
-FROM quay.io/cdis/python:python3.6-buster-pybase3-3.0.2
+FROM quay.io/cdis/python:python3.10-buster-2022.09
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libffi-dev musl-dev gcc libxml2-dev libxslt-dev \

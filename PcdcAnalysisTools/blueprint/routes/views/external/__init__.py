@@ -2,7 +2,7 @@ import json
 import flask
 import urllib.parse
 from flask import current_app as capp
-
+from flask import make_response
 
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
@@ -20,6 +20,20 @@ commons_dict["gdc"] = "TARGET - GDC"
 
 @auth.authorize_for_analysis("access")
 def get_info(common):
+    """Returns the GDC URL with a query string with case ids.
+
+    If the URL is too long the GDC website will return a 414 error. The maximum length
+    depends on their server as well as the client browser. When that happens this function
+    will return a relative URL with a response header of 'Content-Disposition': 'attachment;
+    and the payload will be a plain text file with UUIDs separated by comma. This Should allow
+    the user to copy-paste the contents of the file directly onto the appropriate field in the
+    GDC website. 
+    
+    2048 characters seems to be one of the lower limits. We are using that number,
+    minus the URL size, as an approximation for when the text file should be returned.
+    This ends up being around 40 UUIDs after encoding.
+    """
+
     args = utils.parse.parse_request_json()
 
     if not common or common not in common_list:
@@ -33,6 +47,16 @@ def get_info(common):
     #     return_type = "url"
     # if return_type == "manifest":
     #     return flask.jsonify({"manifest": data})
+    if len(data) > 40:
+        csv_data = ','.join(d for d in data)
+        payload = {}
+        payload["data"] = csv_data
+        payload["type"] = "file"
+        payload["link"] = "https://portal.gdc.cancer.gov/exploration"
+        headers = {'Content-Disposition': 'attachment; filename=case_ids.txt'}
+        jwt = auth.get_jwt_from_header()
+        # headers['Authorization'] = 'bearer ' + jwt
+        return make_response(payload, 201, headers)
 
     ret_obj = {}
     if common == other:
@@ -87,12 +111,13 @@ def fetch_data(args, common):
 
 def build_url(data, common):
     if commons_dict[common] == "TARGET - GDC":
+
         query = '{"op":"and","content":[{"op":"in","content":{"field":"cases.case_id","value":'
         query += json.dumps(data)
         query += '}}]}'
-
         encoded = urllib.parse.quote(query)
         link = 'https://portal.gdc.cancer.gov/exploration?filters=' + encoded
+
         return link
     else:
         return None
