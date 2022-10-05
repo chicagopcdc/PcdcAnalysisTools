@@ -53,10 +53,11 @@ def get_info(common):
         payload["data"] = csv_data
         payload["type"] = "file"
         payload["link"] = "https://portal.gdc.cancer.gov/exploration"
-        headers = {'Content-Disposition': 'attachment; filename=case_ids.txt'}
-        jwt = auth.get_jwt_from_header()
+        # headers = {'Content-Disposition': 'attachment; filename=case_ids.txt'}
+        # jwt = auth.get_jwt_from_header()
         # headers['Authorization'] = 'bearer ' + jwt
-        return make_response(payload, 201, headers)
+        # return make_response(payload, 201, headers)
+        return flask.jsonify(payload)
 
     ret_obj = {}
     if common == other:
