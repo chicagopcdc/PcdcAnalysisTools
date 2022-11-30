@@ -11,10 +11,10 @@ from PcdcAnalysisTools import auth
 # Import and build configuration variables
 DEFAULT_EXTERNAL_CONFIG = {"commons": [{"label": 'Genomic Data Commons', "value": 'gdc'}, {"label": 'Gabriella Miller Kids First', "value": 'gmkf'}], "commons_dict": {"gdc": "TARGET - GDC", "gmkf": "GMKF"}}
 other = "other"
-config = capp.config.get("EXTERNAL", DEFAULT_EXTERNAL_CONFIG)
-common_list = [common["value"] for common in config["commons"]]
-common_list.append(other)
-commons_dict = config["commons_dict"]
+# config = capp.config.get("EXTERNAL", DEFAULT_EXTERNAL_CONFIG)
+# common_list = [common["value"] for common in config["commons"]]
+# common_list.append(other)
+# commons_dict = config["commons_dict"]
 
 
 
@@ -46,6 +46,9 @@ def get_info(common):
     minus the URL size, as an approximation for when the text file should be returned.
     This ends up being around 40 UUIDs after encoding.
     """
+    config = capp.config.get("EXTERNAL", DEFAULT_EXTERNAL_CONFIG)
+    common_list = [common["value"] for common in config["commons"]]
+    common_list.append(other)
 
     args = utils.parse.parse_request_json()
 
@@ -75,6 +78,10 @@ def get_info(common):
 
 
 def fetch_data(args, common):
+
+    config = capp.config.get("EXTERNAL", DEFAULT_EXTERNAL_CONFIG)
+    commons_dict = config["commons_dict"]
+
     # TODO add json payload control
     # TODO add check on payload nulls and stuff
     # TODO add path in the config file or ENV variable
