@@ -105,6 +105,8 @@ def fetch_data(args, common):
     if common == other:
         # return USI from our system since we don't have a connection to this specific external Commons
         return [item["subject_submitter_id"] for item in guppy_data if "subject_submitter_id" in item]
+    elif common == 'gmkf':
+        return [item["external_subject_submitter_id"] for ext_ref in guppy_data if ext_ref and "external_references" in ext_ref for item in ext_ref["external_references"] if item and "external_resource_name" in item and item["external_resource_name"] == commons_dict[common] and "external_subject_submitter_id" in item and item["external_subject_submitter_id"]]
     else:
         # TODO I can count how many are without that information and communicate that to the frontend (guppy data return empty objects when data is missing)
         # external_references = [item["external_subject_id"] for item in guppy_data if "external_references" in item and len(item["external_references"]) > 0]
