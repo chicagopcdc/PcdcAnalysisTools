@@ -88,6 +88,8 @@ def fetch_data(args, common):
 
     if common == other:
         fields = ["subject_submitter_id"]
+    elif common == 'gmkf':
+        fields = ["external_references.external_subject_submitter_id", "external_references.external_resource_name"]
     else:
         fields = ["external_references.external_subject_id", "external_references.external_resource_name"]
 
