@@ -69,12 +69,10 @@ def get_info(common):
         payload["data"] = csv_data
         payload["type"] = "file"
         payload["link"] = get_link(common)
-        return flask.jsonify(payload)
     else:
-        ret_obj["link"] = build_url(data, common)
-        ret_obj["type"] = "redirect"
-        
-    return flask.jsonify(ret_obj)
+        payload["link"] = build_url(data, common)
+        payload["type"] = "redirect"
+    return flask.jsonify(payload)
 
 
 def fetch_data(args, common):
