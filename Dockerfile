@@ -1,4 +1,4 @@
-FROM quay.io/pcdc/pcdcanalysistools_intermediate:improve_base_image_Thu__02_Dec_2021_18_38_44_GMT
+FROM quay.io/pcdc/pcdcanalysistools_intermediate:1.0.0
 
 COPY . /PcdcAnalysisTools
 COPY ./deployment/uwsgi/uwsgi.ini /etc/uwsgi/uwsgi.ini
