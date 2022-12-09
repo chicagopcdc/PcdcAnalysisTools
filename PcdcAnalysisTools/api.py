@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+from dotenv import load_dotenv
 
 from flask import Flask, jsonify
 
@@ -12,7 +13,6 @@ from cdispyutils.uwsgi import setup_user_harakiri
 from gen3authz.client.arborist.client import ArboristClient
 from pcdcutils.environment import is_env_enabled
 from pcdcutils.signature import SignatureManager
-
 
 import PcdcAnalysisTools
 from PcdcAnalysisTools.errors import (
@@ -82,7 +82,6 @@ def app_init(app):
     # app.logger.info(f"GUPPY_API hostname {gapi}")
     # sn = app.config['SERVICE_NAME']
     # app.logger.info(f"SERVICE_NAME: {sn}")
-
     app_register_blueprints(app)
 
     # exclude es init as it's not used yet
@@ -103,8 +102,10 @@ def app_init(app):
 
 
 app = Flask(__name__)
-
-
+load_dotenv()
+app.mock_data = os.environ.get("MOCK_DATA", False)
+if app.mock_data == 'True':
+    app_register_blueprints(app)
 # Setup logger
 app.logger.setLevel(
     logging.DEBUG if is_env_enabled('GEN3_DEBUG') else logging.WARNING

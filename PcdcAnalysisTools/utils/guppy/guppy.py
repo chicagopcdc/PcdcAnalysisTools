@@ -41,7 +41,8 @@ def downloadDataFromGuppy(path, type, totalCount, fields, filters, sort, accessi
             print(e.message)
             return []
         except requests.ConnectionError as e:
-            print(e.message)
+            print(e)
+            print("An error connecting with Guppy.")
             return []
     
         if r.status_code == 200:

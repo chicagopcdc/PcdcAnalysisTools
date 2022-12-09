@@ -1,193 +1,206 @@
 import json
 import flask
+import os
 
 from flask import current_app as capp
 
 from lifelines import KaplanMeierFitter
-from lifelines.statistics import multivariate_logrank_test
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
-from PcdcAnalysisTools.errors import AuthError
+from PcdcAnalysisTools.errors import AuthError, NotFoundError
 
 import numpy as np
 import pandas as pd
 
 
+
+
+DEFAULT_SURVIVAL_CONFIG = {"consortium": [], "result": {}}
+
+
+@auth.authorize_for_analysis("access")
+def get_config():
+    config = capp.config.get("SURVIVAL", DEFAULT_SURVIVAL_CONFIG)
+    return flask.jsonify(config)
+
+
 @auth.authorize_for_analysis("access")
 def get_result():
     args = utils.parse.parse_request_json()
+    config = capp.config.get("SURVIVAL", DEFAULT_SURVIVAL_CONFIG)
 
     # TODO add json payload control
     # TODO add check on payload nulls and stuff
     # TODO add path in the config file or ENV variable
-    _filter = args.get("filter")
-    filters = json.loads(json.dumps(_filter))
-    factor_var = args.get("parameter").get("factorVariable")
-    stratification_var = args.get("parameter").get("stratificationVariable")
+    filter_sets = json.loads(json.dumps(args.get("filterSets")))
     # NOT USED FOR NOW
     # efs_flag = args.get("efsFlag")
-    risktable_flag = args.get("result").get("risktable")
-    survival_flag = args.get("result").get("survival")
-    pval_flag = args.get("result").get("pval")
+    risktable_flag = config.get("result").get("risktable", False)
+    survival_flag = config.get("result").get("survival", False)
+    efs_flag = args.get('efsFlag', False)
 
     log_obj = {}
-    log_obj["filters"] = filters
-    log_obj["factor_variable"] = factor_var
-    log_obj["stratification_variable"] = stratification_var
-    try:
-        user = auth.get_current_user()
-        log_obj["user_id"] = user.id
-    except AuthError:
-        logger.warning(
-            "Unable to load or find the user, check your token"
-        )
-    capp.logger.info(log_obj)
+    log_obj["explorer_id"] = args.get("explorerId")
+    log_obj["filter_set_ids"] = args.get("usedFilterSetIds")
+    log_obj["efs_flag"] = efs_flag
+    if not capp.mock_data:
+        try:
+            user = auth.get_current_user()
+            log_obj["user_id"] = user.id
+        except AuthError:
+            logger.warning(
+                "Unable to load or find the user, check your token"
+            )
+    capp.logger.info("SURVIVAL TOOL - " + json.dumps(log_obj))
 
-    data = (
-        fetch_data(filters, factor_var, stratification_var)
-        if flask.current_app.config.get("IS_SURVIVAL_USING_GUPPY", True)
-        else fetch_fake_data(args)
+    survival_results = {}
+    for filter_set in filter_sets:
+        # the default "All Subjects" option has filter set id of -1
+        filter_set_id = filter_set.get("id")
+        data = fetch_data(config, filter_set.get("filters"), efs_flag)
+        result = get_survival_result(data, risktable_flag, survival_flag)
+
+        survival_results[filter_set_id] = result
+        survival_results[filter_set_id]["name"] = filter_set.get("name")
+
+    return flask.jsonify(survival_results)
+
+
+EVENT_FREE_STATUS_STR = "Subject has had one or more events"
+EVENT_FREE_STATUS_VAR = "censor_status"
+EVENT_FREE_TIME_VAR = "age_at_censor_status"
+
+OVERALL_STATUS_STR = "Dead"
+OVERALL_STATUS_VAR = "survival_characteristics.lkss"
+OVERALL_TIME_VAR = "survival_characteristics.age_at_lkss"
+
+
+def fetch_data(config, filters, efs_flag):
+    status_str, status_var, time_var = (
+        (EVENT_FREE_STATUS_STR, EVENT_FREE_STATUS_VAR, EVENT_FREE_TIME_VAR)
+        if efs_flag
+        else (OVERALL_STATUS_STR, OVERALL_STATUS_VAR, OVERALL_TIME_VAR)
     )
-    return flask.jsonify(get_survival_result(data, factor_var, stratification_var, risktable_flag, survival_flag, pval_flag))
-
-
-def fetch_data(filters, factor_var, stratification_var):
-    status_var, time_var = ("survival_characteristics.lkss",
-                            "survival_characteristics.age_at_lkss")
-
-    fields = [f for f in [status_var, time_var,
-                          factor_var, stratification_var] if f != ""]
 
     filters.setdefault("AND", [])
-    filters["AND"].append({
-        "nested": {
-            "path": "survival_characteristics",
-            "AND": [{"GTE": {"age_at_lkss": 0}}]
-        }
-    })
 
-    guppy_data = utils.guppy.downloadDataFromGuppy(
+    if capp.mock_data == 'True': 
+        f = open(os.environ.get('DATA_PATH'))
+        guppy_data = json.load(f)
+    else:
+        guppy_data = utils.guppy.downloadDataFromGuppy(
         path=capp.config['GUPPY_API'] + "/download",
         type="subject",
         totalCount=100000,
-        fields=fields,
-        filters=filters,
+        fields=[status_var, time_var],
+        filters=(
+            {"AND": [
+                {"IN": {"consortium": config.get('consortium')}},
+                filters
+            ]}
+            if config.get('consortium')
+            else filters
+        ),
         sort=[],
         accessibility="accessible",
         config=capp.config
     )
 
-    for each in guppy_data:
-        survival_dict = each.get("survival_characteristics")[0]
-        del each["survival_characteristics"]
+    if efs_flag:
+        MISSING_EVENT_FREE_STATUS_VAR = True
+        MISSING_EVENT_FREE_TIME_VAR = True
+        for each in guppy_data:
+            if MISSING_EVENT_FREE_STATUS_VAR and each.get(EVENT_FREE_STATUS_VAR) is not None:
+                MISSING_EVENT_FREE_STATUS_VAR = False
 
-        each[status_var] = survival_dict.get("lkss")
-        each[time_var] = survival_dict.get("age_at_lkss")
+            if MISSING_EVENT_FREE_TIME_VAR and each.get(EVENT_FREE_TIME_VAR) is not None:
+                MISSING_EVENT_FREE_TIME_VAR = False
+
+            if not MISSING_EVENT_FREE_STATUS_VAR and not MISSING_EVENT_FREE_TIME_VAR:
+                break
+
+        if MISSING_EVENT_FREE_STATUS_VAR or MISSING_EVENT_FREE_TIME_VAR:
+            raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(
+                EVENT_FREE_STATUS_VAR, EVENT_FREE_TIME_VAR))
+    elif not efs_flag:
+        MISSING_OVERALL_STATUS_VAR = True
+        MISSING_OVERALL_TIME_VAR = True
+
+        for each in guppy_data:
+            survival_dict_tmp = each.get("survival_characteristics")
+            if survival_dict_tmp:
+                survival_dict = survival_dict_tmp[0]
+                del each["survival_characteristics"]
+
+                each[status_var] = survival_dict.get("lkss")
+                if each[status_var] is not None:
+                    MISSING_OVERALL_STATUS_VAR = False
+
+                each[time_var] = survival_dict.get("age_at_lkss")
+                if each[time_var] is not None:
+                    MISSING_OVERALL_TIME_VAR = False
+
+        if MISSING_OVERALL_STATUS_VAR or MISSING_OVERALL_TIME_VAR:
+            raise NotFoundError(
+                "The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(OVERALL_STATUS_VAR, OVERALL_TIME_VAR))
 
     return (
         pd.DataFrame.from_records(guppy_data)
-        .assign(status=lambda x: x[status_var] == "Dead",
-                time=lambda x: x[time_var] / 365.25)
-        .filter(items=[factor_var, stratification_var, "status", "time"])
+        .assign(
+            omitted=lambda x:
+                ((x[status_var].isna()) | (x[status_var] == 'Unknown') |
+                 (x[time_var].isna()) | (x[time_var] < 0)),
+            status=lambda x:
+                np.where(x["omitted"], None, x[status_var] == status_str),
+            time=lambda x:
+                np.where(x["omitted"], None, x[time_var] / 365.25)
+        )
+        .filter(items=["omitted", "status", "time"])
     )
 
 
-def fetch_fake_data(factor_var, stratification_var):
-    """Fetches the mocked source data (pandas.DataFrame) based on request body
-
-    Args:
-        args(dict): Request body parameters and values
-    """
-
-    status_col, time_col = ("EFSCENS", "EFSTIME")
-    # (
-    # ("EFSCENS", "EFSTIME")
-    # if efs_flag
-    # else ("SCENS", "STIME")
-    # )
-
-    return (
-        pd.read_json("./data/fake.json", orient="records")
-        .query(f"{time_col} >= 0")
-        .assign(status=lambda x: x[status_col] == 1,
-                time=lambda x: x[time_col] / 365.25)
-        .filter(items=[factor_var, stratification_var, "status", "time"])
-    )
-
-
-def get_survival_result(data, factor_var, stratification_var, risktable_flag, survival_flag, pval_flag):
+def get_survival_result(data, risktable_flag, survival_flag):
     """Returns the survival results (dict) based on data and request body
 
     Args:
         data(pandas.DataFrame): Source data
-        factor_var(str): Factor variable for survival results
-        stratification_var(str): Stratification variable for survival results
         risktable_flag(bool): Include risk table in result?
         survival_flag(bool): Include survival probability in result?
-        pval_flag(bool): Include p-value in result?
 
     Returns:
-        A dict of survival result consisting of "pval", "risktable", and "survival" data
+        A dict of survival result consisting of "risktable", and "survival" data
         example:
 
-        {"pval": 0.1,
+        {"count": {"fitted": 30, "total": 30},
          "risktable": [{ "nrisk": 30, "time": 0}],
          "survival": [{"prob": 1.0, "time": 0.0}]}
     """
-    kmf = KaplanMeierFitter()
-    variables = [x for x in [factor_var,
-                             stratification_var] if x != ""]
-    time_range = range(int(np.ceil(data.time.max())) + 1)
+    data_kmf = data.loc[data["omitted"] == False]
+    result = {
+        "count": {
+            "fitted": data_kmf.shape[0],
+            "total": data.shape[0]
+        }
+    }
 
-    pval = None
-    risktable = []
-    survival = []
-    if len(variables) == 0:
-        kmf.fit(data.time, data.status)
+    if result["count"]["fitted"] == 0:
         if risktable_flag:
-            risktable.append({
-                "group": [],
-                "data": get_risktable(kmf.event_table, time_range)
-            })
+            result["risktable"] = [{"nrisk": 0, "time": 0}]
 
         if survival_flag:
-            survival.append({
-                "group": [],
-                "data": get_survival(kmf.survival_function_)
-            })
-    else:
-        if pval_flag:
-            pval = get_pval(data, variables)
+            result["survival"] = [{"prob": 0, "time": 0}]
 
-        for name, grouped_df in data.groupby(variables):
-            name = map(str, name if isinstance(name, tuple) else (name,))
-            group = list(map(
-                lambda x: {"variable": x[0], "value": x[1]},
-                zip(variables, name)
-            ))
+        return result
 
-            kmf.fit(grouped_df.time, grouped_df.status)
-            if risktable_flag:
-                risktable.append({
-                    "group": group,
-                    "data": get_risktable(kmf.event_table, time_range)
-                })
-
-            if survival_flag:
-                survival.append({
-                    "group": group,
-                    "data": get_survival(kmf.survival_function_)
-                })
-
-    result = {}
-    if pval_flag:
-        result["pval"] = pval
+    kmf = KaplanMeierFitter()
+    kmf.fit(data_kmf.time, data_kmf.status)
 
     if risktable_flag:
-        result["risktable"] = risktable
+        time_range = range(int(np.ceil(data.time.max())) + 1)
+        result["risktable"] = get_risktable(kmf.event_table, time_range)
 
     if survival_flag:
-        result["survival"] = survival
+        result["survival"] = get_survival(kmf.survival_function_)
 
     return result
 
@@ -204,18 +217,6 @@ def get_survival(survival_function):
         .rename(columns={"KM_estimate": "prob", "timeline": "time"})
         .to_dict(orient="records")
     )
-
-
-def get_pval(data, variables):
-    """Returns the log-rank test p-value (float) for the data and variables
-
-    Args:
-        data(pandas.DataFrame): Source data
-        variables(list): Variables to use in the log-rank test
-    """
-    groups = list(map(str, zip(*[data[f] for f in variables])))
-    result = multivariate_logrank_test(data.time, groups, data.status)
-    return result.p_value if not np.isnan(result.p_value) else None
 
 
 def get_risktable(event_table, time_range):
