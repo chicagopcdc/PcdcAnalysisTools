@@ -58,6 +58,12 @@ routes = [
         methods=["POST"],
     ),
     new_route(
+        "/survival/config",
+        views.survival.get_config,
+        endpoint="survival/config",
+        methods=["GET"],
+    ),
+    new_route(
         "/counts",
         views.counts.get_result,
         endpoint="counts",
@@ -68,6 +74,12 @@ routes = [
         views.external.get_info,
         # endpoint="external",
         methods=["POST"],
+    ),
+    new_route(
+        "/external/config",
+        views.external.get_config,
+        endpoint="external/config",
+        methods=["GET"],
     ),
     new_route(
         "/stats/consortiums",
