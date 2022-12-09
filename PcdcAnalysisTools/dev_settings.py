@@ -2,6 +2,7 @@ import os
 from boto.s3.connection import OrdinaryCallingFormat
 from os import environ as env
 
+APP_NAME = 'PcdcAnalysisTools'
 SERVICE_NAME = 'pcdcanalysistools'
 PRIVATE_KEY_PATH = "/var/www/PcdcAnalysisTools/jwt_private_key.pem"
 
@@ -91,3 +92,27 @@ AUTH_SUBMISSION_LIST = False
 os.environ["AUTHLIB_INSECURE_TRANSPORT"] = "true"
 
 
+SURVIVAL = {
+    'consortium': ["INSTRuCT"],
+    'result': {
+        'risktable': True,
+        'survival': True
+    }
+}
+
+EXTERNAL = {
+    'commons': [
+        {
+            'label': 'Genomic Data Commons',
+            'value': 'gdc'
+        },
+        {
+            'label': 'Gabriella Miller Kids First',
+            'value': 'gmkf'
+        }
+    ], 
+    "commons_dict": {
+        "gdc": "TARGET - GDC", 
+        "gmkf": "GMKF"
+    }
+}

@@ -76,6 +76,12 @@ routes = [
         methods=["POST"],
     ),
     new_route(
+        "/external/config",
+        views.external.get_config,
+        endpoint="external/config",
+        methods=["GET"],
+    ),
+    new_route(
         "/stats/consortiums",
         views.stats.get_consortiums,
         endpoint="stats/consortiums",

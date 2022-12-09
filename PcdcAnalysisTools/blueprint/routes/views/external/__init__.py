@@ -7,16 +7,29 @@ from flask import make_response
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
 
+
+# Import and build configuration variables
+DEFAULT_EXTERNAL_CONFIG = {"commons": [{"label": 'Genomic Data Commons', "value": 'gdc'}, {"label": 'Gabriella Miller Kids First', "value": 'gmkf'}], "commons_dict": {"gdc": "TARGET - GDC", "gmkf": "GMKF"}}
 other = "other"
-common_list = ["gdc", other]
-commons_dict = {}
-commons_dict["gdc"] = "TARGET - GDC"
-# "GDC", "PDC", "GMKF", "Other". 
+# config = capp.config.get("EXTERNAL", DEFAULT_EXTERNAL_CONFIG)
+# common_list = [common["value"] for common in config["commons"]]
+# common_list.append(other)
+# commons_dict = config["commons_dict"]
+
+
+
 
 ### TODO TODO
 #return a link in case it is short enough and supported
 # otherwise return a link to the file and a link to the other common if any
 
+
+
+
+@auth.authorize_for_analysis("access")
+def get_config():
+    config = capp.config.get("EXTERNAL", DEFAULT_EXTERNAL_CONFIG)
+    return flask.jsonify(config)
 
 @auth.authorize_for_analysis("access")
 def get_info(common):
@@ -33,6 +46,9 @@ def get_info(common):
     minus the URL size, as an approximation for when the text file should be returned.
     This ends up being around 40 UUIDs after encoding.
     """
+    config = capp.config.get("EXTERNAL", DEFAULT_EXTERNAL_CONFIG)
+    common_list = [common["value"] for common in config["commons"]]
+    common_list.append(other)
 
     args = utils.parse.parse_request_json()
 
@@ -47,37 +63,23 @@ def get_info(common):
     #     return_type = "url"
     # if return_type == "manifest":
     #     return flask.jsonify({"manifest": data})
-    if len(data) > 40:
+    payload = {}
+    if len(data) > 40 or (len(data) < 40 and common != 'gdc'):
         csv_data = ','.join(d for d in data)
-        payload = {}
         payload["data"] = csv_data
         payload["type"] = "file"
-        payload["link"] = "https://portal.gdc.cancer.gov/exploration"
-        # headers = {'Content-Disposition': 'attachment; filename=case_ids.txt'}
-        # jwt = auth.get_jwt_from_header()
-        # headers['Authorization'] = 'bearer ' + jwt
-        # return make_response(payload, 201, headers)
-        return flask.jsonify(payload)
-
-    ret_obj = {}
-    if common == other:
-        # TODO complete
-        ret_obj["link"] = None
-        #TODO build file, store in S3, return URL instead of string
-        ret_obj["download_link"] = None
-        # ret_obj["type"] = "download"
-        ret_obj["type"] = "string"
-        ret_obj["data"] = data
+        payload["link"] = get_link(common)
     else:
-        link = build_url(data, common)
-        ret_obj["link"] = link
-        ret_obj["type"] = "redirect"
-        
-    return flask.jsonify(ret_obj)
-
+        payload["link"] = build_url(data, common)
+        payload["type"] = "redirect"
+    return flask.jsonify(payload)
 
 
 def fetch_data(args, common):
+
+    config = capp.config.get("EXTERNAL", DEFAULT_EXTERNAL_CONFIG)
+    commons_dict = config["commons_dict"]
+
     # TODO add json payload control
     # TODO add check on payload nulls and stuff
     # TODO add path in the config file or ENV variable
@@ -86,6 +88,8 @@ def fetch_data(args, common):
 
     if common == other:
         fields = ["subject_submitter_id"]
+    elif common == 'gmkf':
+        fields = ["external_references.external_subject_submitter_id", "external_references.external_resource_name"]
     else:
         fields = ["external_references.external_subject_id", "external_references.external_resource_name"]
 
@@ -103,6 +107,8 @@ def fetch_data(args, common):
     if common == other:
         # return USI from our system since we don't have a connection to this specific external Commons
         return [item["subject_submitter_id"] for item in guppy_data if "subject_submitter_id" in item]
+    elif common == 'gmkf':
+        return [item["external_subject_submitter_id"] for ext_ref in guppy_data if ext_ref and "external_references" in ext_ref for item in ext_ref["external_references"] if item and "external_resource_name" in item and item["external_resource_name"] == commons_dict[common] and "external_subject_submitter_id" in item and item["external_subject_submitter_id"]]
     else:
         # TODO I can count how many are without that information and communicate that to the frontend (guppy data return empty objects when data is missing)
         # external_references = [item["external_subject_id"] for item in guppy_data if "external_references" in item and len(item["external_references"]) > 0]
@@ -110,15 +116,23 @@ def fetch_data(args, common):
         # return [item["external_subject_id"] for ext_ref in guppy_data if ext_ref and "external_references" in ext_ref for item in ext_ref["external_references"]]
         return [item["external_subject_id"] for ext_ref in guppy_data if ext_ref and "external_references" in ext_ref for item in ext_ref["external_references"] if item and "external_resource_name" in item and item["external_resource_name"] == commons_dict[common] and "external_subject_id" in item and item["external_subject_id"]]
 
-def build_url(data, common):
-    if commons_dict[common] == "TARGET - GDC":
 
+def get_link(common):
+    if common == 'gdc':
+        return "https://portal.gdc.cancer.gov/exploration"
+    elif common == 'gmkf':
+        return 'https://portal.kidsfirstdrc.org/explore'
+    else:
+        return None
+
+
+def build_url(data, common):
+    if common == "gdc":
         query = '{"op":"and","content":[{"op":"in","content":{"field":"cases.case_id","value":'
         query += json.dumps(data)
         query += '}}]}'
         encoded = urllib.parse.quote(query)
-        link = 'https://portal.gdc.cancer.gov/exploration?filters=' + encoded
-
+        link = get_link(common) + '?filters=' + encoded
         return link
     else:
         return None
