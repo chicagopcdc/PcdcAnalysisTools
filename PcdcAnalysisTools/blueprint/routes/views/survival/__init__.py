@@ -33,8 +33,6 @@ def get_result():
     # TODO add check on payload nulls and stuff
     # TODO add path in the config file or ENV variable
     filter_sets = json.loads(json.dumps(args.get("filterSets")))
-    # NOT USED FOR NOW
-    # efs_flag = args.get("efsFlag")
     risktable_flag = config.get("result").get("risktable", False)
     survival_flag = config.get("result").get("survival", False)
     efs_flag = args.get('efsFlag', False)
@@ -74,6 +72,9 @@ OVERALL_STATUS_STR = "Dead"
 OVERALL_STATUS_VAR = "survival_characteristics.lkss"
 OVERALL_TIME_VAR = "survival_characteristics.age_at_lkss"
 
+# TODO are this the correct variables to check or should I use tumor_assessment? or others?
+AGE_AT_DISEASE_PHASE = "survival_characteristics.age_at_disease_phase"
+DISEASE_PHASE = "survival_characteristics.disease_phase"
 
 def fetch_data(config, filters, efs_flag):
     status_str, status_var, time_var = (
@@ -92,7 +93,7 @@ def fetch_data(config, filters, efs_flag):
         path=capp.config['GUPPY_API'] + "/download",
         type="subject",
         totalCount=100000,
-        fields=[status_var, time_var],
+        fields=[status_var, time_var, DISEASE_PHASE, AGE_AT_DISEASE_PHASE],
         filters=(
             {"AND": [
                 {"IN": {"consortium": config.get('consortium')}},
@@ -106,43 +107,49 @@ def fetch_data(config, filters, efs_flag):
         config=capp.config
     )
 
-    if efs_flag:
-        MISSING_EVENT_FREE_STATUS_VAR = True
-        MISSING_EVENT_FREE_TIME_VAR = True
-        for each in guppy_data:
-            if MISSING_EVENT_FREE_STATUS_VAR and each.get(EVENT_FREE_STATUS_VAR) is not None:
-                MISSING_EVENT_FREE_STATUS_VAR = False
 
-            if MISSING_EVENT_FREE_TIME_VAR and each.get(EVENT_FREE_TIME_VAR) is not None:
-                MISSING_EVENT_FREE_TIME_VAR = False
+    node, age_at_disease_phase = AGE_AT_DISEASE_PHASE.split('.')
+    node, disease_phase = DISEASE_PHASE.split('.')
 
-            if not MISSING_EVENT_FREE_STATUS_VAR and not MISSING_EVENT_FREE_TIME_VAR:
+    MISSING_STATUS_VAR = True
+    MISSING_TIME_VAR = True
+    for each in guppy_data:
+        # Get the age at initial diagnosis
+        dict_tmp = each.get(node)
+        if dict_tmp:
+            for n in dict_tmp:
+                if n.get(disease_phase) == "Initial Diagnosis":
+                    each[age_at_disease_phase] = n.get(age_at_disease_phase)
+                    break
+
+        if efs_flag:
+            if MISSING_STATUS_VAR and each.get(EVENT_FREE_STATUS_VAR) is not None:
+                MISSING_STATUS_VAR = False
+
+            if MISSING_TIME_VAR and each.get(EVENT_FREE_TIME_VAR) is not None:
+                MISSING_TIME_VAR = False
+
+            if not MISSING_STATUS_VAR and not MISSING_TIME_VAR:
                 break
-
-        if MISSING_EVENT_FREE_STATUS_VAR or MISSING_EVENT_FREE_TIME_VAR:
-            raise NotFoundError("The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(
-                EVENT_FREE_STATUS_VAR, EVENT_FREE_TIME_VAR))
-    elif not efs_flag:
-        MISSING_OVERALL_STATUS_VAR = True
-        MISSING_OVERALL_TIME_VAR = True
-
-        for each in guppy_data:
+        elif not efs_flag:
             survival_dict_tmp = each.get("survival_characteristics")
             if survival_dict_tmp:
+                # TODO get the one with the older date
                 survival_dict = survival_dict_tmp[0]
                 del each["survival_characteristics"]
 
                 each[status_var] = survival_dict.get("lkss")
                 if each[status_var] is not None:
-                    MISSING_OVERALL_STATUS_VAR = False
+                    MISSING_STATUS_VAR = False
 
                 each[time_var] = survival_dict.get("age_at_lkss")
                 if each[time_var] is not None:
-                    MISSING_OVERALL_TIME_VAR = False
+                    MISSING_TIME_VAR = False
 
-        if MISSING_OVERALL_STATUS_VAR or MISSING_OVERALL_TIME_VAR:
-            raise NotFoundError(
-                "The cohort selected has no {} and/or no {}. The event free curve can't be built without these necessary data points.".format(OVERALL_STATUS_VAR, OVERALL_TIME_VAR))
+    if MISSING_STATUS_VAR or MISSING_TIME_VAR:
+        raise NotFoundError("The cohort selected has no {} and/or no {}. The curve can't be built without these necessary data points.".format(
+            EVENT_FREE_STATUS_VAR if efs_flag else OVERALL_STATUS_VAR, EVENT_FREE_TIME_VAR if efs_flag else OVERALL_TIME_VAR))
+   
 
     return (
         pd.DataFrame.from_records(guppy_data)
@@ -153,7 +160,7 @@ def fetch_data(config, filters, efs_flag):
             status=lambda x:
                 np.where(x["omitted"], None, x[status_var] == status_str),
             time=lambda x:
-                np.where(x["omitted"], None, x[time_var] / 365.25)
+                np.where(x["omitted"], None, (x[time_var] - x[age_at_disease_phase]) / 365.25)        
         )
         .filter(items=["omitted", "status", "time"])
     )
