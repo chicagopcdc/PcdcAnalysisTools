@@ -72,9 +72,8 @@ OVERALL_STATUS_STR = "Dead"
 OVERALL_STATUS_VAR = "survival_characteristics.lkss"
 OVERALL_TIME_VAR = "survival_characteristics.age_at_lkss"
 
-# TODO are this the correct variables to check or should I use tumor_assessment? or others?
-AGE_AT_DISEASE_PHASE = "survival_characteristics.age_at_disease_phase"
-DISEASE_PHASE = "survival_characteristics.disease_phase"
+AGE_AT_DISEASE_PHASE = "timings.age_at_disease_phase"
+DISEASE_PHASE = "timings.disease_phase"
 
 def fetch_data(config, filters, efs_flag):
     status_str, status_var, time_var = (
@@ -118,9 +117,9 @@ def fetch_data(config, filters, efs_flag):
         dict_tmp = each.get(node)
         if dict_tmp:
             for n in dict_tmp:
-                if n.get(disease_phase) == "Initial Diagnosis":
-                    each[age_at_disease_phase] = n.get(age_at_disease_phase)
-                    break
+                if n.get(disease_phase) == "Initial Diagnosis" and n.get(age_at_disease_phase):
+                    if age_at_disease_phase not in each or n.get(age_at_disease_phase) < each[age_at_disease_phase]:
+                        each[age_at_disease_phase] = n.get(age_at_disease_phase)
 
         if efs_flag:
             if MISSING_STATUS_VAR and each.get(EVENT_FREE_STATUS_VAR) is not None:
@@ -133,9 +132,12 @@ def fetch_data(config, filters, efs_flag):
                 break
         elif not efs_flag:
             survival_dict_tmp = each.get("survival_characteristics")
-            if survival_dict_tmp:
-                # TODO get the one with the older date
-                survival_dict = survival_dict_tmp[0]
+            survival_dict = None
+            for surv in survival_dict_tmp:
+                if not survival_dict or surv["age_at_lkss"] > survival_dict["age_at_lkss"]:
+                    survival_dict = surv
+
+            if survival_dict:
                 del each["survival_characteristics"]
 
                 each[status_var] = survival_dict.get("lkss")
