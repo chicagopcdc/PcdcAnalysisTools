@@ -131,6 +131,7 @@ def fetch_data(config, filters, efs_flag):
             if not MISSING_STATUS_VAR and not MISSING_TIME_VAR:
                 break
         elif not efs_flag:
+            print(each)
             survival_dict_tmp = each.get("survival_characteristics")
             survival_dict = None
             for surv in survival_dict_tmp:
