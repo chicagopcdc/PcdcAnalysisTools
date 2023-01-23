@@ -169,7 +169,7 @@ def fetch_data(config, filters, efs_flag):
             status=lambda x:
                 np.where(x["omitted"], None, x[status_var] == status_str),
             time=lambda x:
-                np.where(x["omitted"], None, float((x[time_var] - x[age_at_disease_phase]) / 365.25))        
+                np.where(x["omitted"], None, (x[time_var] - x[age_at_disease_phase]) / 365.25)        
         )
         .filter(items=["omitted", "status", "time"])
     )
@@ -211,6 +211,11 @@ def get_survival_result(data, risktable_flag, survival_flag):
     kmf = KaplanMeierFitter()
     print("LUCAAAAAA")
     print(data_kmf)
+    # data_kmf = data_kmf.index.repeat(2)
+    data_kmf = data_kmf.append({'omitted': False, 'status': True, 'time': 1})
+    print(data_kmf)
+
+
     kmf.fit(data_kmf.time, data_kmf.status)
 
     if risktable_flag:
