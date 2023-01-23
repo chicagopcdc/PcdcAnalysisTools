@@ -120,6 +120,8 @@ def fetch_data(config, filters, efs_flag):
                 if n.get(disease_phase) == "Initial Diagnosis" and n.get(age_at_disease_phase):
                     if age_at_disease_phase not in each or n.get(age_at_disease_phase) < each[age_at_disease_phase]:
                         each[age_at_disease_phase] = n.get(age_at_disease_phase)
+        if each[age_at_disease_phase]:
+            del each[node]
 
         if efs_flag:
             print(each)
@@ -132,7 +134,6 @@ def fetch_data(config, filters, efs_flag):
             if not MISSING_STATUS_VAR and not MISSING_TIME_VAR:
                 break
         elif not efs_flag:
-            print(each)
             survival_dict_tmp = each.get("survival_characteristics")
             survival_dict = None
 
