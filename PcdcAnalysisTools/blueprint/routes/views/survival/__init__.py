@@ -120,7 +120,7 @@ def fetch_data(config, filters, efs_flag):
                 if n.get(disease_phase) == "Initial Diagnosis" and n.get(age_at_disease_phase):
                     if age_at_disease_phase not in each or n.get(age_at_disease_phase) < each[age_at_disease_phase]:
                         each[age_at_disease_phase] = n.get(age_at_disease_phase)
-        if each[age_at_disease_phase]:
+        if age_at_disease_phase in each:
             del each[node]
 
         if efs_flag:
