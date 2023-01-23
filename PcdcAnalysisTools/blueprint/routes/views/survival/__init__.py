@@ -122,6 +122,7 @@ def fetch_data(config, filters, efs_flag):
                         each[age_at_disease_phase] = n.get(age_at_disease_phase)
 
         if efs_flag:
+            print(each)
             if MISSING_STATUS_VAR and each.get(EVENT_FREE_STATUS_VAR) is not None:
                 MISSING_STATUS_VAR = False
 
@@ -134,9 +135,11 @@ def fetch_data(config, filters, efs_flag):
             print(each)
             survival_dict_tmp = each.get("survival_characteristics")
             survival_dict = None
-            for surv in survival_dict_tmp:
-                if not survival_dict or surv["age_at_lkss"] > survival_dict["age_at_lkss"]:
-                    survival_dict = surv
+
+            if survival_dict_tmp:
+                for surv in survival_dict_tmp:
+                    if not survival_dict or surv["age_at_lkss"] > survival_dict["age_at_lkss"]:
+                        survival_dict = surv
 
             if survival_dict:
                 del each["survival_characteristics"]
@@ -159,7 +162,8 @@ def fetch_data(config, filters, efs_flag):
         .assign(
             omitted=lambda x:
                 ((x[status_var].isna()) | (x[status_var] == 'Unknown') |
-                 (x[time_var].isna()) | (x[time_var] < 0)),
+                 (x[time_var].isna()) | (x[time_var] < 0) |
+                 (x[age_at_disease_phase].isna())),
             status=lambda x:
                 np.where(x["omitted"], None, x[status_var] == status_str),
             time=lambda x:
