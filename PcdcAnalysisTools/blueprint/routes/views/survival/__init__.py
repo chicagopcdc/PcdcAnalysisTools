@@ -122,8 +122,8 @@ def fetch_data(config, filters, efs_flag):
                         each[age_at_disease_phase] = n.get(age_at_disease_phase)
         if age_at_disease_phase in each:
             del each[node]
-        # else:
-        #     each[age_at_disease_phase] = None
+        else:
+            each[age_at_disease_phase] = None
 
         if efs_flag:
             if MISSING_STATUS_VAR and each.get(EVENT_FREE_STATUS_VAR) is not None:
@@ -212,7 +212,7 @@ def get_survival_result(data, risktable_flag, survival_flag):
     print("LUCAAAAAA")
     print(data_kmf)
     # data_kmf = data_kmf.index.repeat(2)
-    data_kmf = data_kmf.append({'omitted': False, 'status': True, 'time': 1})
+    data_kmf = data_kmf.append({'omitted': False, 'status': True, 'time': 1}, ignore_index=True)
     print(data_kmf)
 
 
