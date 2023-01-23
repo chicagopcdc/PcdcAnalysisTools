@@ -124,7 +124,6 @@ def fetch_data(config, filters, efs_flag):
             del each[node]
 
         if efs_flag:
-            print(each)
             if MISSING_STATUS_VAR and each.get(EVENT_FREE_STATUS_VAR) is not None:
                 MISSING_STATUS_VAR = False
 
@@ -208,6 +207,8 @@ def get_survival_result(data, risktable_flag, survival_flag):
         return result
 
     kmf = KaplanMeierFitter()
+    print("LUCAAAAAA")
+    print(data_kmf)
     kmf.fit(data_kmf.time, data_kmf.status)
 
     if risktable_flag:
