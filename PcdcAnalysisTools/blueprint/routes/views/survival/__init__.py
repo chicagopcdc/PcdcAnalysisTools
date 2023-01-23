@@ -122,6 +122,8 @@ def fetch_data(config, filters, efs_flag):
                         each[age_at_disease_phase] = n.get(age_at_disease_phase)
         if age_at_disease_phase in each:
             del each[node]
+        # else:
+        #     each[age_at_disease_phase] = None
 
         if efs_flag:
             if MISSING_STATUS_VAR and each.get(EVENT_FREE_STATUS_VAR) is not None:
@@ -163,11 +165,11 @@ def fetch_data(config, filters, efs_flag):
             omitted=lambda x:
                 ((x[status_var].isna()) | (x[status_var] == 'Unknown') |
                  (x[time_var].isna()) | (x[time_var] < 0) |
-                 (x[age_at_disease_phase].isna())),
+                 (x[age_at_disease_phase].isna()) | (x[age_at_disease_phase] < 0)),
             status=lambda x:
                 np.where(x["omitted"], None, x[status_var] == status_str),
             time=lambda x:
-                np.where(x["omitted"], None, (x[time_var] - x[age_at_disease_phase]) / 365.25)        
+                np.where(x["omitted"], None, float((x[time_var] - x[age_at_disease_phase]) / 365.25))        
         )
         .filter(items=["omitted", "status", "time"])
     )
