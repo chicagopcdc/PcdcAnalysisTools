@@ -1402,7 +1402,7 @@ python-versions = ">=3.4"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "1a92c17e55355e3fe90e76f5df4aa89f8fadf7681e86695e81254e72236ada2e"
+content-hash = "3d5e65e26e2a762a07e7ee1b007bbedcc8e260659e362e11cdebd543d18e848d"
 
 [metadata.files]
 addict = [
