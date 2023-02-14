@@ -131,9 +131,6 @@ def fetch_data(config, filters, efs_flag):
 
             if MISSING_TIME_VAR and each.get(EVENT_FREE_TIME_VAR) is not None:
                 MISSING_TIME_VAR = False
-
-            if not MISSING_STATUS_VAR and not MISSING_TIME_VAR:
-                break
         elif not efs_flag:
             survival_dict_tmp = each.get("survival_characteristics")
             survival_dict = None
