@@ -20,7 +20,7 @@ def get_result():
             path=capp.config['GUPPY_API'] + "/download",
             type="subject",
             totalCount=100000,
-            fields=["consortium", "studies.study_id", "molecular_analysis.molecular_abnormality"],
+            fields=["consortium", "studies.study_id", "molecular_analysis.molecular_abnormality_result"],
             filters=[],
             sort=[],
             accessibility="accessible",
@@ -48,7 +48,9 @@ def get_counts_per_consortium(data, consortium=None):
     for d in data:
         if (consortium is None) or (consortium and "consortium" in d and d["consortium"] == consortium):
             if "molecular_analysis" in d:
-                molecular_analysis_count += len(d["molecular_analysis"])
+                molecular_analysis_result_list = [m["molecular_abnormality_result"] for m in d["molecular_analysis"]]
+                if "Present" in molecular_analysis_result_list or "Absent" in molecular_analysis_result_list:
+                    molecular_analysis_count += 1
             if "studies" in d:
                 for study in d["studies"]:
                     if "study_id" in study:
