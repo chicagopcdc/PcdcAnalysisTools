@@ -71,8 +71,8 @@ config["OAUTH2"] = {
 # trailing slash intentionally omitted
 config['GUPPY_API'] = 'http://guppy-service'
 
-config['USER_API'] = 'http://fence-service/'
-# config["USER_API"] = config["OIDC_ISSUER"]  # for use by authutils
+# config['USER_API'] = 'http://fence-service/'
+config["USER_API"] = config["OIDC_ISSUER"]  # for use by authutils
 # use the USER_API URL instead of the public issuer URL to accquire JWT keys
 config["FORCE_ISSUER"] = True
 
