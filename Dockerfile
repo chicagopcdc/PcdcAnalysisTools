@@ -7,9 +7,9 @@
 #   "oauth2_client_id": "",
 #   "oauth2_client_secret": ""
 # }
-# - Build the image: `docker build . -t sheepdog -f Dockerfile`
-# - Run: `docker run -v /full/path/to/creds.json:/var/www/sheepdog/creds.json -p 81:80 sheepdog`
-# To check running container: `docker exec -it sheepdog /bin/bash`
+# - Build the image: `docker build . -t PcdcAnalysisTools -f Dockerfile`
+# - Run: `docker run -v /full/path/to/creds.json:/var/www/PcdcAnalysisTools/creds.json -p 81:80 PcdcAnalysisTools`
+# To check running container: `docker exec -it PcdcAnalysisTools /bin/bash`
 
 FROM quay.io/cdis/python:python3.9-buster-2.0.0
 
@@ -44,7 +44,7 @@ COPY ./bin/settings.py /var/www/$appname/settings.py
 COPY ./bin/confighelper.py /var/www/$appname/confighelper.py
 
 
-# install sheepdog
+# install PcdcAnalysisTools
 RUN poetry config virtualenvs.create false \
     && poetry install -vv --no-dev --no-interaction \
     && poetry show -v

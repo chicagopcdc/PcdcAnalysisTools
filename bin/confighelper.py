@@ -3,9 +3,9 @@ Originally copied from `cloud-automation/apis_configs/config_helper.py`
 (renamed `confighelper.py` so it isn't overwritten by the file that cloud-automation
 still mounts for backwards compatibility).
 
-TODO: once everyone has this independent version of sheepdog, remove `wsgi.py` and
+TODO: once everyone has this independent version of PcdcAnalysisTools, remove `wsgi.py` and
 `config_helper.py` here:
-https://github.com/uc-cdis/cloud-automation/blob/afb750d/kube/services/sheepdog/sheepdog-deploy.yaml#L166-L177
+https://github.com/uc-cdis/cloud-automation/blob/afb750d/kube/services/PcdcAnalysisTools/PcdcAnalysisTools-deploy.yaml#L166-L177
 """
 
 import json
