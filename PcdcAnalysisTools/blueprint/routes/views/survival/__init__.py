@@ -274,7 +274,7 @@ def check_allowed_filter(config, filter_set):
             value = path[0]
         elif len(path) > 1:
             # This may be a problem if a variable in another path has the same name as the one in this path
-            value = path[len(path) - 1]
+            value = path[-1]
         else:
             raise UnsupportedError("Something in wrong in the survival exluded variable configuration, please notify the admins at pcdc_help@lists.uchicago.edu")
 
