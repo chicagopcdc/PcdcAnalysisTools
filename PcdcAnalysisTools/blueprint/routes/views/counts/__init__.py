@@ -45,7 +45,7 @@ def get_result():
             config=capp.config
         )
     counts = get_counts_list(data, args)
-    # Cache is invalidated if the service is restarted or if the {} endpoint is used
+    # Cache is invalidated if the service is restarted or if the reset_count_cache endpoint is used
     capp.logger.info("CACHING COUNTS VALUE - " + json.dumps(counts))
     capp.config["cache"]["counts"] = counts
     return flask.jsonify(counts)
