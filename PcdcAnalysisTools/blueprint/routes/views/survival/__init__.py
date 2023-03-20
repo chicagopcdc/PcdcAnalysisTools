@@ -7,15 +7,12 @@ from flask import current_app as capp
 from lifelines import KaplanMeierFitter
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
-from PcdcAnalysisTools.errors import AuthError, NotFoundError
+from PcdcAnalysisTools.errors import AuthError, NotFoundError, UnsupportedError, UserError
 
 import numpy as np
 import pandas as pd
 
-
-
-
-DEFAULT_SURVIVAL_CONFIG = {"consortium": [], "result": {}}
+DEFAULT_SURVIVAL_CONFIG = {"consortium": [], "excluded_variables": [], "result": {}}
 
 
 @auth.authorize_for_analysis("access")
@@ -55,8 +52,16 @@ def get_result():
     for filter_set in filter_sets:
         # the default "All Subjects" option has filter set id of -1
         filter_set_id = filter_set.get("id")
-        data = fetch_data(config, filter_set.get("filters"), efs_flag)
-        result = get_survival_result(data, risktable_flag, survival_flag)
+        user_filter = filter_set.get("filters")
+
+        is_filterset_allowed = check_allowed_filter(config, user_filter)
+
+        if is_filterset_allowed:
+            data = fetch_data(config, user_filter, efs_flag)
+            result = get_survival_result(data, risktable_flag, survival_flag)
+        else:
+            data = None
+            result = None
 
         survival_results[filter_set_id] = result
         survival_results[filter_set_id]["name"] = filter_set.get("name")
@@ -256,3 +261,29 @@ def get_risktable(event_table, time_range):
         .astype({"nrisk": "int32"})
         .to_dict(orient="records")
     )
+
+
+def check_allowed_filter(config, filter_set):
+    excluded_variables = config.get("excluded_variables", [])
+    user_filter_str = json.dumps(filter_set)
+
+    for ex_f in excluded_variables:
+        value = None
+        path = ex_f.split('.')
+        if len(path) == 1:
+            value = path[0]
+        elif len(path) > 1:
+            # TODO This may be a problem if a variable in another path has the same name as the one in this path. No variables used as of now have this issue, so this is a reminder for later.
+            value = path[-1]
+        else:
+            raise UnsupportedError("Something in wrong in the survival exluded variable configuration, please notify the admins at pcdc_help@lists.uchicago.edu")
+
+        if value in user_filter_str:
+            raise UserError("One or more filters selected contains a variable that is not allowed. List of variable that are not allowed: {}".format(excluded_variables))
+    return True
+
+
+
+
+
+
