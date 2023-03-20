@@ -280,7 +280,6 @@ def check_allowed_filter(config, filter_set):
 
         if value in user_filter_str:
             raise UserError("One or more filters selected contains a variable that is not allowed. List of variable that are not allowed: {}".format(excluded_variables))
-            # return False
     return True
 
 
