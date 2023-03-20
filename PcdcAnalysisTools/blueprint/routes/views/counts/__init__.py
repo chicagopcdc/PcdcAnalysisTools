@@ -9,8 +9,26 @@ from pcdcutils.environment import is_env_enabled
 import json
 import os 
 
+
+@auth.authorize_for(resource="/programs", method="*")
+def reset_count_cache():
+    config = capp.config.get("cache", None)
+    if cache:
+        if "counts" in cache and cache["counts"] is not None:
+            capp.logger.info("CLEANING COUNTS CACHE - ")
+            cache["counts"] = None
+            return flask.jsonify(cache["counts"])
+    return flask.jsonify(config)
+
+
 @auth.authorize_for_analysis("access")
 def get_result():
+    cache = capp.config.get("cache", None)
+    if cache:
+        if "counts" in cache and cache["counts"] is not None:
+            capp.logger.info("RETRIEVING CACHE COUNTS VALUE - " + json.dumps(cache["counts"]))
+            return flask.jsonify(cache["counts"])
+
     args = utils.parse.parse_request_json()
     if capp.mock_data == 'True': 
         f = open(os.environ.get('DATA_PATH'))
@@ -26,7 +44,11 @@ def get_result():
             accessibility="accessible",
             config=capp.config
         )
-    return flask.jsonify(get_counts_list(data, args))
+    counts = get_counts_list(data, args)
+    # Cache is invalidated if the service is restarted or if the {} endpoint is used
+    capp.logger.info("CACHING COUNTS VALUE - " + json.dumps(counts))
+    capp.config["cache"]["counts"] = counts
+    return flask.jsonify(counts)
 
 
 def get_counts_list(data, args):
