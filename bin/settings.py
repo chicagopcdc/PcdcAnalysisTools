@@ -84,7 +84,20 @@ else:
 
 config['SURVIVAL'] = {
     'consortium': ["INSTRuCT", "INRG"],
-    'excluded_variables': ["data_contributor_id", "treatment_arm", "studies.study_id"],
+    'excluded_variables': [
+        {
+            label: 'Data Contributor',
+            field: 'data_contributor_id',
+        },
+        {
+            label: 'Study',
+            field: 'studies.study_id',
+        },
+        {
+            label: 'Treatment Arm',
+            field: 'treatment_arm',
+        }
+    ],
     'result': {
         'risktable': True,
         'survival': True
