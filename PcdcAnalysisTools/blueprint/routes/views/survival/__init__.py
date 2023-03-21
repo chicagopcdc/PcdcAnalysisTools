@@ -265,6 +265,7 @@ def get_risktable(event_table, time_range):
 
 def check_allowed_filter(config, filter_set):
     excluded_variables = config.get("excluded_variables", [])
+    excluded_variables = [value["field"] for value in excluded_variables]
     user_filter_str = json.dumps(filter_set)
 
     for ex_f in excluded_variables:
