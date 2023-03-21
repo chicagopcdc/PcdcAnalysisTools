@@ -70,6 +70,12 @@ routes = [
         methods=["POST"],
     ),
     new_route(
+        "/counts/invalidate",
+        views.counts.reset_count_cache,
+        endpoint="/counts/invalidate",
+        methods=["GET"],
+    ),
+    new_route(
         "/external/<common>",
         views.external.get_info,
         # endpoint="external",
