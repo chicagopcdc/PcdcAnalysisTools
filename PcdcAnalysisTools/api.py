@@ -93,6 +93,8 @@ def app_init(app):
         app.logger.error(
             "Secret key not set in config! Authentication will not work")
 
+    app.config = {}
+
     # ARBORIST deprecated, replaced by ARBORIST_URL
     arborist_url = os.environ.get("ARBORIST_URL", os.environ.get("ARBORIST"))
     if arborist_url:
