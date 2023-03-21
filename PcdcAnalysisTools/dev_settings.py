@@ -97,16 +97,16 @@ SURVIVAL = {
     'consortium': ["INSTRuCT"],
     'excluded_variables': [
         {
-            label: 'Data Contributor',
-            field: 'data_contributor_id',
+            'label': 'Data Contributor',
+            'field': 'data_contributor_id',
         },
         {
-            label: 'Study',
-            field: 'studies.study_id',
+            'label': 'Study',
+            'field': 'studies.study_id',
         },
         {
-            label: 'Treatment Arm',
-            field: 'treatment_arm',
+            'label': 'Treatment Arm',
+            'field': 'treatment_arm',
         }
     ],
     'result': {
