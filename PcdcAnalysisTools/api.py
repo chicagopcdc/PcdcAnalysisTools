@@ -36,13 +36,14 @@ def app_register_blueprints(app):
 
     app.url_map.strict_slashes = False
 
-    tools_blueprint = PcdcAnalysisTools.create_blueprint("tools")
-
     v0 = "/v0"
+    tools_blueprint = PcdcAnalysisTools.create_blueprint("tools")
     app.register_blueprint(tools_blueprint, url_prefix=v0 + "/tools")
+    tools_blueprint.name += "_legacy"
     app.register_blueprint(tools_blueprint, url_prefix="/tools")
     app.register_blueprint(oauth2_blueprint.blueprint,
                            url_prefix=v0 + "/oauth2")
+    oauth2_blueprint.blueprint.name += "_legacy"
     app.register_blueprint(oauth2_blueprint.blueprint, url_prefix="/oauth2")
 
 
@@ -91,6 +92,8 @@ def app_init(app):
     except KeyError:
         app.logger.error(
             "Secret key not set in config! Authentication will not work")
+
+    app.config["cache"] = {}
 
     # ARBORIST deprecated, replaced by ARBORIST_URL
     arborist_url = os.environ.get("ARBORIST_URL", os.environ.get("ARBORIST"))

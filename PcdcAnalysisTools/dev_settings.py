@@ -92,8 +92,23 @@ AUTH_SUBMISSION_LIST = False
 os.environ["AUTHLIB_INSECURE_TRANSPORT"] = "true"
 
 
+# excluded_variables nested paths may be a problem if a variable in another path has the same name as the one in this path
 SURVIVAL = {
     'consortium': ["INSTRuCT"],
+    'excluded_variables': [
+        {
+            'label': 'Data Contributor',
+            'field': 'data_contributor_id',
+        },
+        {
+            'label': 'Study',
+            'field': 'studies.study_id',
+        },
+        {
+            'label': 'Treatment Arm',
+            'field': 'treatment_arm',
+        }
+    ],
     'result': {
         'risktable': True,
         'survival': True
