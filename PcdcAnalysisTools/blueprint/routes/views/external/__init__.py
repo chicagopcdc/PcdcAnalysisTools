@@ -11,18 +11,6 @@ from PcdcAnalysisTools import auth
 # Import and build configuration variables
 DEFAULT_EXTERNAL_CONFIG = {"commons": [{"label": 'Genomic Data Commons', "value": 'gdc'}, {"label": 'Gabriella Miller Kids First', "value": 'gmkf'}], "commons_dict": {"gdc": "TARGET - GDC", "gmkf": "GMKF"}}
 other = "other"
-# config = capp.config.get("EXTERNAL", DEFAULT_EXTERNAL_CONFIG)
-# common_list = [common["value"] for common in config["commons"]]
-# common_list.append(other)
-# commons_dict = config["commons_dict"]
-
-
-
-
-### TODO TODO
-#return a link in case it is short enough and supported
-# otherwise return a link to the file and a link to the other common if any
-
 
 
 
@@ -83,8 +71,9 @@ def fetch_data(args, common):
     # TODO add json payload control
     # TODO add check on payload nulls and stuff
     # TODO add path in the config file or ENV variable
-    _filter = args.get("filter")
+    _filter = args.get("filter", {})
     filters = json.loads(json.dumps(_filter))
+    filters.setdefault("AND", [])
 
     if common == other:
         fields = ["subject_submitter_id"]
@@ -93,12 +82,20 @@ def fetch_data(args, common):
     else:
         fields = ["external_references.external_subject_id", "external_references.external_resource_name"]
 
+
     guppy_data = utils.guppy.downloadDataFromGuppy(
         path=capp.config['GUPPY_API'] + "/download",
         type="subject",
         totalCount=100000,
         fields=fields,
-        filters=filters,
+        filters=(
+            {"AND": [
+                {"nested":{"path":"external_references","AND":[{"IN":{"external_resource_name":[commons_dict[common]]}}]}},
+                filters
+            ]}
+            if common
+            else filters
+        ),
         sort=[],
         accessibility="accessible",
         config=capp.config
@@ -136,6 +133,15 @@ def build_url(data, common):
         return link
     else:
         return None
+
+
+
+
+
+
+
+
+
 
 
 
