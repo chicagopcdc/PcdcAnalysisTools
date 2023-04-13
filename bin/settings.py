@@ -95,7 +95,7 @@ config['SURVIVAL'] = {
         },
         {
             'label': 'Treatment Arm',
-            'field': 'treatment_arm',
+            'field': 'studies.treatment_arm',
         }
     ],
     'result': {
