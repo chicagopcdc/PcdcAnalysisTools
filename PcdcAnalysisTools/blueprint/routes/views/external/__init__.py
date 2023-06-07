@@ -124,15 +124,18 @@ def get_link(common):
 
 
 def build_url(data, common):
-    if common == "gdc":
-        query = '{"op":"and","content":[{"op":"in","content":{"field":"cases.case_id","value":'
-        query += json.dumps(data)
-        query += '}}]}'
-        encoded = urllib.parse.quote(query)
-        link = get_link(common) + '?filters=' + encoded
-        return link
-    else:
-        return None
+    if type(data) is list and len(data) > 1: 
+        if common == "gdc":
+            query = '{"op":"and","content":[{"op":"in","content":{"field":"cases.case_id","value":'
+            query += json.dumps(data)
+            query += '}}]}'
+            encoded = urllib.parse.quote(query)
+            link = get_link(common) + '?filters=' + encoded
+            return link
+        else:
+            return None
+    
+    return None
 
 
 
