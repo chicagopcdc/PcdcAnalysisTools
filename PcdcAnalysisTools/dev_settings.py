@@ -124,10 +124,15 @@ EXTERNAL = {
         {
             'label': 'Gabriella Miller Kids First',
             'value': 'gmkf'
+        },
+        {
+            'label': 'Common Data Service',
+            'value': 'cds'
         }
     ], 
     "commons_dict": {
         "gdc": "TARGET - GDC", 
-        "gmkf": "GMKF"
+        "gmkf": "GMKF", 
+        "cds": "CDS"
     }
 }

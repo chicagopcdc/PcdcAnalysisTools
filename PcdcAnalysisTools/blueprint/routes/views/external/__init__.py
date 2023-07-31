@@ -79,6 +79,8 @@ def fetch_data(args, common):
         fields = ["subject_submitter_id"]
     elif common == 'gmkf':
         fields = ["external_references.external_subject_submitter_id", "external_references.external_resource_name"]
+    elif common == 'cds':
+        fields = ["external_references.external_subject_submitter_id", "external_references.external_resource_name"]
     else:
         fields = ["external_references.external_subject_id", "external_references.external_resource_name"]
 
@@ -104,7 +106,7 @@ def fetch_data(args, common):
     if common == other:
         # return USI from our system since we don't have a connection to this specific external Commons
         return [item["subject_submitter_id"] for item in guppy_data if "subject_submitter_id" in item]
-    elif common == 'gmkf':
+    elif common in ['gmkf','cds']:
         return [item["external_subject_submitter_id"] for ext_ref in guppy_data if ext_ref and "external_references" in ext_ref for item in ext_ref["external_references"] if item and "external_resource_name" in item and item["external_resource_name"] == commons_dict[common] and "external_subject_submitter_id" in item and item["external_subject_submitter_id"]]
     else:
         # TODO I can count how many are without that information and communicate that to the frontend (guppy data return empty objects when data is missing)
@@ -119,6 +121,8 @@ def get_link(common):
         return "https://portal.gdc.cancer.gov/exploration"
     elif common == 'gmkf':
         return 'https://portal.kidsfirstdrc.org/explore'
+    elif common == 'cds':
+        return 'https://dataservice.datacommons.cancer.gov/#/data'
     else:
         return None
 
