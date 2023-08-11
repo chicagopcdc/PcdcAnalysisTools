@@ -201,6 +201,9 @@ def get_survival_result(data, risktable_flag, survival_flag):
         }
     }
 
+    print(result)
+    print(data_kmf)
+
     if result["count"]["fitted"] == 0:
         if risktable_flag:
             result["risktable"] = [{"nrisk": 0, "time": 0}]
