@@ -122,7 +122,7 @@ def fetch_data(config, filters, efs_flag):
         dict_tmp = each.get(node)
         if dict_tmp:
             for n in dict_tmp:
-                if n.get(disease_phase) == "Initial Diagnosis" and n.get(age_at_disease_phase):
+                if n.get(disease_phase) == "Initial Diagnosis" and n.get(age_at_disease_phase) and n.get(age_at_disease_phase) >= 0:
                     if age_at_disease_phase not in each or n.get(age_at_disease_phase) < each[age_at_disease_phase]:
                         each[age_at_disease_phase] = n.get(age_at_disease_phase)
         if age_at_disease_phase in each:
@@ -171,7 +171,7 @@ def fetch_data(config, filters, efs_flag):
             status=lambda x:
                 np.where(x["omitted"], None, x[status_var] == status_str),
             time=lambda x:
-                np.where(x["omitted"], None, (x[time_var] - x[age_at_disease_phase]) / 365.25)        
+                np.where(x["omitted"], None, (x[time_var] - x[age_at_disease_phase]) / 365.25)      # TODO you can add an omit if   x[age_at_disease_phase]) > x[time_var]
         )
         .filter(items=["omitted", "status", "time"])
     )
