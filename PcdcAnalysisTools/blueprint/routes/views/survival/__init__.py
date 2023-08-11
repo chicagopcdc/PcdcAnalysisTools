@@ -201,7 +201,10 @@ def get_survival_result(data, risktable_flag, survival_flag):
         }
     }
 
+    data_kmf['time'] = data_kmf['time'].astype(float)
+
     print(result)
+    print(data_kmf.info)
     print(data_kmf)
 
     if result["count"]["fitted"] == 0:
@@ -220,7 +223,7 @@ def get_survival_result(data, risktable_flag, survival_flag):
     kmf.fit(data_kmf.time, data_kmf.status)
 
     if risktable_flag:
-        time_range = range(int(np.ceil(data.time.max())) + 1)
+        time_range = range(int(np.ceil(data_kmf.time.max())) + 1)
         result["risktable"] = get_risktable(kmf.event_table, time_range)
 
     if survival_flag:
