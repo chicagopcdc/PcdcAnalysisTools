@@ -194,6 +194,8 @@ def get_survival_result(data, risktable_flag, survival_flag):
          "survival": [{"prob": 1.0, "time": 0.0}]}
     """
     data.info()
+    data['time'] = data['time'].astype(float)
+    data['status'] = data['status'].astype(bool)
     data_kmf = data.loc[data["omitted"] == False]
     result = {
         "count": {
