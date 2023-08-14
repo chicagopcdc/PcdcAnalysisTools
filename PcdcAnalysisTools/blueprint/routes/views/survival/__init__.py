@@ -193,7 +193,7 @@ def get_survival_result(data, risktable_flag, survival_flag):
          "risktable": [{ "nrisk": 30, "time": 0}],
          "survival": [{"prob": 1.0, "time": 0.0}]}
     """
-    data.info()
+    # data.info()
     data['time'] = data['time'].astype(float)
     data['status'] = data['status'].astype(bool)
     data_kmf = data.loc[data["omitted"] == False]
@@ -207,9 +207,9 @@ def get_survival_result(data, risktable_flag, survival_flag):
     # data_kmf.info()
     # data_kmf['time'] = data_kmf['time'].astype(float)
 
-    print(result)
+    # print(result)
     data_kmf.info()
-    print(data_kmf)
+    # print(data_kmf)
 
     if result["count"]["fitted"] == 0:
         if risktable_flag:
