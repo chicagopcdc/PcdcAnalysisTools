@@ -12,7 +12,7 @@ import os
 
 @auth.authorize_for(resource="/programs", method="*")
 def reset_count_cache():
-    config = capp.config.get("cache", None)
+    cache = capp.config.get("cache", None)
     if cache:
         if "counts" in cache and cache["counts"] is not None:
             capp.logger.info("CLEANING COUNTS CACHE - ")
