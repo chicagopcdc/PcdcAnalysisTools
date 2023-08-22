@@ -18,7 +18,7 @@ def reset_count_cache():
             capp.logger.info("CLEANING COUNTS CACHE - ")
             cache["counts"] = None
             return flask.jsonify(cache["counts"])
-    return flask.jsonify(config)
+    return flask.jsonify("The cache has already been cleared.")
 
 
 @auth.authorize_for_analysis("access")
