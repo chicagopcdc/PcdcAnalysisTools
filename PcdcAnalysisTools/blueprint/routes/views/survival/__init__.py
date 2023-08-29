@@ -122,7 +122,7 @@ def fetch_data(config, filters, efs_flag):
         dict_tmp = each.get(node)
         if dict_tmp:
             for n in dict_tmp:
-                if n.get(disease_phase) == "Initial Diagnosis" and n.get(age_at_disease_phase):
+                if n.get(disease_phase) == "Initial Diagnosis" and n.get(age_at_disease_phase) and n.get(age_at_disease_phase) >= 0:
                     if age_at_disease_phase not in each or n.get(age_at_disease_phase) < each[age_at_disease_phase]:
                         each[age_at_disease_phase] = n.get(age_at_disease_phase)
         if age_at_disease_phase in each:
@@ -171,7 +171,7 @@ def fetch_data(config, filters, efs_flag):
             status=lambda x:
                 np.where(x["omitted"], None, x[status_var] == status_str),
             time=lambda x:
-                np.where(x["omitted"], None, (x[time_var] - x[age_at_disease_phase]) / 365.25)        
+                np.where(x["omitted"], None, (x[time_var] - x[age_at_disease_phase]) / 365.25)      # TODO you can add an omit if   x[age_at_disease_phase]) > x[time_var]
         )
         .filter(items=["omitted", "status", "time"])
     )
@@ -193,6 +193,9 @@ def get_survival_result(data, risktable_flag, survival_flag):
          "risktable": [{ "nrisk": 30, "time": 0}],
          "survival": [{"prob": 1.0, "time": 0.0}]}
     """
+    # data.info()
+    data['time'] = data['time'].astype(float)
+    data['status'] = data['status'].astype(bool)
     data_kmf = data.loc[data["omitted"] == False]
     result = {
         "count": {
@@ -200,6 +203,13 @@ def get_survival_result(data, risktable_flag, survival_flag):
             "total": data.shape[0]
         }
     }
+
+    # data_kmf.info()
+    # data_kmf['time'] = data_kmf['time'].astype(float)
+
+    # print(result)
+    data_kmf.info()
+    # print(data_kmf)
 
     if result["count"]["fitted"] == 0:
         if risktable_flag:
@@ -217,7 +227,7 @@ def get_survival_result(data, risktable_flag, survival_flag):
     kmf.fit(data_kmf.time, data_kmf.status)
 
     if risktable_flag:
-        time_range = range(int(np.ceil(data.time.max())) + 1)
+        time_range = range(int(np.ceil(data_kmf.time.max())) + 1)
         result["risktable"] = get_risktable(kmf.event_table, time_range)
 
     if survival_flag:
