@@ -8,7 +8,7 @@ license = "Apache License 2.0"
 [tool.poetry.dependencies]
 # needs a higher python version (3.8) than the other microservices (3.6) because of
 # min requirements for lifelines, pandas, and numpy
-python = "3.9.*"
+python = ">=3.9,<4.0.0"
 authlib = "*" # let authutils decide which version we're using
 authutils = ">=6.0.0"
 # authutils = "^6.1.0"
@@ -41,10 +41,10 @@ lifelines = "^0.25.2"
 # added in final container
 addict = "^2.4.0"
 argparse = "^1.4.0"
-pycryptodome = "3.9.8"
+pycryptodome = "3.19.0"
 python-Levenshtein = "^0.12.0"
 markupsafe = "2.0.1"
-pcdcutils = {git = "https://github.com/chicagopcdc/pcdcutils.git", rev = "0.1.1"}
+pcdcutils = {git = "https://github.com/chicagopcdc/pcdcutils.git", rev = "PEDS-1024"}
 python-dotenv = "^0.20.0"
 
 
