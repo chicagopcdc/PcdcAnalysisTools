@@ -52,14 +52,14 @@ def get_info(common):
     # if return_type == "manifest":
     #     return flask.jsonify({"manifest": data})
     payload = {}
-    if len(data) > 40 or (len(data) < 40 and common != 'gdc'):
-        csv_data = ','.join(d for d in data)
-        payload["data"] = csv_data
-        payload["type"] = "file"
-        payload["link"] = get_link(common)
-    else:
-        payload["link"] = build_url(data, common)
-        payload["type"] = "redirect"
+    csv_data = ','.join(d for d in data)
+    payload["data"] = csv_data
+    payload["type"] = "file"
+    payload["link"] = get_link(common)
+
+    # GDC 2.0 is not supporting query params anymore
+    # payload["link"] = build_url(data, common)
+    # payload["type"] = "redirect"
     return flask.jsonify(payload)
 
 
@@ -118,7 +118,7 @@ def fetch_data(args, common):
 
 def get_link(common):
     if common == 'gdc':
-        return "https://portal.gdc.cancer.gov/exploration"
+        return "https://portal.gdc.cancer.gov/analysis_page?app=CohortBuilder&tab=general"
     elif common == 'gmkf':
         return 'https://portal.kidsfirstdrc.org/explore'
     elif common == 'cds':
