@@ -25,7 +25,9 @@ def downloadDataFromGuppy(path, type, totalCount, fields, filters, sort, accessi
             # TODO in the future use the makesignature in the gen3Manager in pcdcutils to make this
             url = path #'http://guppy-service/download'
             headers = {'Content-Type': 'application/json'}
-            body = json.dumps(queryBody, separators=(',', ':'))
+            body = json.dumps(queryBody, separators=(',', ':'), ensure_ascii=False)
+            print("LUCAAAAAAA 0")
+            print(queryBody)
             print("LUCAAAAAAA")
             print(body)
             jwt = get_jwt_from_header()
