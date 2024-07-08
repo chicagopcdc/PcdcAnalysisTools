@@ -25,15 +25,17 @@ def downloadDataFromGuppy(path, type, totalCount, fields, filters, sort, accessi
             # TODO in the future use the makesignature in the gen3Manager in pcdcutils to make this
             url = path #'http://guppy-service/download'
             headers = {'Content-Type': 'application/json'}
-            body = json.dumps(queryBody, separators=(',', ':'), ensure_ascii=False)
+            body = json.dumps(queryBody, separators=(',', ':'))
+            body_signature = json.dumps(queryBody, separators=(',', ':'), ensure_ascii=False)
             print("LUCAAAAAAA 0")
             print(queryBody)
             print("LUCAAAAAAA")
             print(body)
+            print(body_signature)
             jwt = get_jwt_from_header()
             headers['Authorization'] = 'bearer ' + jwt
             sm = SignatureManager(key=config["RSA_PRIVATE_KEY"])
-            headers['Signature'] = 'signature ' + sm.sign(body)
+            headers['Signature'] = 'signature ' + sm.sign(body_signature)
             headers['Gen3-Service'] = encode_str(config.get('SERVICE_NAME'))
 
             r = requests.post(
