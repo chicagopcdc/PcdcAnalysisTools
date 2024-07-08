@@ -26,12 +26,9 @@ def downloadDataFromGuppy(path, type, totalCount, fields, filters, sort, accessi
             url = path #'http://guppy-service/download'
             headers = {'Content-Type': 'application/json'}
             body = json.dumps(queryBody, separators=(',', ':'))
+            # Use this only for the signature because json.dumps will transform special char in \u encoding which will make a signature javascript won't be able to verify it.
+            # For instance `β` is translated to `\u03b2`
             body_signature = json.dumps(queryBody, separators=(',', ':'), ensure_ascii=False)
-            print("LUCAAAAAAA 0")
-            print(queryBody)
-            print("LUCAAAAAAA")
-            print(body)
-            print(body_signature)
             jwt = get_jwt_from_header()
             headers['Authorization'] = 'bearer ' + jwt
             sm = SignatureManager(key=config["RSA_PRIVATE_KEY"])
