@@ -26,6 +26,8 @@ def downloadDataFromGuppy(path, type, totalCount, fields, filters, sort, accessi
             url = path #'http://guppy-service/download'
             headers = {'Content-Type': 'application/json'}
             body = json.dumps(queryBody, separators=(',', ':'))
+            print("LUCAAAAAAA")
+            print(body)
             jwt = get_jwt_from_header()
             headers['Authorization'] = 'bearer ' + jwt
             sm = SignatureManager(key=config["RSA_PRIVATE_KEY"])
