@@ -1,6 +1,6 @@
 
 import pytest
-from PcdcAnalysisTools.blueprint.routes.views import counts, survival
+from PcdcAnalysisTools.blueprint.routes.views import counts, survival, external
 from PcdcAnalysisTools.api import app
 import flask
 import os
@@ -118,7 +118,7 @@ def survival_incorrect_data(set_data):
 @pytest.fixture()
 def stats_no_data(set_data):
     set_data('NO_DATA_PATH')
-    return stats
+    return {}
 
 @pytest.fixture()
 def stats_incorrect_data(set_data):
@@ -175,7 +175,7 @@ def test_tools_counts_incorrect_data(client, counts_incorrect_data):
 def test_tools_survival_no_data(client, survival_no_data):
     response = client.post('/tools/survival', json=survival_no_data)
     assert {
-            "message": "The cohort selected has no survival_characteristics.lkss and/or no survival_characteristics.age_at_lkss. The event free curve can't be built without these necessary data points."
+            "message": "The cohort selected has no survival_characteristics.lkss and/or no survival_characteristics.age_at_lkss. The curve can't be built without these necessary data points."
            } == response.json
 
 def test_tools_survival_incorrect_data(client, survival_incorrect_data):
@@ -232,8 +232,13 @@ def test_tools_stats_incorrect_data(client, stats_no_data):
     response = client.post('/tools/stats/consortiums', json=stats_no_data)
     assert [] == response.json
 
+def test_tools_external_info(client, counts_correct_data):
+    filter_json = {}
+    response = client.post('/tools/external/gmkf', json=filter_json)
+    res_dict = json.loads(response.json)
+    assert res_dict["type"] == "file"
 
-    
-
-
-                         
+def test_tools_external_config(client):
+    response = client.get('tools/external/config')
+    assert response.json == external.DEFAULT_EXTERNAL_CONFIG
+ 

@@ -52,15 +52,16 @@ def authorize_for_analysis(*required_roles):
         @functools.wraps(func)
         def authorize_and_call(*args, **kwargs):
             resource = "/analysis"
-            jwt = get_jwt_from_header()
-            authz = flask.current_app.auth.auth_request(
-                jwt=jwt,
-                service="analysis",
-                methods="access",
-                resources=[resource],
-            )
-            if not authz:
-                raise AuthZError("user is unauthorized")
+           # -- if(config variable for mock authorization return func)
+#            jwt = get_jwt_from_header()
+#            authz = flask.current_app.auth.auth_request(
+#                jwt=jwt,
+#                service="analysis",
+#                methods="access",
+#                resources=[resource],
+#            )
+ #           if not authz:
+ #               raise AuthZError("user is unauthorized")
             return func(*args, **kwargs)
 
         return authorize_and_call

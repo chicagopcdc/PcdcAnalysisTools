@@ -23,7 +23,7 @@ def get_consortiums():
 
 def get_consortium_list(filters):
     if capp.mock_data == 'True': 
-        f = open(os.environ.get('DATA_PATH'))
+        f = open(os.environ.get('DATA_Path'))
         data = json.load(f)
     else:
         data = utils.guppy.downloadDataFromGuppy(
