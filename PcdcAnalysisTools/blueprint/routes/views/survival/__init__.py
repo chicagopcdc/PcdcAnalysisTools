@@ -77,8 +77,8 @@ OVERALL_STATUS_STR = "Dead"
 OVERALL_STATUS_VAR = "survival_characteristics.lkss"
 OVERALL_TIME_VAR = "survival_characteristics.age_at_lkss"
 
-AGE_AT_DISEASE_PHASE = "timings.age_at_disease_phase"
-DISEASE_PHASE = "timings.disease_phase"
+AGE_AT_DISEASE_PHASE = "molecular_analysis.age_at_disease_phase"
+DISEASE_PHASE = "molecular_anlysis.disease_phase"
 
 def fetch_data(config, filters, efs_flag):
     status_str, status_var, time_var = (
@@ -90,7 +90,7 @@ def fetch_data(config, filters, efs_flag):
     filters.setdefault("AND", [])
 
     if capp.mock_data == 'True': 
-        f = open(os.environ.get('DATA_PATH'))
+        f = open(os.environ.get('DATA_Path'))
         guppy_data = json.load(f)
     else:
         guppy_data = utils.guppy.downloadDataFromGuppy(

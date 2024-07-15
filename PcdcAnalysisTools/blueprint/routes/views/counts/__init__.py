@@ -31,7 +31,7 @@ def get_result():
 
     args = utils.parse.parse_request_json()
     if capp.mock_data == 'True': 
-        f = open(os.environ.get('DATA_PATH'))
+        f = open(os.environ.get('DATA_Path'))
         data = json.load(f)
     else:
         data = utils.guppy.downloadDataFromGuppy(
@@ -70,9 +70,11 @@ def get_counts_per_consortium(data, consortium=None):
     for d in data:
         if (consortium is None) or (consortium and "consortium" in d and d["consortium"] == consortium):
             if "molecular_analysis" in d:
-                molecular_analysis_result_list = [m["molecular_abnormality_result"] for m in d["molecular_analysis"]]
-                if "Present" in molecular_analysis_result_list or "Absent" in molecular_analysis_result_list:
-                    molecular_analysis_count += 1
+                molecular_analysis_count+=1
+            #if "molecular_analysis" in d:
+            #    molecular_analysis_result_list = [m["molecular_abnormality_result"] for m in d["molecular_analysis"]]
+            #    if "Present" in molecular_analysis_result_list or "Absent" in molecular_analysis_result_list:
+            #        molecular_analysis_count += 1
             if "studies" in d:
                 for study in d["studies"]:
                     if "study_id" in study:

@@ -179,9 +179,9 @@ def test_tools_survival_no_data(client, survival_no_data):
            } == response.json
 
 def test_tools_survival_incorrect_data(client, survival_incorrect_data):
-    with pytest.raises(AttributeError) as ex:
+    with pytest.raises(TypeError) as ex:
         client.post('/tools/survival', json=survival_incorrect_data)
-    assert '\'NoneType\' object has no attribute \'get\'' in str(ex.value)
+    assert '\'NoneType\' object is not iterable' in str(ex.value)
 
 
 def test_tools_survival_correct_data(client, survival_correct_data):
