@@ -53,7 +53,7 @@ def get_info(common):
     #     return flask.jsonify({"manifest": data})
     payload = {}
     csv_data = ','.join(d for d in data)
-    payload["data"] = data
+    payload["data"] = csv_data
     payload["type"] = "file"
     payload["link"] = get_link(common)
 

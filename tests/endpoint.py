@@ -242,8 +242,6 @@ def test_tools_external_correct_data(client, external_correct_data):
     response = client.post('/tools/external/other', json=external_correct_data)
     assert 'file' == response.json['type']
     assert None == response.json['link']
-    assert ['subject_domestic_flickery', 'subject_fiscally_Godfrey', 'subject_ejection_perfrication', 'subject_leucosphere_prepenetrate','subject_misconstitutional_uprouse',
-    'subject_proreption_dermoskeleton', 'subject_lymphocystosis_ornithoscopist', 'subject_scrimmage_retroflexion', 'subject_mirthfulness_persecution',
-            'subject_pedatilobate_trebuchet'] == response.json['data']
+    assert 'subject_domestic_flickery,subject_fiscally_Godfrey,subject_ejection_perfrication,subject_leucosphere_prepenetrate,subject_misconstitutional_uprouse,subject_proreption_dermoskeleton,subject_lymphocystosis_ornithoscopist,subject_scrimmage_retroflexion,subject_mirthfulness_persecution,subject_pedatilobate_trebuchet' == response.json['data']
 
                          
