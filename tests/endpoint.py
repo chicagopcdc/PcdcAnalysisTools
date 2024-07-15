@@ -130,6 +130,11 @@ def stats_correct_data(set_data):
     set_data('Short_DATA_STATS_PATH')
     return survival
 
+@pytest.fixture()
+def external_correct_data(set_data):
+    set_data('SHORT_DATA_EXTERNAL_PATH')
+    return survival
+
 def test_enviorment():
     assert app.mock_data == 'True'
 
@@ -233,7 +238,12 @@ def test_tools_stats_incorrect_data(client, stats_no_data):
     assert [] == response.json
 
 
-    
-
+def test_tools_external_correct_data(client, external_correct_data):
+    response = client.post('/tools/external/other', json=external_correct_data)
+    assert 'file' == response.json['type']
+    assert None == response.json['link']
+    assert ['subject_domestic_flickery', 'subject_fiscally_Godfrey', 'subject_ejection_perfrication', 'subject_leucosphere_prepenetrate','subject_misconstitutional_uprouse',
+    'subject_proreption_dermoskeleton', 'subject_lymphocystosis_ornithoscopist', 'subject_scrimmage_retroflexion', 'subject_mirthfulness_persecution',
+            'subject_pedatilobate_trebuchet'] == response.json['data']
 
                          
