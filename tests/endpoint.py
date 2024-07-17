@@ -180,13 +180,13 @@ def test_tools_counts_incorrect_data(client, counts_incorrect_data):
 def test_tools_survival_no_data(client, survival_no_data):
     response = client.post('/tools/survival', json=survival_no_data)
     assert {
-            "message": "The cohort selected has no survival_characteristics.lkss and/or no survival_characteristics.age_at_lkss. The event free curve can't be built without these necessary data points."
+            "message": "The cohort selected has no survival_characteristics.lkss and/or no survival_characteristics.age_at_lkss. The curve can't be built without these necessary data points."
            } == response.json
 
 def test_tools_survival_incorrect_data(client, survival_incorrect_data):
-    with pytest.raises(AttributeError) as ex:
+    with pytest.raises(TypeError) as ex:
         client.post('/tools/survival', json=survival_incorrect_data)
-    assert '\'NoneType\' object has no attribute \'get\'' in str(ex.value)
+    assert '\'NoneType\' object is not iterable' in str(ex.value)
 
 
 def test_tools_survival_correct_data(client, survival_correct_data):
