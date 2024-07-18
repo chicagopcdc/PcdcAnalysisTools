@@ -62,7 +62,6 @@ def app_init(app):
         # If True, enforce indexd record exists before file node registration
         app.config.get("REQUIRE_FILE_INDEX_EXISTS", False)
     )
-
     if app.config.get("USE_USER_HARAKIRI", True):
         setup_user_harakiri(app)
 
@@ -93,7 +92,6 @@ def app_init(app):
         app.logger.error(
             "Secret key not set in config! Authentication will not work")
 
-    app.config["cache"] = {}
 
     # ARBORIST deprecated, replaced by ARBORIST_URL
     arborist_url = os.environ.get("ARBORIST_URL", os.environ.get("ARBORIST"))
@@ -105,10 +103,11 @@ def app_init(app):
 
 
 app = Flask(__name__)
-load_dotenv()
+load_dotenv("/Users/ritroy/PcdcAnalysisTools/tests/env.env")
 app.mock_data = os.environ.get("MOCK_DATA", False)
 if app.mock_data == 'True':
     app_register_blueprints(app)
+    app.config["cache"] = {}
 # Setup logger
 app.logger.setLevel(
     logging.DEBUG if is_env_enabled('GEN3_DEBUG') else logging.WARNING
@@ -119,7 +118,6 @@ while app.logger.handlers:
 app.logger.addHandler(get_handler())
 
 setup_default_handlers(app)
-
 
 @app.route("/_status", methods=["GET"])
 def health_check():

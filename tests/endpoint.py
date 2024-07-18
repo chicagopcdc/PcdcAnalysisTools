@@ -96,7 +96,7 @@ def counts_correct_data(set_data):
 
 @pytest.fixture()
 def counts_incorrect_data(set_data):
-    set_data('Short_DATA_PATH')
+    set_data('SHORT_DATA_PATH')
     return {'consortiumList': ['None']}
 
 

@@ -31,7 +31,7 @@ def get_result():
 
     args = utils.parse.parse_request_json()
     if capp.mock_data == 'True': 
-        f = open(os.environ.get('DATA_PATH'))
+        f = open(os.environ.get('DATA_Path'))
         data = json.load(f)
     else:
         data = utils.guppy.downloadDataFromGuppy(
@@ -47,7 +47,8 @@ def get_result():
     counts = get_counts_list(data, args)
     # Cache is invalidated if the service is restarted or if the reset_count_cache endpoint is used
     capp.logger.info("CACHING COUNTS VALUE - " + json.dumps(counts))
-    capp.config["cache"]["counts"] = counts
+    if(capp.mock_data != 'True'):
+        capp.config["cache"]["counts"] = counts
     return flask.jsonify(counts)
 
 
