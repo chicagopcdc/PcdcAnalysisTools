@@ -104,7 +104,7 @@ def app_init(app):
 
 
 app = Flask(__name__)
-load_dotenv("/Users/ritroy/PcdcAnalysisTools/tests/env.env")
+load_dotenv()
 app.mock_data = os.environ.get("MOCK_DATA", False)
 if app.mock_data == 'True':
     app_register_blueprints(app)
