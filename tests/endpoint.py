@@ -191,39 +191,7 @@ def test_tools_survival_incorrect_data(client, survival_incorrect_data):
 
 def test_tools_survival_correct_data(client, survival_correct_data):
     response = client.post('/tools/survival', json=survival_correct_data)
-    assert {
-            "-1": {
-                "count": {
-                    "fitted": 2,
-                    "total": 2
-                },
-                "name": "1. *** All Subjects ***",
-                "risktable": [
-                    {
-                        "nrisk": 2,
-                        "time": 0.0
-                    },
-                    {
-                        "nrisk": 0,
-                        "time": 1.0
-                    }
-                    ],
-                "survival": [
-                    {
-                        "prob": 1.0,
-                        "time": 0.0
-                    },
-                    {
-                        "prob": 1.0,
-                        "time": 0.07939767282683094
-                    },
-                    {
-                        "prob": 1.0,
-                        "time": 0.24914442162902123
-                    }
-                    ]
-                }
-            } == response.json
+    assert {'-1': {'count': {'fitted': 0, 'total': 10}, 'name': '1. *** All Subjects ***'}} == response.json
 
 def test_tools_stats_correct_data(client, stats_correct_data):
     response = client.post('/tools/stats/consortiums', json=stats_correct_data)

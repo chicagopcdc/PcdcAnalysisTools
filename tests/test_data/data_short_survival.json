@@ -1,6 +1,4 @@
-{
-  "data": {
-    "subject": [
+ [
       {
         "censor_status": "Subject is censored (i.e. has had no event(s))",
         "age_at_censor_status": 39,
@@ -129,5 +127,3 @@
         "timings": null
       }
     ]
-  }
-}
