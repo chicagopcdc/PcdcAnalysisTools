@@ -55,7 +55,6 @@ stats = {
 }
 
 
-
 @pytest.fixture()
 def app_setup():
     app.config.update({
@@ -66,7 +65,16 @@ def app_setup():
 @pytest.fixture()
 def client(app_setup):
     return app.test_client()
-    
+
+@pytest.fixture()
+def clear_cache(app_setup):
+    with app.test_client() as testing_client:
+        if app.config["cache"] is not None:
+            cache = app.config["cache"]
+            if "counts" in cache:
+                cache["counts"] = None
+        yield testing_client
+
 @pytest.fixture()
 def set_args():
     def this_args(args, base_args):
@@ -145,7 +153,7 @@ def test_tools_route(client):
     assert response.status_code == 200
 
 
-def test_tools_counts_no_data(client, counts_no_data):
+def test_tools_counts_no_data(client, counts_no_data, clear_cache):
     response = client.post('/tools/counts', json=counts_no_data)
     assert [{"consortium":"total","molecular_analysis":0,"study":0,"subject":0},
     {"consortium":"INSTRuCT","molecular_analysis":0,"study":0,"subject":0},
@@ -157,7 +165,7 @@ def test_tools_counts_no_data(client, counts_no_data):
     {"consortium":"ALL","molecular_analysis":0,"study":0,"subject":0},
     {"consortium":"missing","molecular_analysis":0,"study":0,"subject":0}]  == response.json
 
-def test_tools_counts_correct_data(client, counts_correct_data):
+def test_tools_counts_correct_data(client, counts_correct_data, clear_cache):
     response = client.post('/tools/counts', json=counts_correct_data)
     assert [{"consortium":"total","molecular_analysis":1,"study":0,"subject":3},
     {"consortium":"INSTRuCT","molecular_analysis":1,"study":0,"subject":1},
@@ -170,7 +178,7 @@ def test_tools_counts_correct_data(client, counts_correct_data):
     {"consortium":"missing","molecular_analysis":0,"study":0,"subject":0}] == response.json
 
 
-def test_tools_counts_incorrect_data(client, counts_incorrect_data):
+def test_tools_counts_incorrect_data(client, counts_incorrect_data, clear_cache):
     response = client.post('/tools/counts', json=counts_incorrect_data)
     assert [{"consortium":"total","molecular_analysis":1,"study":0,"subject":3},
             {'consortium': 'None', 'molecular_analysis': 0, 'study': 0, 'subject': 0},
