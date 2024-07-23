@@ -3,7 +3,7 @@ import flask
 import urllib.parse
 from flask import current_app as capp
 from flask import make_response
-
+import os
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
 
@@ -42,7 +42,7 @@ def get_info(common):
 
     if not common or common not in common_list:
         common = other
-
+    
     data = fetch_data(args, common)
     # data = [value for value in data if value]
     
@@ -84,25 +84,27 @@ def fetch_data(args, common):
     else:
         fields = ["external_references.external_subject_id", "external_references.external_resource_name"]
 
-
-    guppy_data = utils.guppy.downloadDataFromGuppy(
-        path=capp.config['GUPPY_API'] + "/download",
-        type="subject",
-        totalCount=100000,
-        fields=fields,
-        filters=(
-            {"AND": [
-                {"nested":{"path":"external_references","AND":[{"IN":{"external_resource_name":[commons_dict[common]]}}]}},
-                filters
-            ]}
-            if common
-            else filters
-        ),
-        sort=[],
-        accessibility="accessible",
-        config=capp.config
-    )
-
+    if(capp.mock_data == 'True'):
+        f = open(os.environ.get('DATA_Path'))
+        guppy_data = json.load(f)["data"]["subject"]
+    else:
+        guppy_data = utils.guppy.downloadDataFromGuppy(
+            path=capp.config['GUPPY_API'] + "/download",
+            type="subject",
+            totalCount=100000,
+            fields=fields,
+            filters=(
+                {"AND": [
+                    {"nested":{"path":"external_references","AND":[{"IN":{"external_resource_name":[commons_dict[common]]}}]}},
+                    filters
+                ]}
+                if common
+                else filters
+            ),
+            sort=[],
+            accessibility="accessible",
+            config=capp.config
+        )
     if common == other:
         # return USI from our system since we don't have a connection to this specific external Commons
         return [item["subject_submitter_id"] for item in guppy_data if "subject_submitter_id" in item]

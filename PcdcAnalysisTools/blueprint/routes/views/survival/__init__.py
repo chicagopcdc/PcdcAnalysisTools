@@ -90,7 +90,7 @@ def fetch_data(config, filters, efs_flag):
     filters.setdefault("AND", [])
 
     if capp.mock_data == 'True': 
-        f = open(os.environ.get('DATA_PATH'))
+        f = open(os.environ.get('DATA_Path'))
         guppy_data = json.load(f)
     else:
         guppy_data = utils.guppy.downloadDataFromGuppy(
