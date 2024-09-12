@@ -93,6 +93,12 @@ routes = [
         endpoint="stats/consortiums",
         methods=["POST"],
     ),
+    new_route(
+        "/tableone",
+        views.tableOne.get_result,
+        endpoint="tableone",
+        methods=["POST"],
+    ),
 
 
     # new_route("/<program>", views.program.delete_program, methods=["DELETE"]),

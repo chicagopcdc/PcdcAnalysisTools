@@ -65,20 +65,20 @@ DICTIONARY_URL = os.environ.get(
     "https://s3.amazonaws.com/dictionary-artifacts/datadictionary/develop/schema.json",
 )
 
-GUPPY_API = "http://localhost/guppy"
+GUPPY_API = "http://portal-dev.pedscommons.org/guppy"
 
-USER_API = "http://localhost/user/"
-OIDC_ISSUER = "http://localhost"
+USER_API = "http://portal-dev.pedscommons.org/user/"
+OIDC_ISSUER = "http://portal-dev.pedscommons.org"
 OAUTH2 = {
     "client_id": os.environ.get("CDIS_GDCAPI_CLIENT_ID"),
     "client_secret": os.environ.get("CDIS_GDCAPI_CLIENT_SECRET"),
     "api_base_url": USER_API,
-    "authorize_url": "http://localhost/user/oauth2/authorize",
-    "access_token_url": "http://localhost/user/oauth2/token",
-    "refresh_token_url": "http://localhost/user/oauth2/token",
+    "authorize_url": "http://portal-dev.pedscommons.org/user/oauth2/authorize",
+    "access_token_url": "http://portal-dev.pedscommons.org/user/oauth2/token",
+    "refresh_token_url": "http://portal-dev.pedscommons.org/user/oauth2/token",
     "client_kwargs": {
         "redirect_uri": os.environ.get(
-            "CDIS_GDCAPI_OAUTH_REDIRECT", "http://localhost/api/v0/oauth2/authorize"
+            "CDIS_GDCAPI_OAUTH_REDIRECT", "http://portal-dev.pedscommons.org/api/v0/oauth2/authorize"
         ),
         "scope": "openid data user",
     },

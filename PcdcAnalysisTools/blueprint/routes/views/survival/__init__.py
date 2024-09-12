@@ -41,7 +41,7 @@ def get_result():
     if not capp.mock_data:
         try:
             user = auth.get_current_user()
-            log_obj["user_id"] = user.id
+            #log_obj["user_id"] = user.id
         except AuthError:
             logger.warning(
                 "Unable to load or find the user, check your token"
@@ -53,7 +53,6 @@ def get_result():
         # the default "All Subjects" option has filter set id of -1
         filter_set_id = filter_set.get("id")
         user_filter = filter_set.get("filters")
-
         is_filterset_allowed = check_allowed_filter(config, user_filter)
 
         if is_filterset_allowed:
@@ -62,6 +61,8 @@ def get_result():
         else:
             data = None
             result = None
+
+        #print(data)
 
         survival_results[filter_set_id] = result
         survival_results[filter_set_id]["name"] = filter_set.get("name")
@@ -93,6 +94,7 @@ def fetch_data(config, filters, efs_flag):
         f = open(os.environ.get('DATA_PATH'))
         guppy_data = json.load(f)
     else:
+        #print(capp.config['GUPPY_API'])
         guppy_data = utils.guppy.downloadDataFromGuppy(
         path=capp.config['GUPPY_API'] + "/download",
         type="subject",
@@ -110,7 +112,6 @@ def fetch_data(config, filters, efs_flag):
         accessibility="accessible",
         config=capp.config
     )
-
 
     node, age_at_disease_phase = AGE_AT_DISEASE_PHASE.split('.')
     node, disease_phase = DISEASE_PHASE.split('.')
@@ -159,6 +160,7 @@ def fetch_data(config, filters, efs_flag):
     if MISSING_STATUS_VAR or MISSING_TIME_VAR:
         raise NotFoundError("The cohort selected has no {} and/or no {}. The curve can't be built without these necessary data points.".format(
             EVENT_FREE_STATUS_VAR if efs_flag else OVERALL_STATUS_VAR, EVENT_FREE_TIME_VAR if efs_flag else OVERALL_TIME_VAR))
+        
    
 
     return (

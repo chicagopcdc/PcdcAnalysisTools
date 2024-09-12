@@ -48,6 +48,7 @@ def app_register_blueprints(app):
 
 
 def app_init(app):
+    
     # Register duplicates only at runtime
     app.logger.setLevel(logging.INFO)
     app.logger.info("Initializing app")
@@ -73,9 +74,16 @@ def app_init(app):
     app.config["IS_SURVIVAL_USING_GUPPY"] = True
 
     key_path = app.config.get("PRIVATE_KEY_PATH", None)
-    app.config["RSA_PRIVATE_KEY"] = SignatureManager(key_path=key_path).get_key()
-    if app.config["RSA_PRIVATE_KEY"] is None:
-        app.logger.error(f"ERROR - PRIVATE KEY NOT LOADED! ('{key_path}')")
+    print(key_path)
+    #app.config["RSA_PRIVATE_KEY"] = SignatureManager(key_path=key_path).get_key()
+    app.config["RSA_PRIVATE_KEY"] = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImZlbmNlX2tleV8yMDIyLTA5LTE1VDE2OjE5OjUwWiIsInR5cCI6IkpXVCJ9.eyJwdXIiOiJhcGlfa2V5Iiwic3ViIjoiMzIiLCJpc3MiOiJodHRwczovL3BvcnRhbC1kZXYucGVkc2NvbW1vbnMub3JnL3VzZXIiLCJhdWQiOlsiaHR0cHM6Ly9wb3J0YWwtZGV2LnBlZHNjb21tb25zLm9yZy91c2VyIl0sImlhdCI6MTcyMzU4NDgwMiwiZXhwIjoxNzI2MTc2ODAyLCJqdGkiOiIyZDViZDg2NC05MTI4LTRmYjMtYmFmMy03MTk2MDRiMzE4YjgiLCJhenAiOiIiLCJzY29wZSI6WyJmZW5jZSIsImRhdGEiLCJvcGVuaWQiLCJnb29nbGVfY3JlZGVudGlhbHMiLCJnb29nbGVfc2VydmljZV9hY2NvdW50IiwiZ2E0Z2hfcGFzc3BvcnRfdjEiLCJnb29nbGVfbGluayIsInVzZXIiLCJhZG1pbiJdfQ.eBJ2PxwSF1-po-P23tIJmrSOvUivjxvzCfTHV0Xp3gx2bRYtB7jetFkKJC-73KUXevrij3feFDTFTiNtIBxaUu8Ip_kHiOlmCWGYyvk8cLqS-rx27NfOPXv5W0oLWx-GCNGVDVxKqX3cHOB_ik_16ijTu9QnFpz7B9UyRBPBgh85X4forhFnj9MqddhScXNddzr4-AquXaB3TRYFI81VjGMgPvT9ftk9q-IotD13UT5ZUARprn5LKAbY1Dfqjqw2H1TETHwc6mKVGrxELEz2vnpmcaBng70qkV8RjmJ5W3XiD-ELEZKqSNhDGcCoQ07OKwAZr5F3BIoQ2_ZuRaLGZw"
+    #     
+    #{
+    #     "api_key": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImZlbmNlX2tleV8yMDIyLTA5LTE1VDE2OjE5OjUwWiIsInR5cCI6IkpXVCJ9.eyJwdXIiOiJhcGlfa2V5Iiwic3ViIjoiMzIiLCJpc3MiOiJodHRwczovL3BvcnRhbC1kZXYucGVkc2NvbW1vbnMub3JnL3VzZXIiLCJhdWQiOlsiaHR0cHM6Ly9wb3J0YWwtZGV2LnBlZHNjb21tb25zLm9yZy91c2VyIl0sImlhdCI6MTcyMzU4NDgwMiwiZXhwIjoxNzI2MTc2ODAyLCJqdGkiOiIyZDViZDg2NC05MTI4LTRmYjMtYmFmMy03MTk2MDRiMzE4YjgiLCJhenAiOiIiLCJzY29wZSI6WyJmZW5jZSIsImRhdGEiLCJvcGVuaWQiLCJnb29nbGVfY3JlZGVudGlhbHMiLCJnb29nbGVfc2VydmljZV9hY2NvdW50IiwiZ2E0Z2hfcGFzc3BvcnRfdjEiLCJnb29nbGVfbGluayIsInVzZXIiLCJhZG1pbiJdfQ.eBJ2PxwSF1-po-P23tIJmrSOvUivjxvzCfTHV0Xp3gx2bRYtB7jetFkKJC-73KUXevrij3feFDTFTiNtIBxaUu8Ip_kHiOlmCWGYyvk8cLqS-rx27NfOPXv5W0oLWx-GCNGVDVxKqX3cHOB_ik_16ijTu9QnFpz7B9UyRBPBgh85X4forhFnj9MqddhScXNddzr4-AquXaB3TRYFI81VjGMgPvT9ftk9q-IotD13UT5ZUARprn5LKAbY1Dfqjqw2H1TETHwc6mKVGrxELEz2vnpmcaBng70qkV8RjmJ5W3XiD-ELEZKqSNhDGcCoQ07OKwAZr5F3BIoQ2_ZuRaLGZw",
+    #     "key_id": "2d5bd864-9128-4fb3-baf3-719604b318b8"
+    # }
+    # if app.config["RSA_PRIVATE_KEY"] is None:
+    #     app.logger.error(f"ERROR - PRIVATE KEY NOT LOADED! ('{key_path}')")
     # else:
     #     app.logger.info(f"Private key loaded. ('{key_path}')")
 
@@ -83,7 +91,9 @@ def app_init(app):
     # app.logger.info(f"GUPPY_API hostname {gapi}")
     # sn = app.config['SERVICE_NAME']
     # app.logger.info(f"SERVICE_NAME: {sn}")
+    print('finallyhere')
     app_register_blueprints(app)
+    
 
     # exclude es init as it's not used yet
     # es_init(app)
