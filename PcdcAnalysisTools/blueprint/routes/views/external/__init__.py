@@ -122,7 +122,7 @@ def get_link(common):
     if common == 'gdc':
         return "https://portal.gdc.cancer.gov/analysis_page?app=CohortBuilder&tab=general"
     elif common == 'gmkf':
-        return 'https://portal.kidsfirstdrc.org/explore'
+        return 'https://portal.kidsfirstdrc.org/data-exploration'
     elif common == 'cds':
         return 'https://dataservice.datacommons.cancer.gov/#/data'
     else:
