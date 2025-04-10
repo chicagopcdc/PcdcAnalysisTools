@@ -41,7 +41,7 @@ def get_result():
     if not capp.mock_data:
         try:
             user = auth.get_current_user()
-            #log_obj["user_id"] = user.id
+            log_obj["user_id"] = user.id
         except AuthError:
             logger.warning(
                 "Unable to load or find the user, check your token"

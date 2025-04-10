@@ -9,10 +9,8 @@ from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
 from PcdcAnalysisTools.errors import AuthError, NotFoundError, UnsupportedError, UserError
 
-import numpy as np
 import pandas as pd
 
-DEFAULT_SURVIVAL_CONFIG = {"consortium": [], "excluded_variables": [], "result": {}}
 
 # @auth.authorize_for_analysis("access")
 # def get_config():
@@ -30,33 +28,43 @@ allFilter = {
         [{'IN': {'consortium': ['INSTRuCT']}}, {'AND': []}]
     }
 def get_result():
-    args = utils.parse.parse_request_json()
-    filter_sets = json.loads(json.dumps(args.get("filterSets")))
-    fields = json.loads(json.dumps(args.get("covarFields")))
-    groupFilter = filter_sets[0].get("filters")
-    alldata = fetch_data(config, allFilter, fields)
-    truedata = fetch_data(config, groupFilter, fields)
+    try:
+        args = utils.parse.parse_request_json()
+        if not args or not args.get("filterSets") or not args.get("covarFields"):
+            return {
+            "message": "No filter or variable selected."
+           }
 
-    dfb = pd.DataFrame(alldata)
-    dfs = pd.DataFrame(truedata)
+        filter_sets = json.loads(json.dumps(args.get("filterSets")))
+        fields = json.loads(json.dumps(args.get("covarFields")))
+        groupFilter = filter_sets[0].get("filters")
 
-    if 'survival_characteristics' in dfb.columns:
-        df_c = dfb['survival_characteristics'].apply(pd.Series)
-        df_c = df_c[0].apply(pd.Series)
-        dfb = dfb.drop('survival_characteristics', axis='columns')
-        dfb = pd.concat([dfb,df_c], axis = 1)
+        alldata = fetch_data(config, allFilter, fields)  # 注意：你这里 allFilter 没定义
+        truedata = fetch_data(config, groupFilter, fields)
 
-        df_c = dfs['survival_characteristics'].apply(pd.Series)
-        df_c = df_c[0].apply(pd.Series)
-        dfs = dfs.drop('survival_characteristics', axis='columns')
-        dfs = pd.concat([dfs,df_c], axis = 1)
-    
-    print(dfs)
-    
-    res = get_table_result(dfs, dfb, args.get("covariates"), filter_sets[0])
+        dfb = pd.DataFrame(alldata)
+        dfs = pd.DataFrame(truedata)
 
-    return(res)
-    #return("okok")
+        if 'survival_characteristics' in dfb.columns:
+            df_c = dfb['survival_characteristics'].apply(pd.Series)
+            df_c = df_c[0].apply(pd.Series)
+            dfb = dfb.drop('survival_characteristics', axis='columns')
+            dfb = pd.concat([dfb, df_c], axis=1)
+
+            df_c = dfs['survival_characteristics'].apply(pd.Series)
+            df_c = df_c[0].apply(pd.Series)
+            dfs = dfs.drop('survival_characteristics', axis='columns')
+            dfs = pd.concat([dfs, df_c], axis=1)
+
+        res = get_table_result(dfs, dfb, args.get("covariates"), filter_sets[0])
+        return res
+
+    except Exception as e:
+        # print("Error in get_result:", e)
+        return {
+            "message": "Error in selected filters or variables."
+           }
+
 
 
 

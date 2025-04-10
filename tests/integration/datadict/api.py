@@ -77,7 +77,6 @@ def app_init(app):
     except KeyError:
         app.logger.error("Secret key not set in config! Authentication will not work")
     
-    print("apiherere")
     PcdcAnalysisTools_blueprint = PcdcAnalysisTools.create_blueprint("submission")
 
     try:

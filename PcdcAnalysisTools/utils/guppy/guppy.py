@@ -23,7 +23,7 @@ def downloadDataFromGuppy(path, type, totalCount, fields, filters, sort, accessi
             queryBody["accessibility"] = 'accessible' # accessibility
 
         try:
-            url = "https://portal-dev.pedscommons.org/guppy/download" #'http://guppy-service/download'
+            url ='http://guppy-service/download'
             headers = {'Content-Type': 'application/json'}
             body = json.dumps(queryBody, separators=(',', ':'))
             jwt = get_jwt_from_header()
