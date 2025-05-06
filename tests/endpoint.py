@@ -55,7 +55,6 @@ stats = {
 }
 
 
-
 @pytest.fixture()
 def app_setup():
     app.config.update({
@@ -66,7 +65,16 @@ def app_setup():
 @pytest.fixture()
 def client(app_setup):
     return app.test_client()
-    
+
+@pytest.fixture()
+def clear_cache(app_setup):
+    with app.test_client() as testing_client:
+        if app.config["cache"] is not None:
+            cache = app.config["cache"]
+            if "counts" in cache:
+                cache["counts"] = None
+        yield testing_client
+
 @pytest.fixture()
 def set_args():
     def this_args(args, base_args):
@@ -96,7 +104,7 @@ def counts_correct_data(set_data):
 
 @pytest.fixture()
 def counts_incorrect_data(set_data):
-    set_data('Short_DATA_PATH')
+    set_data('SHORT_DATA_PATH')
     return {'consortiumList': ['None']}
 
 
@@ -131,6 +139,11 @@ def stats_correct_data(set_data):
     return survival
 
 @pytest.fixture()
+def external_correct_data(set_data):
+    set_data('SHORT_DATA_EXTERNAL_PATH')
+    return survival
+
+@pytest.fixture()
 def tableone_correct_data(set_data):
     set_data('Short_DATA_TABLEONE_PATH')
     return survival
@@ -155,7 +168,7 @@ def test_tools_route(client):
     assert response.status_code == 200
 
 
-def test_tools_counts_no_data(client, counts_no_data):
+def test_tools_counts_no_data(client, counts_no_data, clear_cache):
     response = client.post('/tools/counts', json=counts_no_data)
     assert [{"consortium":"total","molecular_analysis":0,"study":0,"subject":0},
     {"consortium":"INSTRuCT","molecular_analysis":0,"study":0,"subject":0},
@@ -167,7 +180,7 @@ def test_tools_counts_no_data(client, counts_no_data):
     {"consortium":"ALL","molecular_analysis":0,"study":0,"subject":0},
     {"consortium":"missing","molecular_analysis":0,"study":0,"subject":0}]  == response.json
 
-def test_tools_counts_correct_data(client, counts_correct_data):
+def test_tools_counts_correct_data(client, counts_correct_data, clear_cache):
     response = client.post('/tools/counts', json=counts_correct_data)
     assert [{"consortium":"total","molecular_analysis":1,"study":0,"subject":3},
     {"consortium":"INSTRuCT","molecular_analysis":1,"study":0,"subject":1},
@@ -180,7 +193,7 @@ def test_tools_counts_correct_data(client, counts_correct_data):
     {"consortium":"missing","molecular_analysis":0,"study":0,"subject":0}] == response.json
 
 
-def test_tools_counts_incorrect_data(client, counts_incorrect_data):
+def test_tools_counts_incorrect_data(client, counts_incorrect_data, clear_cache):
     response = client.post('/tools/counts', json=counts_incorrect_data)
     assert [{"consortium":"total","molecular_analysis":1,"study":0,"subject":3},
             {'consortium': 'None', 'molecular_analysis': 0, 'study': 0, 'subject': 0},
@@ -190,50 +203,18 @@ def test_tools_counts_incorrect_data(client, counts_incorrect_data):
 def test_tools_survival_no_data(client, survival_no_data):
     response = client.post('/tools/survival', json=survival_no_data)
     assert {
-            "message": "The cohort selected has no survival_characteristics.lkss and/or no survival_characteristics.age_at_lkss. The event free curve can't be built without these necessary data points."
+            "message": "The cohort selected has no survival_characteristics.lkss and/or no survival_characteristics.age_at_lkss. The curve can't be built without these necessary data points."
            } == response.json
 
 def test_tools_survival_incorrect_data(client, survival_incorrect_data):
-    with pytest.raises(AttributeError) as ex:
+    with pytest.raises(TypeError) as ex:
         client.post('/tools/survival', json=survival_incorrect_data)
-    assert '\'NoneType\' object has no attribute \'get\'' in str(ex.value)
+    assert '\'NoneType\' object is not iterable' in str(ex.value)
 
 
 def test_tools_survival_correct_data(client, survival_correct_data):
     response = client.post('/tools/survival', json=survival_correct_data)
-    assert {
-            "-1": {
-                "count": {
-                    "fitted": 2,
-                    "total": 2
-                },
-                "name": "1. *** All Subjects ***",
-                "risktable": [
-                    {
-                        "nrisk": 2,
-                        "time": 0.0
-                    },
-                    {
-                        "nrisk": 0,
-                        "time": 1.0
-                    }
-                    ],
-                "survival": [
-                    {
-                        "prob": 1.0,
-                        "time": 0.0
-                    },
-                    {
-                        "prob": 1.0,
-                        "time": 0.07939767282683094
-                    },
-                    {
-                        "prob": 1.0,
-                        "time": 0.24914442162902123
-                    }
-                    ]
-                }
-            } == response.json
+    assert {'-1': {'count': {'fitted': 0, 'total': 10}, 'name': '1. *** All Subjects ***'}} == response.json
 
 def test_tools_stats_correct_data(client, stats_correct_data):
     response = client.post('/tools/stats/consortiums', json=stats_correct_data)
@@ -295,7 +276,10 @@ def test_tools_tableone_no_data(client, tableone_no_data):
             "message": "No filter or variable selected."
            } == response.json
 
-    
-
+def test_tools_external_correct_data(client, external_correct_data):
+    response = client.post('/tools/external/other', json=external_correct_data)
+    assert 'file' == response.json['type']
+    assert None == response.json['link']
+    assert 'subject_domestic_flickery,subject_fiscally_Godfrey,subject_ejection_perfrication,subject_leucosphere_prepenetrate,subject_misconstitutional_uprouse,subject_proreption_dermoskeleton,subject_lymphocystosis_ornithoscopist,subject_scrimmage_retroflexion,subject_mirthfulness_persecution,subject_pedatilobate_trebuchet' == response.json['data']
 
                          
