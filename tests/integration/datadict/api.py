@@ -76,7 +76,6 @@ def app_init(app):
         app.secret_key = app.config["FLASK_SECRET_KEY"]
     except KeyError:
         app.logger.error("Secret key not set in config! Authentication will not work")
-    
     PcdcAnalysisTools_blueprint = PcdcAnalysisTools.create_blueprint("submission")
 
     try:
