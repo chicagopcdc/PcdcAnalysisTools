@@ -1,9 +1,12 @@
 [tool.poetry]
 name = "pcdcanalysistools"
-version = "0.1.12"
+version = "0.2.0"
 description = "microservice analysis tools"
 authors = ["Your Name <you@example.com>"]
 license = "Apache License 2.0"
+packages = [
+    { include = "PcdcAnalysisTools" }
+]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0.0"
@@ -33,6 +36,9 @@ numpy = "^1.17.3"
 scipy = ">=1.10.0"
 pandas = "1.4.2"
 lifelines = "^0.25.2"
+gunicorn = ">=21.2.0"
+psycopg2 = ">=2.8.2,<2.9.0"
+
 
 
 
