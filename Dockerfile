@@ -53,4 +53,6 @@ USER gen3
 
 WORKDIR /${appname}
 
-CMD ["/PcdcAnalysisTools/dockerrun.bash"]
+RUN chmod 755 /${appname}/dockerrun.bash
+
+CMD ["/bin/bash", "-c", "/PcdcAnalysisTools/dockerrun.bash"]
