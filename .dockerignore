@@ -1,0 +1,9 @@
+# Ignore the .env file
+.env
+
+# Optionally, ignore other sensitive or unnecessary files
+*.log
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store

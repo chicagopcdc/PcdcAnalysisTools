@@ -1,6 +1,6 @@
 from PcdcAnalysisTools.api import app, app_init
 from os import environ
-import confighelper
+import bin.confighelper as confighelper
 from pcdcutils.environment import is_env_enabled
 
 APP_NAME='PcdcAnalysisTools'
