@@ -39,10 +39,10 @@ lifelines = "^0.25.2"
 # added in final container
 addict = "^2.4.0"
 argparse = "^1.4.0"
-pycryptodome = "3.19.0"
+pycryptodome = "^3.21.0"
 python-Levenshtein = "^0.12.0"
 markupsafe = ">=2.1.1"
-pcdcutils = {git = "https://github.com/chicagopcdc/pcdcutils.git", rev = "0.4.1"}
+pcdcutils = {git = "https://github.com/chicagopcdc/pcdcutils.git", rev = "PEDS-1379"}
 python-dotenv = "^0.20.0"
 
 
