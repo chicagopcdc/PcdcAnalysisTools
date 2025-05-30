@@ -19,14 +19,12 @@ RUN yum install -y \
     libpq-devel && \
     yum clean all
 
+# May need to uncomment this for nerdctl builds
+# RUN ln -s /usr/bin/python3 /usr/bin/python || true
+
 USER gen3
 
 COPY --chown=gen3:gen3 . /${appname}
-
-USER root
-RUN ln -s /usr/bin/python3 /usr/bin/python || true
-
-USER gen3
 
 RUN poetry install -vv --without dev --no-interaction
 
