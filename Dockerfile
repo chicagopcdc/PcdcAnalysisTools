@@ -23,6 +23,11 @@ USER gen3
 
 COPY --chown=gen3:gen3 . /${appname}
 
+USER root
+RUN ln -s /usr/bin/python3 /usr/bin/python || true
+
+USER gen3
+
 RUN poetry install -vv --without dev --no-interaction
 
 RUN git config --global --add safe.directory ${appname} && COMMIT=`git rev-parse HEAD` && echo "COMMIT=\"${COMMIT}\"" > ${appname}/version_data.py \

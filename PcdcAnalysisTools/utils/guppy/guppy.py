@@ -1,12 +1,22 @@
-import requests
 import json
+import logging
+import requests
 
 from PcdcAnalysisTools.auth import get_jwt_from_header
-from pcdcutils.signature import SignatureManager
 from pcdcutils.errors import NoKeyError
 from pcdcutils.helpers import encode_str
 from pcdcutils.gen3 import Gen3RequestManager
 from types import SimpleNamespace
+
+
+# Compatibility helper to wrap a string body in an async function.
+# This allows synchronous Flask code to provide a payload compatible with
+# async signature generation logic (used by FastAPI-based services).
+def wrap_async_body(data):
+    async def _wrapped():
+        return data.encode()
+
+    return _wrapped
 
 
 def downloadDataFromGuppy(
@@ -33,7 +43,7 @@ def downloadDataFromGuppy(
 
             key = config.get(f"{service_name}_PRIVATE_KEY")
 
-            # Try to find the specific private key for this service (e.g., PCDCANALYSIS_PRIVATE_KEY).
+            # Try to find the specific private key for this service (e.g., PCDCANALYSISTOOLS_PRIVATE_KEY).
             # If it's not found, fall back to a shared RSA_PRIVATE_KEY. This supports legacy behavior.
             if not key:
                 key = config.get("RSA_PRIVATE_KEY")
@@ -58,7 +68,7 @@ def downloadDataFromGuppy(
                 SimpleNamespace(
                     method=method,
                     url=SimpleNamespace(path=path),
-                    body=lambda: body.encode(),
+                    body=wrap_async_body(body),
                 ),
                 signing_config,
             )
