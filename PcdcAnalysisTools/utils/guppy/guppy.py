@@ -55,6 +55,7 @@ def downloadDataFromGuppy(
             print("AAAAAAAAA")
             print(body)
             print(headers)
+            print(config)
           
             r = requests.post(
                 url,
