@@ -26,10 +26,6 @@ def downloadDataFromGuppy(
             queryBody["accessibility"] = "accessible"
 
         try:
-            print("AAABBBBBBBBBB")
-            print(config)
-
-
             url = path
             jwt = get_jwt_from_header()
             headers = {
@@ -50,6 +46,9 @@ def downloadDataFromGuppy(
             )
 
             g3rm = Gen3RequestManager(headers=headers)
+
+            print("AAABBBBBBBBBB")
+            print(config)
             signature = g3rm.make_gen3_signature(payload, config=config)
 
             headers["Content-Type"] = "application/json"
