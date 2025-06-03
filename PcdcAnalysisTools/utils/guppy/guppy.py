@@ -26,6 +26,10 @@ def downloadDataFromGuppy(
             queryBody["accessibility"] = "accessible"
 
         try:
+            print("AAABBBBBBBBBB")
+            print(config)
+
+
             url = path
             jwt = get_jwt_from_header()
             headers = {
