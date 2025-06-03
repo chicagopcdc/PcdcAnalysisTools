@@ -44,18 +44,25 @@ def downloadDataFromGuppy(
                 print("No RSA_PRIVATE_KEY configured — cannot sign request")
                 raise NoKeyError("Missing RSA_PRIVATE_KEY — cannot sign request")
 
-            g3rm = Gen3RequestManager(headers={})
+            g3rm = Gen3RequestManager()
+
+            # --- Prepare body ---
+            body = json.dumps(queryBody, separators=(",", ":"))
+            body_signature = json.dumps(
+                queryBody, separators=(",", ":"), ensure_ascii=False
+            )
 
             # --- Prepare SignaturePayload ---
             from urllib.parse import urlparse
+            from types import SimpleNamespace
 
             parsed_url = urlparse(url)
             path_only = parsed_url.path
 
-            payload = SignaturePayload(
+            payload = SimpleNamespace(
                 method="POST",
                 path=path_only,
-                headers={"Gen3-Service": config.get("SERVICE_NAME")},
+                get_data=lambda as_text=True: body_signature,  # Sign the BODY
             )
 
             signature = g3rm.make_gen3_signature(payload, config=config)
@@ -68,8 +75,7 @@ def downloadDataFromGuppy(
                 "Gen3-Service": encode_str(config.get("SERVICE_NAME")),
             }
 
-            body = json.dumps(queryBody, separators=(",", ":"))
-
+            # --- POST ---
             r = requests.post(
                 url,
                 data=body,
