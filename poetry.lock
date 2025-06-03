@@ -3020,8 +3020,8 @@ pycryptodome = "3.21.0"
 [package.source]
 type = "git"
 url = "https://github.com/chicagopcdc/pcdcutils.git"
-reference = "test_1"
-resolved_reference = "9e812ac50e3afb11c1465c325770036697cc229b"
+reference = "test_2"
+resolved_reference = "748d592e49695286d0316cb699ac9b744b30f3f3"
 
 [[package]]
 name = "pillow"
@@ -4800,4 +4800,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<4.0.0"
-content-hash = "f11ac491335952df130be28b9284b60d7269f5a8b32a24a9f780c4d30646a09d"
+content-hash = "6ff659ade94f214b53c60b4709c3f7b45b8219f6ff862853e013aca15009e80c"
