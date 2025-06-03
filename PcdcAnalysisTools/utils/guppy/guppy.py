@@ -52,11 +52,6 @@ def downloadDataFromGuppy(
             headers["Content-Type"] = "application/json"
             headers["Authorization"] = "bearer " + jwt
             headers["Signature"] = "signature " + signature
-
-            print("AAAAAAAAA")
-            print(body)
-            print(headers)
-            print(config)
           
             r = requests.post(
                 url,
