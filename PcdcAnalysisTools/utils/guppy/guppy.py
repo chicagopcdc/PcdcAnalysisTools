@@ -53,6 +53,7 @@ def downloadDataFromGuppy(
             headers["Signature"] = "signature " + signature
 
             print("AAAAAAAAA")
+            print(body)
             print(headers)
           
             r = requests.post(
