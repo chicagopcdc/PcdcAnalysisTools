@@ -49,7 +49,7 @@ pycryptodome = "^3.21.0"
 python-Levenshtein = "^0.12.0"
 markupsafe = ">=2.1.1"
 # Testing a fix to pcdcutils
-pcdcutils = {git = "https://github.com/chicagopcdc/pcdcutils.git", rev = "test_4"}
+pcdcutils = {git = "https://github.com/chicagopcdc/pcdcutils.git", rev = "test_5"}
 python-dotenv = "^0.20.0"
 
 
