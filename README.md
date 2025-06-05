@@ -54,6 +54,7 @@ create .env file:
     DATA_PATH = 'test_data\data_short_stats.json'
     Short_DATA_SURVIVAL_PATH = 'test_data\data_short_survival.json'
     Short_DATA_STATS_PATH = 'test_data\data_short_stats.json'
+    SHORT_DATA_EXTERNAL_PATH = 'test_data\data_external.json'
     Short_DATA_TABLEONE_PATH = 'test_data\data_short_tableone.json'
     MOCK_DATA = 'True'
 
