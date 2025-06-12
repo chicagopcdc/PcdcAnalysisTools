@@ -99,6 +99,12 @@ routes = [
         endpoint="tableone",
         methods=["POST"],
     ),
+    new_route(
+        "/tableone/config",
+        views.tableOne.get_config,
+        endpoint="tableone/config",
+        methods=["GET"],
+    ),
 
 
     # new_route("/<program>", views.program.delete_program, methods=["DELETE"]),
