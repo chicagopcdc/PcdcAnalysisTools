@@ -15,10 +15,14 @@ from PcdcAnalysisTools.blueprint.routes.views.stats import get_consortium_list
 
 logger = get_logger(logger_name=__name__, log_level="info")
 
-DEFAULT_TABLE_ONE_CONFIG = {"consortium": ["INRG", "INTERACT"], "excluded_variables": [], "result": {}}
+DEFAULT_TABLE_ONE_CONFIG = {"consortium": ["INRG", "INTERACT", "INSTRuCT"], "excluded_variables": [], "result": {"enabled": True}}
 @auth.authorize_for_analysis("access")
 def get_config():
     config = capp.config.get("TABLE_ONE", DEFAULT_TABLE_ONE_CONFIG)
+    #change the name of the key from excluded_variables to excludedVariables
+    config = dict(config)  # make a shallow copy so we don't modify the original
+    if "excluded_variables" in config:
+        config["excludedVariables"] = config.pop("excluded_variables")
     return flask.jsonify(config)
 
 
@@ -88,7 +92,6 @@ def _get_table_one_df(filterset, fields):
             nested_fields = field.split('.')
             base_field = nested_fields[0]  # The column name (e.g., 'survival_characteristics')
             target_field = nested_fields[-1]  # The field to extract (e.g., 'lkss_obfuscated')
-            
             # Check if the column exists
             if base_field in df.columns:
                 # Handle lists of dictionaries - extract the first value that matches
@@ -152,7 +155,7 @@ def _check_user_input(args):
     for filter_set in filter_sets:
         try:
             log_obj["filter"] = filter_set["filter"]
-            log_obj["explorer_id"] = filter_set["explorerId"]
+            # log_obj["explorer_id"] = filter_set["explorerId"]
             log_obj["filter_name"] = filter_set["name"]
             log_obj["filter_set_id"] = filter_set["id"]
             logger.info(log_obj)
@@ -204,7 +207,7 @@ def _get_table_result(col_2_df, col_3_df, covariates, config):
     true_number = len(col_2_df)
     total_number = len(col_3_df)
 
-    return_table = {"variables": [], "true_count": true_number, "total_count": total_number}
+    return_table = {"variables": [], "trueCount": true_number, "totalCount": total_number}
     
     #  for each covariate, so for each row / variables it computes 
     # for continous should bucketize the response, and the buckets shoud come from the user input, not sure it is doing this
@@ -219,18 +222,17 @@ def _get_table_result(col_2_df, col_3_df, covariates, config):
         missing_count_from_true = col_2_df[covariate['label']].isnull().sum()
         missing_count_from_total = col_3_df[covariate['label']].isnull().sum()
 
-        covariate_return_value["missing_from_true"] = '{:.1%}'.format(missing_count_from_true / true_number)
-        covariate_return_value["missing_from_total"] = '{:.1%}'.format(missing_count_from_total / total_number)
+        covariate_return_value["missingFromTrue"] = '{:.1%}'.format(missing_count_from_true / true_number)
+        covariate_return_value["missingFromTotal"] = '{:.1%}'.format(missing_count_from_total / total_number)
 
         if covariate["type"] == "continuous":
             #need to figure out how to find unit in data-portal
             #removed unit for now/int(covariate['unit']
             #this is rounding 
-            true_mean = format(col_2_df[covariate['label']].mean(), '0.0f' )
-            total_mean = format(col_3_df[covariate['label']].mean(), '0.0f' )
-            keys.append({"name" : "" , "data" : {f"true": true_mean, "total": total_mean}})
-            
-
+            true_mean = format(col_2_df[covariate['label']].mean(), '.1f' )
+            total_mean = format(col_3_df[covariate['label']].mean(), '.1f' )
+            covariate_return_value["mean"] = {f"true": true_mean, "total": total_mean}
+            covariate_return_value["type"] = "continuous"
         elif covariate["type"] == "categorical":
             
             for selected_key in covariate["selectedKeys"]:
@@ -242,14 +244,17 @@ def _get_table_result(col_2_df, col_3_df, covariates, config):
                 total_percentage = '{:.1%}'.format(total_count / total_number)
 
                 keys.append({"name": selected_key, "data": {f"true": true_percentage, "total": total_percentage}})
-        
+
+            covariate_return_value["keys"] = keys
+            covariate_return_value["type"] = "categorical"
+
         else:
 
             raise UserError(
                 f"Unsupported covariate type: {covariate}. Supported types are 'continuous' and 'categorical'."
             )
         
-        covariate_return_value["keys"] = keys
+        
         return_table["variables"].append(covariate_return_value)
      
 
