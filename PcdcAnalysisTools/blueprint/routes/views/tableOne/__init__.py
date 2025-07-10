@@ -15,7 +15,7 @@ from PcdcAnalysisTools.blueprint.routes.views.stats import get_consortium_list
 
 logger = get_logger(logger_name=__name__, log_level="info")
 
-DEFAULT_TABLE_ONE_CONFIG = {"consortium": ["INRG", "INTERACT", "INSTRuCT"], "excluded_variables": [], "result": {"enabled": True}}
+DEFAULT_TABLE_ONE_CONFIG = {"consortium": [], "excluded_variables": [], "result": {"enabled": True}}
 @auth.authorize_for_analysis("access")
 def get_config():
     config = capp.config.get("TABLE_ONE", DEFAULT_TABLE_ONE_CONFIG)
@@ -63,12 +63,6 @@ def get_result():
     total_filter_set_df = _get_table_one_df({"AND":[{"IN":{"consortium":config["consortium"]}}]}, fields)
     total_fs_df_less_user_fs_df = _find_inverse_user_df(total_filter_set_df, user_filter_set_df)
 
-    # # this IF statement is supposed to execute for every nested object in the data, not just survival_characteristics
-    # # tries to expand each col of the nested object in its own col. subject.survival_characteristics is a list of object of survival_characteristics type
-    # # so in short it flattens the nested object in the dataframe
-
-    
-    user_filter_set_df.to_csv('/tmp/guppy_table_one.csv', index=False)
 
     res = _get_table_result(user_filter_set_df, total_fs_df_less_user_fs_df, covariates, config)
     return flask.jsonify(res)
@@ -154,11 +148,12 @@ def _check_user_input(args):
             )
     for filter_set in filter_sets:
         try:
+
             log_obj["filter"] = filter_set["filter"]
             # log_obj["explorer_id"] = filter_set["explorerId"]
             log_obj["filter_name"] = filter_set["name"]
             log_obj["filter_set_id"] = filter_set["id"]
-            logger.info(log_obj)
+            logger.info(f"TABLE ONE - {log_obj}")
         except KeyError as e:
             raise UserError(f"Missing required field in filter set: {e}")
         
