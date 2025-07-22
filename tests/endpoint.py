@@ -143,6 +143,21 @@ def external_correct_data(set_data):
     set_data('SHORT_DATA_EXTERNAL_PATH')
     return survival
 
+@pytest.fixture()
+def tableone_correct_data(set_data):
+    set_data('Short_DATA_TABLEONE_PATH')
+    return survival
+
+@pytest.fixture()
+def tableone_no_data(set_data):
+    set_data('NO_DATA_PATH')
+    return survival
+
+@pytest.fixture()
+def tableone_incorrect_data(set_data):
+    set_data('Short_DATA_TABLEONE_PATH')
+    return {}
+
 def test_enviorment():
     assert app.mock_data == 'True'
 
@@ -213,6 +228,53 @@ def test_tools_stats_incorrect_data(client, stats_no_data):
     response = client.post('/tools/stats/consortiums', json=stats_no_data)
     assert [] == response.json
 
+
+def test_tools_tableone_correct_data(client, tableone_correct_data):
+    response = client.post('/tools/tableone', json=tableone_correct_data)
+    assert {
+            "variables": [
+                {
+                "keys": [
+                    {
+                    "data": {
+                        "true": "19.8%",
+                    },
+                    "name": "Alive",
+                    },
+                    {
+                    "data": {
+                        "true": "33.0%",
+                    },
+                    "name": "Dead",
+                    },
+                    {
+                    "data": {
+                        "true": "17.6%",
+                    },
+                    "name": "Unknown",
+                    },
+                ],
+                "name": "lkss",
+                "size": {
+                    "total": 363,
+                    "true": 91,
+                },
+                },
+            ],
+            } == response.json
+
+
+def test_tools_tableone_incorrect_data(client, tableone_no_data):
+    response = client.post('/tools/tableone', json=tableone_no_data)
+    assert {
+            "message": "Error in selected filters or variables."
+           } == response.json
+
+def test_tools_tableone_no_data(client, tableone_no_data):
+    response = response = client.post('/tools/tableone', json=tableone_no_data)
+    assert {
+            "message": "No filter or variable selected."
+           } == response.json
 
 def test_tools_external_correct_data(client, external_correct_data):
     response = client.post('/tools/external/other', json=external_correct_data)

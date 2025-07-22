@@ -8,6 +8,7 @@ from lifelines import KaplanMeierFitter
 from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
 from PcdcAnalysisTools.errors import AuthError, NotFoundError, UnsupportedError, UserError
+from PcdcAnalysisTools.blueprint.routes.views.stats import get_consortium_list
 
 import numpy as np
 import pandas as pd
@@ -54,7 +55,8 @@ def get_result():
         filter_set_id = filter_set.get("id")
         user_filter = filter_set.get("filters")
 
-        is_filterset_allowed = check_allowed_filter(config, user_filter)
+        is_filterset_allowed = check_allowed_filter(config, filter_sets[0]["filter"]) and \
+                                set(get_consortium_list(filter_sets[0]["filter"])).issubset(set(config.get("consortium")))
 
         if is_filterset_allowed:
             data = fetch_data(config, user_filter, efs_flag)
