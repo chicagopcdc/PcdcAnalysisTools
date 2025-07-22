@@ -55,6 +55,7 @@ create .env file:
     Short_DATA_SURVIVAL_PATH = 'test_data\data_short_survival.json'
     Short_DATA_STATS_PATH = 'test_data\data_short_stats.json'
     SHORT_DATA_EXTERNAL_PATH = 'test_data\data_external.json'
+    Short_DATA_TABLEONE_PATH = 'test_data\data_short_tableone.json'
     MOCK_DATA = 'True'
 
 if MOCK_DATA does not equal true then data will come from guppy data otherwise data will come from mock data from json files
