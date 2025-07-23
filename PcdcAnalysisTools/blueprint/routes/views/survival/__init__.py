@@ -44,7 +44,7 @@ def get_result():
             user = auth.get_current_user()
             log_obj["user_id"] = user.id
         except AuthError:
-            logger.warning(
+            capp.logger.warning(
                 "Unable to load or find the user, check your token"
             )
     capp.logger.info("SURVIVAL TOOL - " + json.dumps(log_obj))
@@ -54,16 +54,14 @@ def get_result():
         # the default "All Subjects" option has filter set id of -1
         filter_set_id = filter_set.get("id")
         user_filter = filter_set.get("filters")
-
-        is_filterset_allowed = check_allowed_filter(config, filter_sets[0]["filter"]) and \
-                                set(get_consortium_list(filter_sets[0]["filter"])).issubset(set(config.get("consortium")))
+        is_filterset_allowed = check_allowed_filter(config, filter_set["filters"]) and \
+                                set(get_consortium_list(filter_set["filters"])).issubset(set(config.get("consortium")))
 
         if is_filterset_allowed:
             data = fetch_data(config, user_filter, efs_flag)
             result = get_survival_result(data, risktable_flag, survival_flag)
         else:
-            data = None
-            result = None
+            raise UserError("The provided filterset is not allowed")
 
         survival_results[filter_set_id] = result
         survival_results[filter_set_id]["name"] = filter_set.get("name")
