@@ -54,9 +54,8 @@ def get_result():
         # the default "All Subjects" option has filter set id of -1
         filter_set_id = filter_set.get("id")
         user_filter = filter_set.get("filters")
-        is_filterset_allowed = check_allowed_filter(config, user_filter)
-        # is_filterset_allowed = check_allowed_filter(config, filter_set["filters"]) and \
-                                # set(get_consortium_list(filter_set["filters"])).issubset(set(config.get("consortium")))
+        is_filterset_allowed = check_allowed_filter(config, filter_set["filters"]) and \
+                                set(get_consortium_list(filter_set["filters"])).issubset(set(config.get("consortium")))
 
         if is_filterset_allowed:
             data = fetch_data(config, user_filter, efs_flag)
