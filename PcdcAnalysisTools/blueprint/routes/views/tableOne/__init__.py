@@ -15,7 +15,7 @@ from PcdcAnalysisTools.blueprint.routes.views.stats import get_consortium_list
 
 logger = get_logger(logger_name=__name__, log_level="info")
 
-DEFAULT_TABLE_ONE_CONFIG = {"consortium": [], "excluded_variables": [], "result": {"enabled": True}}
+DEFAULT_TABLE_ONE_CONFIG = {"consortium": [], "excluded_variables": [], "enabled": True}
 @auth.authorize_for_analysis("access")
 def get_config():
     config = capp.config.get("TABLE_ONE", DEFAULT_TABLE_ONE_CONFIG)
@@ -37,16 +37,9 @@ covarname = {
  # TODO - add mock options to run it locally for dev / testing 
 @auth.authorize_for_analysis("access")
 def get_result():
-    config = capp.config.get("TABLE_ONE", DEFAULT_TABLE_ONE_CONFIG)
-    try: 
-        args = utils.parse.parse_request_json()
-        _check_user_input(args)
-    
-    except Exception as e:
-        logger.error(f"Error processing request: {e}")
-        raise UserError(
-            "There was an error processing your request. Please check your input and try again."
-        )
+    config = capp.config.get("TABLE_ONE", DEFAULT_TABLE_ONE_CONFIG) 
+    args = utils.parse.parse_request_json()
+    _check_user_input(args)
     
     filter_set = args.get("filterSets")[0]
     covariates = args.get("covariates")
@@ -167,6 +160,11 @@ def _check_user_input(args):
     if_filterset_allowed = check_allowed_filter(config, filter_sets[0]["filter"]) and \
                            set(get_consortium_list(filter_sets[0]["filter"])).issubset(set(config.get("consortium")))
     
+    disallowed_variables = [variable['field'] for variable in config.get("excluded_variables", [])]
+    for label, covariate in covariates.items():
+        if covariate['label'] in disallowed_variables:
+            raise UserError(f"Covariate '{label}' is not allowed in this analysis.")
+    
     if not if_filterset_allowed:
         raise UserError("The filter set is not allowed for this analysis. Please check the filter set and try again.")
     
@@ -218,7 +216,9 @@ def _get_table_result(col_2_df, col_3_df, covariates, config):
         missing_count_from_total = col_3_df[covariate['label']].isnull().sum()
 
         covariate_return_value["missingFromTrue"] = '{:.1%}'.format(missing_count_from_true / true_number)
+        covariate_return_value["missingFromTrueCount"] = int(missing_count_from_true)
         covariate_return_value["missingFromTotal"] = '{:.1%}'.format(missing_count_from_total / total_number)
+        covariate_return_value["missingFromTotalCount"] = int(missing_count_from_total)
 
         if covariate["type"] == "continuous":
             #need to figure out how to find unit in data-portal
@@ -238,7 +238,7 @@ def _get_table_result(col_2_df, col_3_df, covariates, config):
                 total_count = (col_3_df[covariate["label"]] == selected_key).sum()
                 total_percentage = '{:.1%}'.format(total_count / total_number)
 
-                keys.append({"name": selected_key, "data": {f"true": true_percentage, "total": total_percentage}})
+                keys.append({"name": selected_key, "data": {f"true": true_percentage, "trueCount": int(true_count), "total": total_percentage, "totalCount": int(total_count)}})
 
             covariate_return_value["keys"] = keys
             covariate_return_value["type"] = "categorical"
