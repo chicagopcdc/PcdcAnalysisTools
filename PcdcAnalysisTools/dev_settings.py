@@ -137,7 +137,7 @@ EXTERNAL = {
     }
 }
 
-TABLE_ONE = {
+TABLE_ONE =  {
     'consortium': ["INSTRuCT", "INRG", "MaGIC", "NODAL", "INTERACT"],
     'excluded_variables': [
         {
@@ -153,8 +153,5 @@ TABLE_ONE = {
             'field': 'studies.treatment_arm',
         }
     ],
-
-    'result': {
-        'enabled': True
-    }
+    "enabled": True
 }
