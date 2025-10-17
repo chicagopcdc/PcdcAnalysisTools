@@ -9,7 +9,11 @@ from PcdcAnalysisTools import auth
 
 
 # Import and build configuration variables
-DEFAULT_EXTERNAL_CONFIG = {"commons": [{"label": 'Genomic Data Commons', "value": 'gdc'}, {"label": 'Gabriella Miller Kids First', "value": 'gmkf'}], "commons_dict": {"gdc": "TARGET - GDC", "gmkf": "GMKF"}}
+DEFAULT_EXTERNAL_CONFIG = {"commons": [
+                            {"label": 'Genomic Data Commons', "value": 'gdc'}, 
+                            {"label": 'Gabriella Miller Kids First', "value": 'gmkf'},
+                            {"label": 'Imaging Data Common', "value": 'idc'}], 
+                          "commons_dict": {"gdc": "TARGET - GDC", "gmkf": "GMKF", "idc": "Imaging Data Common"}}
 other = "other"
 
 
@@ -125,6 +129,8 @@ def get_link(common):
         return 'https://portal.kidsfirstdrc.org/data-exploration'
     elif common == 'cds':
         return 'https://dataservice.datacommons.cancer.gov/#/data'
+    elif common == 'idc':
+        return 'https://portal.imaging.datacommons.cancer.gov/explore/'
     else:
         return None
 
