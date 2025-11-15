@@ -15,6 +15,8 @@ import pandas as pd
 
 DEFAULT_SURVIVAL_CONFIG = {"consortium": [], "excluded_variables": [], "result": {}}
 
+# TODO: consider a simple cache keyed by (efs_flag, consortium, filters) to reuse guppy_data across repeated runs.
+
 
 @auth.authorize_for_analysis("access")
 def get_config():
@@ -24,13 +26,20 @@ def get_config():
 
 @auth.authorize_for_analysis("access")
 def get_result():
+    # provides a Python dict built from the request JSON
     args = utils.parse.parse_request_json()
     config = capp.config.get("SURVIVAL", DEFAULT_SURVIVAL_CONFIG)
 
     # TODO add json payload control
     # TODO add check on payload nulls and stuff
     # TODO add path in the config file or ENV variable
-    filter_sets = json.loads(json.dumps(args.get("filterSets")))
+    raw_filter_sets = args.get("filterSets") or []
+    if not isinstance(raw_filter_sets, list):
+        raise UserError("filterSets must be a list")
+
+    # clean copy of list
+    filter_sets = list(raw_filter_sets)
+
     risktable_flag = config.get("result").get("risktable", False)
     survival_flag = config.get("result").get("survival", False)
     efs_flag = args.get('efsFlag', False)
@@ -47,7 +56,8 @@ def get_result():
             capp.logger.warning(
                 "Unable to load or find the user, check your token"
             )
-    capp.logger.info("SURVIVAL TOOL - " + json.dumps(log_obj))
+
+    # capp.logger.info("SURVIVAL TOOL - " + json.dumps(log_obj))
 
     survival_results = {}
     for filter_set in filter_sets:
@@ -80,6 +90,7 @@ OVERALL_TIME_VAR = "survival_characteristics.age_at_lkss"
 AGE_AT_DISEASE_PHASE = "timings.age_at_disease_phase"
 DISEASE_PHASE = "timings.disease_phase"
 
+
 def fetch_data(config, filters, efs_flag):
     status_str, status_var, time_var = (
         (EVENT_FREE_STATUS_STR, EVENT_FREE_STATUS_VAR, EVENT_FREE_TIME_VAR)
@@ -94,23 +105,22 @@ def fetch_data(config, filters, efs_flag):
         guppy_data = json.load(f)
     else:
         guppy_data = utils.guppy.downloadDataFromGuppy(
-        path=capp.config['GUPPY_API'] + "/download",
-        type="subject",
-        totalCount=100000,
-        fields=[status_var, time_var, DISEASE_PHASE, AGE_AT_DISEASE_PHASE],
-        filters=(
-            {"AND": [
-                {"IN": {"consortium": config.get('consortium')}},
-                filters
-            ]}
-            if config.get('consortium')
-            else filters
-        ),
-        sort=[],
-        accessibility="accessible",
-        config=capp.config
-    )
-
+            path=capp.config['GUPPY_API'] + "/download",
+            type="subject",
+            totalCount=100000,
+            fields=[status_var, time_var, DISEASE_PHASE, AGE_AT_DISEASE_PHASE],
+            filters=(
+                {"AND": [
+                    {"IN": {"consortium": config.get('consortium')}},
+                    filters
+                ]}
+                if config.get('consortium')
+                else filters
+            ),
+            sort=[],
+            accessibility="accessible",
+            config=capp.config
+        )
 
     node, age_at_disease_phase = AGE_AT_DISEASE_PHASE.split('.')
     node, disease_phase = DISEASE_PHASE.split('.')
@@ -160,7 +170,6 @@ def fetch_data(config, filters, efs_flag):
         raise NotFoundError("The cohort selected has no {} and/or no {}. The curve can't be built without these necessary data points.".format(
             EVENT_FREE_STATUS_VAR if efs_flag else OVERALL_STATUS_VAR, EVENT_FREE_TIME_VAR if efs_flag else OVERALL_TIME_VAR))
    
-
     return (
         pd.DataFrame.from_records(guppy_data)
         .assign(
@@ -208,7 +217,7 @@ def get_survival_result(data, risktable_flag, survival_flag):
     # data_kmf['time'] = data_kmf['time'].astype(float)
 
     # print(result)
-    data_kmf.info()
+    # data_kmf.info()
     # print(data_kmf)
 
     if result["count"]["fitted"] == 0:
@@ -292,9 +301,3 @@ def check_allowed_filter(config, filter_set):
         if value in user_filter_str:
             raise UserError("One or more filters selected contains a variable that is not allowed. List of variable that are not allowed: {}".format(excluded_variables))
     return True
-
-
-
-
-
-
