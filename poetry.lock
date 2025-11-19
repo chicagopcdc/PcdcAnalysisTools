@@ -320,32 +320,28 @@ cryptography = "*"
 
 [[package]]
 name = "authutils"
-version = "7.1.0"
+version = "7.1.1"
 description = "Gen3 auth utility functions"
 optional = false
-python-versions = ">=3.9.2, <4.0"
+python-versions = "<4.0,>=3.9.2"
 groups = ["main"]
-files = []
-develop = false
+files = [
+    {file = "authutils-7.1.1-py3-none-any.whl", hash = "sha256:eaa5c1e7d7b98449f0ae196572b058d0a1a9bc4e4717001ff37ba3a00bde72ca"},
+    {file = "authutils-7.1.1.tar.gz", hash = "sha256:2a4638d3e2d3571f153f43c9006e40a852dedf4dd7562495699d5ee7b269044b"},
+]
 
 [package.dependencies]
-authlib = ">=1.6.4"
-cached-property = "~=1.4"
+authlib = ">=1.6.5"
+cached-property = ">=1.4,<2.0"
 cdiserrors = "<2.0.0"
-cryptography = "^44.0.1"
+cryptography = ">=44.0.1,<45.0.0"
 httpx = ">=0.23.0,<1.0.0"
 pyjwt = {version = ">=2.4.0,<3.0", extras = ["crypto"]}
-xmltodict = "~=0.9"
+xmltodict = ">=0.9,<1.0"
 
 [package.extras]
 fastapi = ["fastapi (>=0.65.2,<0.66.0)"]
 flask = ["Flask (<=2.3.3)"]
-
-[package.source]
-type = "git"
-url = "https://github.com/chicagopcdc/authutils.git"
-reference = "master"
-resolved_reference = "90d992aad090fe4e39c60c0a149de4501572ca27"
 
 [[package]]
 name = "autograd"
@@ -5419,4 +5415,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9.2,<4.0.0"
-content-hash = "2ee7e4875b86dd6b7f5ee625fd0ab1e45b1c11127b2a15767fbf6b162390369b"
+content-hash = "e92e1ddf35a217b457c4fd4387661359eb2e6568011d2f97eb69992c56f5d27f"

@@ -11,9 +11,7 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.9.2,<4.0.0"
 authlib = "*" # let authutils decide which version we're using
-authutils = {git = "https://github.com/chicagopcdc/authutils.git", rev = "master"} 
-# authutils = "^6.1.0"
-# authutils = "4.0.0"
+authutils = "7.1.1"
 boto = ">=2.39.0"
 # flask 2.2.0 removes `RequestContext.preserved` which we use in a workaround in `conftest.client`
 Flask = ">=2.2.5"
