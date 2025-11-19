@@ -9,9 +9,9 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<4.0.0"
+python = ">=3.9.2,<4.0.0"
 authlib = "*" # let authutils decide which version we're using
-authutils = ">=6.0.0"
+authutils = {git = "https://github.com/chicagopcdc/authutils.git", rev = "master"} 
 # authutils = "^6.1.0"
 # authutils = "4.0.0"
 boto = ">=2.39.0"
