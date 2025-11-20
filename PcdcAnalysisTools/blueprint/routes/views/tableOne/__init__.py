@@ -16,10 +16,12 @@ from PcdcAnalysisTools.blueprint.routes.views.stats import get_consortium_list
 logger = get_logger(logger_name=__name__, log_level="info")
 
 DEFAULT_TABLE_ONE_CONFIG = {"consortium": [], "excluded_variables": [], "enabled": True}
+
+
 @auth.authorize_for_analysis("access")
 def get_config():
     config = capp.config.get("TABLE_ONE", DEFAULT_TABLE_ONE_CONFIG)
-    #change the name of the key from excluded_variables to excludedVariables
+    # change the name of the key from excluded_variables to excludedVariables
     config = dict(config)  # make a shallow copy so we don't modify the original
     if "excluded_variables" in config:
         config["excludedVariables"] = config.pop("excluded_variables")
@@ -28,8 +30,8 @@ def get_config():
 
 # TODO - this is not used anywhere so I am not sure?? maybe it is the format expected for the `covariates` arg in the request 
 covarname = {
-    "sex":"sex",
-    "race":"race",
+    "sex": "sex",
+    "race": "race",
     "survival_characteristics.lkss":"lkss"
 }
 
@@ -96,9 +98,14 @@ def _check_user_input(args):
     
     config = capp.config.get("TABLE_ONE", DEFAULT_TABLE_ONE_CONFIG)
 
-    filter_sets = args.get("filterSets")
+    raw_filter_sets = args.get("filterSets") or []
+    if not isinstance(raw_filter_sets, list):
+        raise UserError("filterSets must be a list")
+
+    # clean copy of list
+    filter_sets = list(raw_filter_sets)
     covariates = args.get("covariates")
-    #for first version only allow one filter set
+    # for first version only allow one filter set
     if not filter_sets:
         raise UserError("You must submit a filter set")
     if len(filter_sets) != 1:
@@ -150,8 +157,6 @@ def _check_user_input(args):
         except KeyError as e:
             raise UserError(f"Missing required field in filter set: {e}")
         
-
-
     # TODO I assume we don't need a filter for all data aside from {} We will need to support consortiums limitations like for the survival.
     # I guess this is the reason of this allFilter variable?
     # we will also in addition to this need to check if the selected filters is allowed, like in the survival 
@@ -170,7 +175,7 @@ def _check_user_input(args):
     
 
 def _find_inverse_user_df(total_filter_set_df, user_filter_set_df):
-    ### compare the two pandas dataframes and create a new dataframe of the rows from total_filter_set_df whose values in subject_submitter_id are not in user_filter_set_df
+    # compare the two pandas dataframes and create a new dataframe of the rows from total_filter_set_df whose values in subject_submitter_id are not in user_filter_set_df
     if "subject_submitter_id" not in total_filter_set_df.columns or "subject_submitter_id" not in user_filter_set_df.columns:
         raise InternalError("Both dataframes must contain the 'subject_submitter_id' column to find the inverse.")
     # Find the subject_submitter_id values in user_filter_set_df
@@ -181,9 +186,10 @@ def _find_inverse_user_df(total_filter_set_df, user_filter_set_df):
     inverse_df.reset_index(drop=True, inplace=True)
     return inverse_df
 
+
 def _fetch_data(filters, fields):
     guppy_data = utils.guppy.downloadDataFromGuppy(
-        path=capp.config.get("GUPPY_API") + "/download",
+        path=capp.config['GUPPY_API'] + "/download",
         type="subject",
         totalCount=100000,
         fields=fields,     # TODO - check it is a list
@@ -193,8 +199,8 @@ def _fetch_data(filters, fields):
         config=capp.config
     )
 
-    
-    return(guppy_data)
+    return (guppy_data)
+
 
 def _get_table_result(col_2_df, col_3_df, covariates, config):
     true_number = len(col_2_df)
@@ -208,7 +214,7 @@ def _get_table_result(col_2_df, col_3_df, covariates, config):
 
         covariate_return_value = {"name": name}
         keys = []
-        #calcuate the total number of row values which are empty / data is missing for this column covariate['label']
+        # calcuate the total number of row values which are empty / data is missing for this column covariate['label']
         if covariate['label'] not in col_2_df.columns:
             raise InternalError(f"Covariate label '{covariate['label']}' not found in the data.")
         
@@ -221,9 +227,9 @@ def _get_table_result(col_2_df, col_3_df, covariates, config):
         covariate_return_value["missingFromTotalCount"] = int(missing_count_from_total)
 
         if covariate["type"] == "continuous":
-            #need to figure out how to find unit in data-portal
-            #removed unit for now/int(covariate['unit']
-            #this is rounding 
+            # need to figure out how to find unit in data-portal
+            # removed unit for now/int(covariate['unit']
+            # this is rounding 
             true_mean = format(col_2_df[covariate['label']].mean(), '.1f' )
             total_mean = format(col_3_df[covariate['label']].mean(), '.1f' )
             covariate_return_value["mean"] = {f"true": true_mean, "total": total_mean}
