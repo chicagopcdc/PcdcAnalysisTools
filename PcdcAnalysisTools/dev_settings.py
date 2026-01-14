@@ -128,12 +128,17 @@ EXTERNAL = {
         {
             'label': 'Common Data Service',
             'value': 'cds'
+        },
+        {   
+            'label': 'Imaging Data Common', 
+            'value': 'idc'
         }
     ], 
     "commons_dict": {
         "gdc": "TARGET - GDC", 
         "gmkf": "GMKF", 
-        "cds": "CDS"
+        "cds": "CDS",
+        "idc": "Imaging Data Common"
     }
 }
 
