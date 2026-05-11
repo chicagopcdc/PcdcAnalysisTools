@@ -1,6 +1,4 @@
-"""
-TODO
-"""
+"""Service-specific error types."""
 
 from cdiserrors import *
 
@@ -19,10 +17,19 @@ class UnsupportedError(UserError):
 
 class NoIndexForFileError(UserError):
     def __init__(self, file_id):
-        self.message = "Existing index is required for file creation. File id {} has no indexd record.".format(
+        message = "Existing index is required for file creation. File id {} has no indexd record.".format(
             file_id
         )
-        self.code = 400
+        super(NoIndexForFileError, self).__init__(message, 400, {})
+
+
+class UpstreamServiceError(APIError):
+    def __init__(self, upstream, message="upstream service request failed", code=502, json=None):
+        if json is None:
+            json = {}
+        details = {"upstream": upstream}
+        details.update(json)
+        super(UpstreamServiceError, self).__init__(message, code, details)
 
 
 class HandledIntegrityError(Exception):
