@@ -5,6 +5,7 @@ from PcdcAnalysisTools import utils
 from PcdcAnalysisTools import auth
 from PcdcAnalysisTools.errors import (
     AuthError,
+    UpstreamServiceError,
     UserError,
     InternalError,
 )
@@ -70,11 +71,11 @@ def _get_table_one_df(filterset, fields):
     try:
         data = _fetch_data(filterset, fields)
         df = pd.DataFrame(data)
-    except Exception as e:
+    except (TypeError, ValueError, KeyError, RuntimeError, UpstreamServiceError) as e:
         logger.error(f"Error fetching data from Guppy: {e}")
         raise InternalError(
             "There was an error fetching data from the data source. Please try again later."
-        )
+        ) from e
 
     if len(df) == 0:
         raise UserError(
@@ -191,7 +192,7 @@ def _check_user_input(args):
             log_obj["filter_set_id"] = filter_set["id"]
             logger.info(f"TABLE ONE - {log_obj}")
         except KeyError as e:
-            raise UserError(f"Missing required field in filter set: {e}")
+            raise UserError(f"Missing required field in filter set: {e}") from e
 
     # TODO I assume we don't need a filter for all data aside from {} We will need to support consortiums limitations like for the survival.
     # I guess this is the reason of this allFilter variable?

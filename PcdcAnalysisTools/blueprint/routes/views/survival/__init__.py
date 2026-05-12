@@ -30,7 +30,11 @@ def get_result():
     # TODO add json payload control
     # TODO add check on payload nulls and stuff
     # TODO add path in the config file or ENV variable
-    filter_sets = json.loads(json.dumps(args.get("filterSets")))
+    filter_sets = args.get("filterSets")
+    if not isinstance(filter_sets, list) or not filter_sets:
+        raise UserError("You must submit at least one filter set")
+
+    filter_sets = json.loads(json.dumps(filter_sets))
     risktable_flag = config.get("result").get("risktable", False)
     survival_flag = config.get("result").get("survival", False)
     efs_flag = args.get('efsFlag', False)
@@ -51,9 +55,18 @@ def get_result():
 
     survival_results = {}
     for filter_set in filter_sets:
+        if not isinstance(filter_set, dict):
+            raise UserError("Each filter set must be an object")
+
+        if "filters" not in filter_set:
+            raise UserError("Missing required field in filter set: filters")
+
         # the default "All Subjects" option has filter set id of -1
         filter_set_id = filter_set.get("id")
         user_filter = filter_set.get("filters")
+        if not isinstance(user_filter, dict):
+            raise UserError("filterSet.filters must be an object")
+
         is_filterset_allowed = check_allowed_filter(config, filter_set["filters"]) and \
                                 set(get_consortium_list(filter_set["filters"])).issubset(set(config.get("consortium")))
 
