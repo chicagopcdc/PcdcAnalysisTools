@@ -1,9 +1,11 @@
 import os
 import sys
 import logging
+from datetime import datetime, timezone
 from dotenv import load_dotenv
+from uuid import uuid4
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 # from authutils.oauth2 import client as oauth2_client
 from authutils.oauth2.client import blueprint as oauth2_blueprint
@@ -153,15 +155,39 @@ def version():
     return jsonify(base), 200
 
 
+def _get_request_id():
+    request_id = request.headers.get("X-Request-Id")
+    return request_id or str(uuid4())
+
+
+def _error_response(status_code, message, error_type=None, details=None):
+    payload = {
+        "code": status_code,
+        "message": message,
+        "details": details or {},
+        "request_id": _get_request_id(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+    if error_type:
+        payload["error"] = error_type
+    return jsonify(payload), status_code
+
+
 @app.errorhandler(404)
 def page_not_found(e):
-    return jsonify(message=e.description), e.code
+    message = getattr(e, "description", "resource not found")
+    return _error_response(
+        404,
+        message,
+        error_type="NotFound",
+        details={"path": request.path},
+    )
 
 
 @app.errorhandler(500)
 def server_error(e):
-    app.logger.exception(e)
-    return jsonify(message="internal server error"), 500
+    app.logger.exception("Unhandled server error")
+    return _error_response(500, "internal server error", error_type="InternalServerError")
 
 
 def _log_and_jsonify_exception(e):
@@ -171,18 +197,37 @@ def _log_and_jsonify_exception(e):
     This is the error handling mechanism for ``APIErrors`` and
     ``AuthError``.
     """
-    app.logger.exception(e)
-    if hasattr(e, "json") and e.json:
-        return jsonify(**e.json), e.code
-    else:
-        return jsonify(message=e.message), e.code
+    app.logger.exception(
+        "Handled API error (%s) request_id=%s",
+        e.__class__.__name__,
+        _get_request_id(),
+    )
+    status_code = int(getattr(e, "code", 500))
+    message = getattr(e, "message", str(e))
+    details = {}
+    if hasattr(e, "json") and isinstance(e.json, dict):
+        details = e.json
+
+    return _error_response(
+        status_code,
+        message,
+        error_type=e.__class__.__name__,
+        details=details,
+    )
+
+
+def _log_and_jsonify_unhandled_exception(e):
+    app.logger.exception(
+        "Unhandled exception (%s) request_id=%s",
+        e.__class__.__name__,
+        _get_request_id(),
+    )
+    return _error_response(500, "internal server error", error_type="InternalServerError")
 
 
 app.register_error_handler(APIError, _log_and_jsonify_exception)
-
-app.register_error_handler(
-    PcdcAnalysisTools.errors.APIError, _log_and_jsonify_exception)
 app.register_error_handler(AuthError, _log_and_jsonify_exception)
+app.register_error_handler(Exception, _log_and_jsonify_unhandled_exception)
 
 
 def run_for_development(**kwargs):
@@ -196,9 +241,5 @@ def run_for_development(**kwargs):
     kwargs["port"] = app.config["SHEEPDOG_PORT"]
     kwargs["host"] = app.config["SHEEPDOG_HOST"]
 
-    try:
-        app_init(app)
-    except Exception:
-        app.logger.exception(
-            "Couldn't initialize application, continuing anyway")
+    app_init(app)
     app.run(**kwargs)
