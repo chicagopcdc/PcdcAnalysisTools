@@ -253,6 +253,20 @@ def _fetch_data(filters, fields):
     return guppy_data
 
 
+def _mask_small_count(count):
+    """Return -1 when *count* is below the configured small-cell threshold."""
+    threshold = capp.config.get("SMALL_CELL_SIZE", 5)
+    return -1 if count < threshold else int(count)
+
+
+def _mask_small_percentage(count, total, fmt="{:.1%}"):
+    """Return the formatted percentage, or '-1' when the count is masked."""
+    threshold = capp.config.get("SMALL_CELL_SIZE", 5)
+    if count < threshold:
+        return "-1"
+    return fmt.format(count / total)
+
+
 def _get_table_result(
     user_filter_set_df, everything_else_df, total_filter_set_df, covariates
 ):
@@ -261,8 +275,8 @@ def _get_table_result(
 
     return_table = {
         "variables": [],
-        "trueCount": true_number,
-        "everythingElseCount": everything_else_number,
+        "trueCount": _mask_small_count(true_number),
+        "everythingElseCount": _mask_small_count(everything_else_number),
     }
 
     #  for each covariate, so for each row / variables it computes
@@ -282,14 +296,16 @@ def _get_table_result(
             everything_else_df[covariate["label"]].isnull().sum()
         )
 
-        covariate_return_value["missingFromTruePercent"] = "{:.1%}".format(
-            missing_count_from_true / true_number
+        covariate_return_value["missingFromTruePercent"] = _mask_small_percentage(
+            missing_count_from_true, true_number
         )
-        covariate_return_value["missingFromTrueCount"] = int(missing_count_from_true)
-        covariate_return_value["missingFromEverythingElsePercent"] = "{:.1%}".format(
-            missing_count_from_everything_else / everything_else_number
+        covariate_return_value["missingFromTrueCount"] = _mask_small_count(
+            missing_count_from_true
         )
-        covariate_return_value["missingFromEverythingElseCount"] = int(
+        covariate_return_value["missingFromEverythingElsePercent"] = (
+            _mask_small_percentage(missing_count_from_everything_else, everything_else_number)
+        )
+        covariate_return_value["missingFromEverythingElseCount"] = _mask_small_count(
             missing_count_from_everything_else
         )
 
@@ -351,15 +367,17 @@ def _get_table_result(
                         else 0
                     )
 
+                    true_bucket_count = len(true_bucket_data)
+                    everything_else_bucket_count = len(everything_else_bucket_data)
                     keys.append(
                         {
                             "name": f"{round(start, 2)} - {round(end, 2)}",
                             "data": {
                                 "trueMean": round(true_mean, 2),
-                                "trueCount": int(len(true_bucket_data)),
+                                "trueCount": _mask_small_count(true_bucket_count),
                                 "everythingElseMean": round(everything_else_mean, 2),
-                                "everythingElseCount": int(
-                                    len(everything_else_bucket_data)
+                                "everythingElseCount": _mask_small_count(
+                                    everything_else_bucket_count
                                 ),
                             },
                         }
@@ -380,26 +398,26 @@ def _get_table_result(
 
             for selected_key in covariate["selectedKeys"]:
 
-                true_count = (
-                    user_filter_set_df[covariate["label"]] == selected_key
-                ).sum()
-                true_percentage = "{:.1%}".format(true_count / true_number)
+                true_count = int(
+                    (user_filter_set_df[covariate["label"]] == selected_key).sum()
+                )
+                true_percentage = _mask_small_percentage(true_count, true_number)
 
-                everything_else_count = (
-                    everything_else_df[covariate["label"]] == selected_key
-                ).sum()
-                everything_else_percentage = "{:.1%}".format(
-                    everything_else_count / everything_else_number
+                everything_else_count = int(
+                    (everything_else_df[covariate["label"]] == selected_key).sum()
+                )
+                everything_else_percentage = _mask_small_percentage(
+                    everything_else_count, everything_else_number
                 )
 
                 keys.append(
                     {
                         "name": selected_key,
                         "data": {
-                            f"truePercent": true_percentage,
-                            "trueCount": int(true_count),
+                            "truePercent": true_percentage,
+                            "trueCount": _mask_small_count(true_count),
                             "everythingElsePercent": everything_else_percentage,
-                            "everythingElseCount": int(everything_else_count),
+                            "everythingElseCount": _mask_small_count(everything_else_count),
                         },
                     }
                 )

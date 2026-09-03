@@ -73,6 +73,9 @@ def app_init(app):
     # data source for survival analysis
     app.config["IS_SURVIVAL_USING_GUPPY"] = True
 
+    # minimum cell size — counts below this threshold are masked to -1 in results
+    app.config["SMALL_CELL_SIZE"] = app.config.get("SMALL_CELL_SIZE", 5)
+
     key_path = app.config.get("PRIVATE_KEY_PATH", None)
     app.config["RSA_PRIVATE_KEY"] = SignatureManager(key_path=key_path).get_key()
     if app.config["RSA_PRIVATE_KEY"] is None:
